@@ -883,13 +883,22 @@ function applyFilters() {
     if (codeOnly && !(p.code && p.code.trim())) return false;
     if (q) {
       const scope = document.getElementById('searchScope').value;
-      let haystack;
-      if (scope === 'author') haystack = (p.Authors || '').toLowerCase();
-      else if (scope === 'title') haystack = (p.Title || '').toLowerCase();
-      else if (scope === 'abstract') haystack = (p.Abstract || '').toLowerCase();
-      else haystack = [p.Title, p.Authors, p.Abstract, p.Type, p.Subtype, p['abbr.'], p.Publication, p._vlm_keywords || '', p._tasks || ''].join(' ').toLowerCase();
-      const terms = q.split(/\s+/);
-      if (!terms.every(t => haystack.includes(t))) return false;
+      if (scope === 'author') {
+        // Author: phrase match — search full query as-is in Authors field
+        if (!(p.Authors || '').toLowerCase().includes(q)) return false;
+      } else if (scope === 'title') {
+        const terms = q.split(/\s+/);
+        const title = (p.Title || '').toLowerCase();
+        if (!terms.every(t => title.includes(t))) return false;
+      } else if (scope === 'abstract') {
+        const terms = q.split(/\s+/);
+        const abs = (p.Abstract || '').toLowerCase();
+        if (!terms.every(t => abs.includes(t))) return false;
+      } else {
+        const haystack = [p.Title, p.Authors, p.Abstract, p.Type, p.Subtype, p['abbr.'], p.Publication, p._vlm_keywords || '', p._tasks || ''].join(' ').toLowerCase();
+        const terms = q.split(/\s+/);
+        if (!terms.every(t => haystack.includes(t))) return false;
+      }
     }
     return true;
   });
