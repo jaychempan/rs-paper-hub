@@ -99,6 +99,61 @@
     0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; }
   }
 
+  /* Recent papers side panel */
+  .recent-toggle {
+    position: fixed; right: 0; top: 50%; transform: translateY(-50%); z-index: 60;
+    writing-mode: vertical-rl; padding: 12px 6px; font-size: 12px; font-weight: 600;
+    background: linear-gradient(180deg, #4f46e5, #7c3aed); color: white;
+    border-radius: 8px 0 0 8px; cursor: pointer; border: none;
+    box-shadow: -2px 0 8px rgba(79,70,229,0.3); transition: all 0.2s; letter-spacing: 1px;
+  }
+  .recent-toggle:hover { padding-right: 10px; }
+  .recent-panel {
+    position: fixed; right: -360px; top: 0; width: 360px; height: 100%; z-index: 150;
+    background: var(--card); box-shadow: -4px 0 20px rgba(0,0,0,0.15);
+    transition: right 0.3s ease; display: flex; flex-direction: column;
+  }
+  .recent-panel.open { right: 0; }
+  .recent-panel-header {
+    padding: 16px 20px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .recent-panel-header h3 { font-size: 15px; margin: 0; }
+  .recent-panel-close {
+    background: none; border: none; font-size: 20px; cursor: pointer;
+    color: var(--text-secondary); padding: 0 4px;
+  }
+  .recent-tabs {
+    display: flex; border-bottom: 1px solid var(--border);
+  }
+  .recent-tab {
+    flex: 1; padding: 10px; text-align: center; font-size: 13px; font-weight: 500;
+    cursor: pointer; border: none; background: none; color: var(--text-secondary);
+    border-bottom: 2px solid transparent; transition: all 0.15s;
+  }
+  .recent-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+  .recent-list {
+    flex: 1; overflow-y: auto; padding: 12px 16px;
+  }
+  .recent-item {
+    padding: 10px 0; border-bottom: 1px solid var(--border); cursor: pointer;
+  }
+  .recent-item:last-child { border-bottom: none; }
+  .recent-item:hover .recent-item-title { color: var(--primary); }
+  .recent-item-date { font-size: 11px; color: var(--text-secondary); margin-bottom: 2px; }
+  .recent-item-title { font-size: 13px; font-weight: 500; line-height: 1.4; transition: color 0.15s; }
+  .recent-item-meta { font-size: 11px; color: var(--text-secondary); margin-top: 3px; }
+  .recent-empty { text-align: center; color: var(--text-secondary); font-size: 13px; padding: 40px 0; }
+  .recent-panel-overlay {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.3); z-index: 140;
+  }
+  .recent-panel-overlay.show { display: block; }
+  @media (max-width: 768px) {
+    .recent-panel { width: 100%; right: -100%; }
+    .recent-toggle { font-size: 11px; padding: 10px 5px; }
+  }
+
   /* Back to top */
   .back-top {
     position: fixed; bottom: 28px; right: 28px; width: 40px; height: 40px;
@@ -199,6 +254,7 @@
   .tag.category { background: #dbeafe; color: #1e40af; }
   .tag.vlm { background: #fce7f3; color: #9d174d; }
   .tag.vlm-kw { background: #ede9fe; color: #5b21b6; font-size: 11px; }
+  .tag.task { background: #fff7ed; color: #c2410c; font-size: 11px; font-weight: 600; }
   .field-icon { display: inline; vertical-align: middle; margin-right: 4px; opacity: 0.5; }
   .paper-authors { font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; padding-left: 20px; position: relative; }
   .paper-authors .field-icon { position: absolute; left: 0; top: 2px; }
@@ -372,6 +428,7 @@
       <option value="false">Non-VLM</option>
     </select>
     <select id="vlmKeywordFilter" style="display:none;max-width:180px;"></select>
+    <select id="taskFilter" style="display:none;"></select>
     <div class="sort-group">
       <button class="sort-btn active" data-sort="newest">New</button>
       <button class="sort-btn" data-sort="oldest">Old</button>
@@ -403,6 +460,20 @@
   <a href='https://www.counters-free.net/' style="color:inherit;text-decoration:none;">visits:</a>
   <script type='text/javascript' src='https://www.freevisitorcounters.com/auth.php?id=fb6eb33e03e201b26048add495de3cda89f56796'></script>
   <script type="text/javascript" src="https://www.freevisitorcounters.com/en/home/counter/1536583/t/5"></script>
+</div>
+
+<button class="recent-toggle" id="recentToggle" onclick="toggleRecentPanel()">NEW PAPERS</button>
+<div class="recent-panel-overlay" id="recentOverlay" onclick="toggleRecentPanel()"></div>
+<div class="recent-panel" id="recentPanel">
+  <div class="recent-panel-header">
+    <h3>Recent Papers</h3>
+    <button class="recent-panel-close" onclick="toggleRecentPanel()">&times;</button>
+  </div>
+  <div class="recent-tabs">
+    <button class="recent-tab active" onclick="switchRecentTab('daily', this)">Today</button>
+    <button class="recent-tab" onclick="switchRecentTab('weekly', this)">This Week</button>
+  </div>
+  <div class="recent-list" id="recentList"></div>
 </div>
 
 <button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
@@ -489,6 +560,21 @@ async function loadData(file) {
     Object.entries(cats).sort((a,b) => b[1] - a[1]).forEach(([c, n]) => {
       const o = document.createElement('option');
       o.value = c; o.textContent = c + ' (' + n + ')'; catSel.appendChild(o);
+    });
+  }
+  // Show/hide Task filter
+  const hasTask = allPapers.some(p => p._tasks);
+  const taskSel = document.getElementById('taskFilter');
+  taskSel.style.display = hasTask ? '' : 'none';
+  taskSel.innerHTML = '<option value="">All Tasks</option>';
+  if (hasTask) {
+    const tasks = {};
+    allPapers.forEach(p => {
+      (p._tasks || '').split(';').filter(t => t.trim()).forEach(t => { tasks[t] = (tasks[t] || 0) + 1; });
+    });
+    Object.entries(tasks).sort((a,b) => b[1] - a[1]).forEach(([t, n]) => {
+      const o = document.createElement('option');
+      o.value = t; o.textContent = t + ' (' + n + ')'; taskSel.appendChild(o);
     });
   }
   populateFilters();
@@ -597,6 +683,7 @@ function applyFilters() {
   const vlm = document.getElementById('vlmFilter').value;
   const vlmKw = document.getElementById('vlmKeywordFilter').value;
   const catDD = document.getElementById('categoryFilter').value;
+  const taskDD = document.getElementById('taskFilter').value;
 
   // Effective filters: chart multi-select takes priority, dropdown as fallback
   const yearSet = chartSel.year.size > 0 ? chartSel.year : null;
@@ -620,9 +707,10 @@ function applyFilters() {
     if (vlm === 'true' && !p._is_vlm) return false;
     if (vlm === 'false' && p._is_vlm) return false;
     if (vlmKw && !(p._vlm_keywords || '').includes(vlmKw)) return false;
+    if (taskDD && !(p._tasks || '').split(';').includes(taskDD)) return false;
     if (codeOnly && !(p.code && p.code.trim())) return false;
     if (q) {
-      const haystack = [p.Title, p.Authors, p.Abstract, p.Type, p.Subtype, p['abbr.'], p.Publication, p._vlm_keywords || ''].join(' ').toLowerCase();
+      const haystack = [p.Title, p.Authors, p.Abstract, p.Type, p.Subtype, p['abbr.'], p.Publication, p._vlm_keywords || '', p._tasks || ''].join(' ').toLowerCase();
       const terms = q.split(/\s+/);
       if (!terms.every(t => haystack.includes(t))) return false;
     }
@@ -675,6 +763,9 @@ function render() {
     const vlmKwTags = (p._vlm_keywords || '').split(';').filter(k => k.trim()).map(k => {
       return `<span class="tag vlm-kw">${escHtml(cleanRegexLabel(k))}</span>`;
     }).join('');
+    const taskTags = (p._tasks || '').split(';').filter(t => t.trim()).map(t => {
+      return `<span class="tag task">${escHtml(t)}</span>`;
+    }).join('');
     return `
     <div class="paper-card" onclick="toggleAbstract(event, ${idx})">
       <div class="paper-title"><a href="${escHtml(p.Paper_link)}" target="_blank" onclick="event.stopPropagation()">${renderLatex(p.Title)}</a></div>
@@ -683,7 +774,7 @@ function render() {
         <span class="tag">${escHtml(p.Type)}</span>
         ${p.Subtype ? `<span class="tag">${escHtml(p.Subtype.substring(0, 50))}</span>` : ''}
         ${pubTag}
-        ${catTag}${vlmTag}${vlmKwTags}
+        ${catTag}${vlmTag}${vlmKwTags}${taskTags}
       </div>
       <div class="paper-authors"><span class="field-icon">${ICON.authors}</span>${escHtml(p.Authors)}</div>
       <div class="paper-abstract-wrap"><span class="field-icon">${ICON.abstract}</span><div class="paper-abstract" id="abs-${idx}">${renderLatex(p.Abstract)}</div></div>
@@ -946,6 +1037,7 @@ document.getElementById('yearToFilter').addEventListener('change', applyFilters)
 document.getElementById('monthFilter').addEventListener('change', applyFilters);
 document.getElementById('vlmFilter').addEventListener('change', applyFilters);
 document.getElementById('vlmKeywordFilter').addEventListener('change', applyFilters);
+document.getElementById('taskFilter').addEventListener('change', applyFilters);
 document.getElementById('categoryFilter').addEventListener('change', () => { if (!_chartDriven) chartSel.category.clear(); applyFilters(); });
 document.querySelectorAll('.sort-btn').forEach(btn => {
   btn.addEventListener('click', () => {

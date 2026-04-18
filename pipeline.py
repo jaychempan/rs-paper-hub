@@ -18,6 +18,7 @@ import pandas as pd
 from cleaning.abstract_cleaner import clean_abstract
 from cleaning.filter.vlm_filter import filter_vlm_papers
 from cleaning.classifier import classify_papers
+from cleaning.task_tagger import tag_all_papers
 
 logging.basicConfig(
     level=logging.INFO,
@@ -30,7 +31,7 @@ logger = logging.getLogger(__name__)
 ALL_COLUMNS = [
     "Category", "Type", "Subtype", "Date", "Month", "Year", "Institute",
     "Title", "abbr.", "Paper_link", "Abstract",
-    "code", "Publication", "BibTex", "Authors",
+    "code", "Publication", "BibTex", "Authors", "_tasks",
 ]
 
 VLM_COLUMNS = ["Category"] + ALL_COLUMNS
@@ -80,8 +81,12 @@ def run(input_path: str, output_dir: str):
     logger.info(f"  Code field filled from abstract: {code_filled}")
 
     # ── Step 2: Classify all papers ────────────────────────
-    logger.info("[2/5] Classifying all papers...")
+    logger.info("[2/6] Classifying all papers...")
     classify_papers(papers)
+
+    # ── Step 2.5: Tag tasks ───────────────────────────────
+    logger.info("[3/6] Tagging tasks from title & abstract...")
+    tag_all_papers(papers)
 
 
     all_cat_counter = Counter(p.get("Category", "Other") for p in papers)
@@ -89,7 +94,7 @@ def run(input_path: str, output_dir: str):
         logger.info(f"  {cat}: {count}")
 
     # ── Step 3: Save cleaned full dataset ─────────────────
-    logger.info("[3/5] Saving cleaned dataset...")
+    logger.info("[4/6] Saving cleaned dataset...")
     save(
         papers,
         os.path.join(output_dir, "papers.csv"),
@@ -98,12 +103,12 @@ def run(input_path: str, output_dir: str):
     )
 
     # ── Step 4: Filter VLM papers ─────────────────────────
-    logger.info("[4/5] Filtering VLM-related papers...")
+    logger.info("[5/6] Filtering VLM-related papers...")
     matched, annotated = filter_vlm_papers(papers)
     logger.info(f"  VLM-related: {len(matched)} / {len(papers)}")
 
     # ── Step 5: Classify VLM papers ───────────────────────
-    logger.info("[5/5] Classifying VLM papers...")
+    logger.info("[6/6] Classifying VLM papers...")
     classify_papers(matched)
 
 
