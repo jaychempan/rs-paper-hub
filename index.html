@@ -23,7 +23,7 @@
     --shadow: 0 1px 3px rgba(0,0,0,0.08);
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding-bottom: 40px; }
 
   /* Header */
   .header {
@@ -207,6 +207,14 @@
   #monthFilter { border-color: #fcd34d; color: #92400e; background-color: #fffbeb; }
   #vlmFilter, #vlmKeywordFilter { border-color: #f9a8d4; color: #9d174d; background-color: #fdf2f8; }
   #taskFilter { border-color: #fdba74; color: #c2410c; background-color: #fff7ed; }
+  .quick-filter {
+    padding: 6px 12px; border: 1px solid var(--border); border-radius: 8px;
+    background: var(--card); cursor: pointer; font-size: 12px; font-weight: 500;
+    white-space: nowrap; transition: all 0.2s; color: var(--text-secondary);
+  }
+  .quick-filter:hover { border-color: var(--primary); color: var(--primary); }
+  .quick-filter.active { background: var(--primary); color: white; border-color: var(--primary); }
+  .quick-filter .qf-count { font-weight: 700; margin-left: 2px; }
   .result-count { font-size: 13px; color: var(--text-secondary); white-space: nowrap; }
 
   /* Charts area */
@@ -408,6 +416,8 @@
 <div class="controls">
   <div class="controls-top">
     <select id="dataSource"></select>
+    <button class="quick-filter" id="qfToday" onclick="toggleQuickFilter('today')">Today <span class="qf-count" id="qfTodayCount"></span></button>
+    <button class="quick-filter" id="qfWeek" onclick="toggleQuickFilter('week')">This Week <span class="qf-count" id="qfWeekCount"></span></button>
     <input class="search-box" id="searchInput" type="text" placeholder="Search title, authors, abstract, keywords...">
     <button class="filter-toggle" id="filterToggle" onclick="document.getElementById('filterPanel').classList.toggle('open');this.classList.toggle('open')">Filters ▼</button>
     <span class="result-count" id="resultCount"></span>
@@ -466,11 +476,11 @@
 <div class="paper-list" id="paperList"></div>
 <div class="pagination" id="pagination"></div>
 
-<div style="text-align:center;padding:20px 0 30px;font-size:11px;color:#94a3b8;opacity:0.6;">
+<footer style="position:fixed;bottom:0;left:0;width:100%;background:var(--card);border-top:1px solid var(--border);padding:8px 0;text-align:center;font-size:11px;color:#94a3b8;z-index:40;">
   <a href='https://www.counters-free.net/' style="color:inherit;text-decoration:none;">visits:</a>
   <script type='text/javascript' src='https://www.freevisitorcounters.com/auth.php?id=fb6eb33e03e201b26048add495de3cda89f56796'></script>
   <script type="text/javascript" src="https://www.freevisitorcounters.com/en/home/counter/1536583/t/5"></script>
-</div>
+</footer>
 
 <button class="recent-toggle" id="recentToggle" onclick="toggleRecentPanel()">NEW PAPERS</button>
 <div class="recent-panel-overlay" id="recentOverlay" onclick="toggleRecentPanel()"></div>
@@ -525,6 +535,7 @@ let filtered = [];
 let currentPage = 1;
 let chartsVisible = false;
 let codeOnly = false;
+let quickDateFilter = ''; // '', 'today', 'week'
 
 function initDataSourceSelect() {
   const sel = document.getElementById('dataSource');
@@ -558,6 +569,9 @@ async function loadData(file) {
   yearSelect.innerHTML = '<option value="">All Years</option>';
   document.getElementById('yearRangeGroup').style.display = 'none';
   chartSel.year.clear(); chartSel.type.clear(); chartSel.category.clear(); chartSel.task.clear();
+  quickDateFilter = '';
+  document.getElementById('qfToday').classList.remove('active');
+  document.getElementById('qfWeek').classList.remove('active');
   document.getElementById('searchInput').value = '';
   // Show/hide VLM filters based on data
   const hasVlm = allPapers.some(p => '_is_vlm' in p);
@@ -596,6 +610,7 @@ async function loadData(file) {
   populateFilters();
   applyFilters();
   renderStats(allPapers);
+  updateQuickFilterCounts();
 }
 
 async function init() {
@@ -709,7 +724,21 @@ function applyFilters() {
   const catSet = chartSel.category.size > 0 ? chartSel.category : null;
   const taskSet = chartSel.task.size > 0 ? chartSel.task : null;
 
+  // Quick date filter dates
+  let qfDateFrom = '';
+  if (quickDateFilter === 'today') {
+    qfDateFrom = new Date().toISOString().slice(0, 10);
+  } else if (quickDateFilter === 'week') {
+    const now = new Date();
+    const mon = new Date(now);
+    const d = mon.getDay();
+    mon.setDate(mon.getDate() - (d === 0 ? 6 : d - 1));
+    qfDateFrom = mon.toISOString().slice(0, 10);
+  }
+
   filtered = allPapers.filter(p => {
+    // Quick date filter
+    if (qfDateFrom && (!p.Date || p.Date < qfDateFrom)) return false;
     // Type filter
     if (typeSet) { if (!typeSet.has(p.Type)) return false; }
     else if (typeDD && p.Type !== typeDD) return false;
@@ -1119,6 +1148,26 @@ function toggleCodeFilter() {
   label.textContent = codeOnly ? 'With Code ✓' : 'With Code';
   label.style.color = codeOnly ? 'var(--primary)' : '';
   applyFilters();
+}
+
+function toggleQuickFilter(mode) {
+  quickDateFilter = quickDateFilter === mode ? '' : mode;
+  document.getElementById('qfToday').classList.toggle('active', quickDateFilter === 'today');
+  document.getElementById('qfWeek').classList.toggle('active', quickDateFilter === 'week');
+  applyFilters();
+}
+
+function updateQuickFilterCounts() {
+  const now = new Date();
+  const todayStr = now.toISOString().slice(0, 10);
+  const monday = new Date(now);
+  const day = monday.getDay();
+  monday.setDate(monday.getDate() - (day === 0 ? 6 : day - 1));
+  const mondayStr = monday.toISOString().slice(0, 10);
+  const todayCount = allPapers.filter(p => p.Date === todayStr).length;
+  const weekCount = allPapers.filter(p => p.Date >= mondayStr).length;
+  document.getElementById('qfTodayCount').textContent = todayCount > 0 ? todayCount : '';
+  document.getElementById('qfWeekCount').textContent = weekCount > 0 ? weekCount : '';
 }
 
 function debounce(fn, ms) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }

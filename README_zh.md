@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="asset/logo.png" alt="RS-Paper-Hub" width="200">
+<img src="asset/logo.png" alt="RS-Paper-Hub" width="100">
 
 # RS-Paper-Hub
 
@@ -264,6 +264,22 @@ python3 -m http.server 8080
 - `Institute` 字段依赖 arXiv 的 affiliation 信息，大部分论文未提供
 - 已下载的 PDF 和已采集的月份会被记录，重复运行不会重复处理
 - `progress.json` 采用原子写入，中断不会损坏进度文件
+
+---
+
+## 引用
+
+如果 RS-Paper-Hub 对您的研究或工作有所帮助，请考虑引用本仓库：
+
+```bibtex
+@software{rs_paper_hub,
+  author       = {ML4Sustain},
+  title        = {RS-Paper-Hub: A Curated Collection of Remote Sensing Papers from arXiv},
+  year         = {2025},
+  url          = {https://github.com/ML4Sustain/rs-paper-hub},
+  note         = {Automated scraping, cleaning, classification, and VLM filtering pipeline for remote sensing papers}
+}
+```
 
 ---
 

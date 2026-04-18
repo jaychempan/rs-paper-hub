@@ -267,6 +267,22 @@ Open http://localhost:8080 — features include:
 
 ---
 
+## Citation
+
+If you find RS-Paper-Hub useful in your research or work, please consider citing this repository:
+
+```bibtex
+@software{rs_paper_hub,
+  author       = {ML4Sustain},
+  title        = {RS-Paper-Hub: A Curated Collection of Remote Sensing Papers from arXiv},
+  year         = {2025},
+  url          = {https://github.com/ML4Sustain/rs-paper-hub},
+  note         = {Automated scraping, cleaning, classification, and VLM filtering pipeline for remote sensing papers}
+}
+```
+
+---
+
 ## License
 
 MIT
