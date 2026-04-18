@@ -48,7 +48,7 @@
     max-width: 1200px; margin: 20px auto; padding: 0 20px;
   }
   .controls-top {
-    display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+    display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
   }
   .filter-toggle {
     display: none; padding: 8px 14px; border: 1px solid var(--border); border-radius: 8px;
@@ -56,16 +56,16 @@
   }
   .filter-toggle.open { border-color: var(--primary); color: var(--primary); }
   .filter-panel {
-    display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-top: 12px;
+    display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 10px;
   }
   .search-box {
-    flex: 1; min-width: 260px; padding: 10px 16px; border: 1px solid var(--border);
-    border-radius: 8px; font-size: 14px; outline: none; transition: border 0.2s;
+    flex: 1; min-width: 200px; padding: 8px 14px; border: 1px solid var(--border);
+    border-radius: 8px; font-size: 13px; outline: none; transition: border 0.2s;
   }
   .search-box:focus { border-color: var(--primary); }
   select {
-    padding: 10px 32px 10px 12px; border: 1px solid var(--border); border-radius: 8px;
-    font-size: 14px; background: var(--card); outline: none; cursor: pointer;
+    padding: 8px 28px 8px 10px; border: 1px solid var(--border); border-radius: 8px;
+    font-size: 13px; background: var(--card); outline: none; cursor: pointer;
     appearance: none; -webkit-appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M2 4l4 4 4-4'/%3E%3C/svg%3E");
     background-repeat: no-repeat; background-position: right 10px center;
@@ -127,7 +127,7 @@
   .paper-abstract {
     font-size: 13px; color: var(--text-secondary); line-height: 1.7;
     max-height: 5.1em; overflow: hidden; transition: max-height 0.3s;
-    position: relative; cursor: pointer;
+    position: relative; cursor: pointer; text-align: justify;
   }
   .paper-abstract::after {
     content: '... Show more ▾'; position: absolute; bottom: 0; right: 0;
@@ -181,8 +181,8 @@
   /* Sort buttons */
   .sort-group { display: flex; gap: 0; }
   .sort-btn {
-    padding: 10px 14px; border: 1px solid var(--border); background: var(--card);
-    font-size: 13px; cursor: pointer; transition: all 0.2s;
+    padding: 8px 12px; border: 1px solid var(--border); background: var(--card);
+    font-size: 12px; cursor: pointer; transition: all 0.2s;
   }
   .sort-btn:first-child { border-radius: 8px 0 0 8px; }
   .sort-btn:last-child { border-radius: 0 8px 8px 0; }
@@ -190,8 +190,8 @@
 
   /* Toggle charts */
   .toggle-charts {
-    padding: 8px 16px; border: 1px solid var(--border); border-radius: 8px;
-    background: var(--card); cursor: pointer; font-size: 13px;
+    padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px;
+    background: var(--card); cursor: pointer; font-size: 12px;
   }
 
   /* Bibtex modal */
@@ -247,12 +247,12 @@
 
 <div class="controls">
   <div class="controls-top">
+    <select id="dataSource"></select>
     <input class="search-box" id="searchInput" type="text" placeholder="Search title, authors, abstract, keywords...">
     <button class="filter-toggle" id="filterToggle" onclick="document.getElementById('filterPanel').classList.toggle('open');this.classList.toggle('open')">Filters ▼</button>
     <span class="result-count" id="resultCount"></span>
   </div>
   <div class="filter-panel" id="filterPanel">
-    <select id="dataSource"></select>
     <select id="typeFilter"><option value="">All Types</option></select>
     <select id="yearFilter"><option value="">All Years</option></select>
     <div id="yearRangeGroup" style="display:none;align-items:center;gap:4px;">
@@ -267,16 +267,16 @@
       <option value="7">Jul</option><option value="8">Aug</option><option value="9">Sep</option>
       <option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option>
     </select>
+    <select id="categoryFilter" style="display:none;"></select>
     <select id="vlmFilter" style="display:none;">
       <option value="">All VLM</option>
       <option value="true">VLM Only</option>
       <option value="false">Non-VLM</option>
     </select>
-    <select id="vlmKeywordFilter" style="display:none;max-width:200px;"></select>
-    <select id="categoryFilter" style="display:none;"></select>
+    <select id="vlmKeywordFilter" style="display:none;max-width:180px;"></select>
     <div class="sort-group">
-      <button class="sort-btn active" data-sort="newest">Newest</button>
-      <button class="sort-btn" data-sort="oldest">Oldest</button>
+      <button class="sort-btn active" data-sort="newest">New</button>
+      <button class="sort-btn" data-sort="oldest">Old</button>
       <button class="sort-btn" data-sort="title">A-Z</button>
     </div>
     <button class="toggle-charts" id="toggleCharts">Charts ▼</button>
