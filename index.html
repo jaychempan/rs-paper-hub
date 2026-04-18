@@ -197,11 +197,23 @@
   .filter-panel {
     display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 10px;
   }
-  .search-box {
-    flex: 1; min-width: 200px; padding: 8px 14px; border: 1px solid var(--border);
-    border-radius: 8px; font-size: 13px; outline: none; transition: border 0.2s;
+  .search-wrap {
+    flex: 1; min-width: 200px; display: flex; border: 1px solid var(--border);
+    border-radius: 8px; overflow: hidden; transition: border 0.2s;
   }
-  .search-box:focus { border-color: var(--primary); }
+  .search-wrap:focus-within { border-color: var(--primary); }
+  .search-scope {
+    padding: 8px 6px 8px 10px; border: none; border-right: 1px solid var(--border);
+    font-size: 12px; font-weight: 500; color: var(--primary); background: var(--tag-bg);
+    outline: none; cursor: pointer; appearance: none; -webkit-appearance: none;
+    background-image: url("image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%234f46e5' d='M2 4l4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 4px center;
+    padding-right: 18px; flex-shrink: 0;
+  }
+  .search-box {
+    flex: 1; min-width: 0; padding: 8px 14px; border: none;
+    font-size: 13px; outline: none; background: var(--card);
+  }
   select {
     padding: 8px 28px 8px 10px; border: 1px solid var(--border); border-radius: 8px;
     font-size: 13px; background: var(--card); outline: none; cursor: pointer;
@@ -336,7 +348,7 @@
   .paper-abstract a:hover { text-decoration: underline; }
   .paper-abstract h1, .paper-abstract h2, .paper-abstract h3 { font-size: 14px; margin: 6px 0 2px; }
   .paper-title p { display: inline; margin: 0; }
-  .paper-links { margin-top: 8px; display: flex; gap: 10px; align-items: center; }
+  .paper-links { margin-top: 8px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
   .paper-links a {
     font-size: 12px; color: var(--text-secondary); text-decoration: none; font-weight: 500;
     display: inline-flex; align-items: center; gap: 4px;
@@ -420,7 +432,7 @@
     }
     .controls-top select#dataSource { flex: 0 0 auto; }
     .controls-top .quick-filter { flex: 0 0 auto; }
-    .search-box { min-width: 0; flex: 1 1 100%; order: 10; margin-top: 8px; }
+    .search-wrap { min-width: 0; flex: 1 1 100%; order: 10; margin-top: 8px; }
     .filter-toggle { display: block; order: 11; margin-top: 8px; }
     .result-count { order: 12; margin-top: 8px; flex: 1; text-align: right; }
     .filter-panel {
@@ -472,7 +484,15 @@
     <select id="dataSource"></select>
     <button class="quick-filter" id="qfToday" onclick="toggleQuickFilter('today')">Today<span class="qf-badge" id="qfTodayCount"></span></button>
     <button class="quick-filter" id="qfWeek" onclick="toggleQuickFilter('week')">This Week<span class="qf-badge" id="qfWeekCount"></span></button>
-    <input class="search-box" id="searchInput" type="text" placeholder="Search title, authors, abstract, keywords...">
+    <div class="search-wrap">
+      <select id="searchScope" class="search-scope">
+        <option value="all">All</option>
+        <option value="title">Title</option>
+        <option value="author">Author</option>
+        <option value="abstract">Abstract</option>
+      </select>
+      <input class="search-box" id="searchInput" type="text" placeholder="Search papers...">
+    </div>
     <button class="collection-btn" id="collectionBtn" onclick="toggleCollectionView()" style="display:none;">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
       Collection <span class="collection-badge" id="collectionBadge">0</span>
@@ -860,7 +880,12 @@ function applyFilters() {
     else if (taskDD && !(p._tasks || '').split(';').includes(taskDD)) return false;
     if (codeOnly && !(p.code && p.code.trim())) return false;
     if (q) {
-      const haystack = [p.Title, p.Authors, p.Abstract, p.Type, p.Subtype, p['abbr.'], p.Publication, p._vlm_keywords || '', p._tasks || ''].join(' ').toLowerCase();
+      const scope = document.getElementById('searchScope').value;
+      let haystack;
+      if (scope === 'author') haystack = (p.Authors || '').toLowerCase();
+      else if (scope === 'title') haystack = (p.Title || '').toLowerCase();
+      else if (scope === 'abstract') haystack = (p.Abstract || '').toLowerCase();
+      else haystack = [p.Title, p.Authors, p.Abstract, p.Type, p.Subtype, p['abbr.'], p.Publication, p._vlm_keywords || '', p._tasks || ''].join(' ').toLowerCase();
       const terms = q.split(/\s+/);
       if (!terms.every(t => haystack.includes(t))) return false;
     }
@@ -869,17 +894,23 @@ function applyFilters() {
 
   // Relevance sort when searching, otherwise normal sort
   if (q) {
+    const scope = document.getElementById('searchScope').value;
     const terms = q.split(/\s+/);
-    filtered.forEach(p => {
-      const title = (p.Title || '').toLowerCase();
-      const abbr = (p['abbr.'] || '').toLowerCase();
-      const authors = (p.Authors || '').toLowerCase();
-      if (terms.every(t => title.includes(t) || abbr.includes(t))) p._rel = 0;
-      else if (terms.some(t => title.includes(t) || abbr.includes(t))) p._rel = 1;
-      else if (terms.some(t => authors.includes(t))) p._rel = 2;
-      else p._rel = 3;
-    });
-    filtered.sort((a, b) => (a._rel - b._rel) || sortCompare(a, b));
+    if (scope !== 'all') {
+      // Scoped search: just use default sort
+      filtered.sort(sortCompare);
+    } else {
+      filtered.forEach(p => {
+        const title = (p.Title || '').toLowerCase();
+        const abbr = (p['abbr.'] || '').toLowerCase();
+        const authors = (p.Authors || '').toLowerCase();
+        if (terms.every(t => title.includes(t) || abbr.includes(t))) p._rel = 0;
+        else if (terms.some(t => title.includes(t) || abbr.includes(t))) p._rel = 1;
+        else if (terms.some(t => authors.includes(t))) p._rel = 2;
+        else p._rel = 3;
+      });
+      filtered.sort((a, b) => (a._rel - b._rel) || sortCompare(a, b));
+    }
   } else {
     filtered.sort(sortCompare);
   }
@@ -903,6 +934,20 @@ function render() {
   const start = (currentPage - 1) * PER_PAGE;
   const page = filtered.slice(start, start + PER_PAGE);
   const list = document.getElementById('paperList');
+
+  if (filtered.length === 0) {
+    const msg = quickDateFilter === 'today'
+      ? 'No remote sensing papers published today.'
+      : quickDateFilter === 'week'
+      ? 'No remote sensing papers found this week yet.'
+      : 'No papers match your current filters.';
+    list.innerHTML = `<div style="text-align:center;padding:60px 20px;color:var(--text-secondary);">
+      <div style="font-size:40px;margin-bottom:12px;">📭</div>
+      <div style="font-size:15px;font-weight:500;margin-bottom:6px;">${msg}</div>
+    </div>`;
+    renderPagination();
+    return;
+  }
 
   list.innerHTML = page.map((p, localIdx) => {
     const idx = start + localIdx;
@@ -1288,6 +1333,7 @@ function renderMathInPage() {
 
 // Event listeners
 document.getElementById('searchInput').addEventListener('input', debounce(applyFilters, 300));
+document.getElementById('searchScope').addEventListener('change', () => { if (document.getElementById('searchInput').value) applyFilters(); });
 document.getElementById('typeFilter').addEventListener('change', () => { if (!_chartDriven) chartSel.type.clear(); applyFilters(); });
 document.getElementById('yearFilter').addEventListener('change', () => {
   if (!_chartDriven) chartSel.year.clear();
