@@ -11,6 +11,7 @@ import os
 import json
 import argparse
 import logging
+from collections import Counter
 
 import pandas as pd
 
@@ -27,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 # All output columns
 ALL_COLUMNS = [
-    "Type", "Subtype", "Date", "Month", "Year", "Institute",
+    "Category", "Type", "Subtype", "Date", "Month", "Year", "Institute",
     "Title", "abbr.", "Paper_link", "Abstract",
     "code", "Publication", "BibTex", "Authors",
 ]
@@ -68,8 +69,17 @@ def run(input_path: str, output_dir: str):
             code_filled += 1
     logger.info(f"  Code field filled from abstract: {code_filled}")
 
-    # ── Step 2: Save cleaned full dataset ─────────────────
-    logger.info("[2/4] Saving cleaned dataset...")
+    # ── Step 2: Classify all papers ────────────────────────
+    logger.info("[2/5] Classifying all papers...")
+    classify_papers(papers)
+
+
+    all_cat_counter = Counter(p.get("Category", "Other") for p in papers)
+    for cat, count in all_cat_counter.most_common():
+        logger.info(f"  {cat}: {count}")
+
+    # ── Step 3: Save cleaned full dataset ─────────────────
+    logger.info("[3/5] Saving cleaned dataset...")
     save(
         papers,
         os.path.join(output_dir, "papers.csv"),
@@ -77,16 +87,16 @@ def run(input_path: str, output_dir: str):
         ALL_COLUMNS,
     )
 
-    # ── Step 3: Filter VLM papers ─────────────────────────
-    logger.info("[3/4] Filtering VLM-related papers...")
+    # ── Step 4: Filter VLM papers ─────────────────────────
+    logger.info("[4/5] Filtering VLM-related papers...")
     matched, annotated = filter_vlm_papers(papers)
     logger.info(f"  VLM-related: {len(matched)} / {len(papers)}")
 
-    # ── Step 4: Classify VLM papers ───────────────────────
-    logger.info("[4/4] Classifying VLM papers...")
+    # ── Step 5: Classify VLM papers ───────────────────────
+    logger.info("[5/5] Classifying VLM papers...")
     classify_papers(matched)
 
-    from collections import Counter
+
     cat_counter = Counter(p.get("Category", "Other") for p in matched)
     for cat, count in cat_counter.most_common():
         logger.info(f"  {cat}: {count}")
