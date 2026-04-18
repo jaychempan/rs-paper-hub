@@ -197,6 +197,11 @@
   <input class="search-box" id="searchInput" type="text" placeholder="Search title, authors, abstract, keywords...">
   <select id="typeFilter"><option value="">All Types</option></select>
   <select id="yearFilter"><option value="">All Years</option></select>
+  <div id="yearRangeGroup" style="display:none;align-items:center;gap:4px;">
+    <select id="yearFromFilter"></select>
+    <span style="color:var(--text-secondary);font-size:13px;">~</span>
+    <select id="yearToFilter"></select>
+  </div>
   <select id="monthFilter">
     <option value="">All Months</option>
     <option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option>
@@ -297,6 +302,7 @@ async function loadData(file) {
   const yearSelect = document.getElementById('yearFilter');
   typeSelect.innerHTML = '<option value="">All Types</option>';
   yearSelect.innerHTML = '<option value="">All Years</option>';
+  document.getElementById('yearRangeGroup').style.display = 'none';
   document.getElementById('searchInput').value = '';
   // Show/hide VLM filters based on data
   const hasVlm = allPapers.some(p => '_is_vlm' in p);
@@ -371,8 +377,19 @@ function populateFilters() {
   const years = [...new Set(allPapers.map(p => p.Year).filter(Boolean))].sort((a,b) => b - a);
   const typeSelect = document.getElementById('typeFilter');
   const yearSelect = document.getElementById('yearFilter');
+  const yearFromSelect = document.getElementById('yearFromFilter');
+  const yearToSelect = document.getElementById('yearToFilter');
   types.forEach(t => { const o = document.createElement('option'); o.value = t; o.textContent = t; typeSelect.appendChild(o); });
   years.forEach(y => { const o = document.createElement('option'); o.value = y; o.textContent = y; yearSelect.appendChild(o); });
+  yearSelect.appendChild(Object.assign(document.createElement('option'), { value: '_range', textContent: 'Custom Range...' }));
+  // Populate range selects (ascending)
+  const yearsAsc = [...years].reverse();
+  yearFromSelect.innerHTML = ''; yearToSelect.innerHTML = '';
+  yearsAsc.forEach(y => {
+    const o1 = document.createElement('option'); o1.value = y; o1.textContent = y; yearFromSelect.appendChild(o1);
+    const o2 = document.createElement('option'); o2.value = y; o2.textContent = y; yearToSelect.appendChild(o2);
+  });
+  yearToSelect.value = yearsAsc[yearsAsc.length - 1];
 }
 
 function renderStats(papers) {
@@ -390,7 +407,9 @@ function renderStats(papers) {
 function applyFilters() {
   const q = document.getElementById('searchInput').value.toLowerCase().trim();
   const type = document.getElementById('typeFilter').value;
-  const year = document.getElementById('yearFilter').value;
+  const yearVal = document.getElementById('yearFilter').value;
+  const yearFrom = document.getElementById('yearFromFilter').value;
+  const yearTo = document.getElementById('yearToFilter').value;
   const month = document.getElementById('monthFilter').value;
 
   const vlm = document.getElementById('vlmFilter').value;
@@ -399,7 +418,10 @@ function applyFilters() {
 
   filtered = allPapers.filter(p => {
     if (type && p.Type !== type) return false;
-    if (year && String(p.Year) !== year) return false;
+    if (yearVal === '_range') {
+      if (yearFrom && Number(p.Year) < Number(yearFrom)) return false;
+      if (yearTo && Number(p.Year) > Number(yearTo)) return false;
+    } else if (yearVal && String(p.Year) !== yearVal) return false;
     if (month && String(p.Month) !== month) return false;
     if (cat && p.Category !== cat) return false;
     if (vlm === 'true' && !p._is_vlm) return false;
@@ -639,7 +661,13 @@ function renderMathInPage() {
 // Event listeners
 document.getElementById('searchInput').addEventListener('input', debounce(applyFilters, 300));
 document.getElementById('typeFilter').addEventListener('change', applyFilters);
-document.getElementById('yearFilter').addEventListener('change', applyFilters);
+document.getElementById('yearFilter').addEventListener('change', () => {
+  const v = document.getElementById('yearFilter').value;
+  document.getElementById('yearRangeGroup').style.display = v === '_range' ? 'flex' : 'none';
+  applyFilters();
+});
+document.getElementById('yearFromFilter').addEventListener('change', applyFilters);
+document.getElementById('yearToFilter').addEventListener('change', applyFilters);
 document.getElementById('monthFilter').addEventListener('change', applyFilters);
 document.getElementById('vlmFilter').addEventListener('change', applyFilters);
 document.getElementById('vlmKeywordFilter').addEventListener('change', applyFilters);

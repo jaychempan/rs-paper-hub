@@ -1,6 +1,8 @@
 <div align="center">
 
-# 🛰️ RS-Paper-Hub
+<img src="asset/logo.png" alt="RS-Paper-Hub" width="200">
+
+# RS-Paper-Hub
 
 **arXiv 遥感论文自动采集、清洗与视觉语言模型（VLM）筛选工具**
 

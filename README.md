@@ -1,6 +1,8 @@
 <div align="center">
 
-# 🛰️ RS-Paper-Hub
+<img src="asset/logo.png" alt="RS-Paper-Hub" width="200">
+
+# RS-Paper-Hub
 
 **A curated collection of Remote Sensing papers from arXiv, with automated scraping, cleaning, and VLM filtering.**
 
