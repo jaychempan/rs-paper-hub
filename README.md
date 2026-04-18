@@ -120,8 +120,8 @@ python clean.py --inplace
 # VLM filter only
 python filter_vlm.py --input output/papers.json
 
-# Backfill exact dates for existing papers
-python backfill_dates.py
+# Backfill exact dates for existing papers (if needed)
+python backfill_dates_noneed.py
 ```
 
 ### PDF Download

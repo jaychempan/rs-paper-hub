@@ -120,8 +120,8 @@ python clean.py --inplace
 # 仅 VLM 筛选
 python filter_vlm.py --input output/papers.json
 
-# 为已有论文补全精确发布日期
-python backfill_dates.py
+# 为已有论文补全精确发布日期（按需）
+python backfill_dates_noneed.py
 ```
 
 ### PDF 下载

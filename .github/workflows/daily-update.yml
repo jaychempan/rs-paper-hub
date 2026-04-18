@@ -30,9 +30,6 @@ jobs:
       - name: Update papers (last 7 days)
         run: python main.py --update
 
-      - name: Backfill dates for new papers
-        run: python backfill_dates.py
-
       - name: Run pipeline (clean + filter + classify)
         run: python pipeline.py
 
