@@ -103,7 +103,7 @@
   /* Paper list */
   .paper-list { max-width: 1200px; margin: 0 auto; padding: 0 20px 40px; }
   .paper-card {
-    background: var(--card); border-radius: 12px; padding: 20px; margin-bottom: 12px;
+    background: var(--card); border-radius: 12px; padding: 20px 28px; margin-bottom: 12px;
     box-shadow: var(--shadow); border: 1px solid var(--border);
     transition: box-shadow 0.2s; cursor: pointer;
   }
@@ -126,10 +126,16 @@
   .paper-authors { font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; }
   .paper-abstract {
     font-size: 13px; color: var(--text-secondary); line-height: 1.7;
-    max-height: 4.2em; overflow: hidden; transition: max-height 0.3s;
-    position: relative;
+    max-height: 5.1em; overflow: hidden; transition: max-height 0.3s;
+    position: relative; cursor: pointer;
+  }
+  .paper-abstract::after {
+    content: '... Show more ▾'; position: absolute; bottom: 0; right: 0;
+    padding-left: 40px; font-size: 11px; color: var(--primary); font-weight: 500;
+    background: linear-gradient(90deg, transparent, var(--card) 30%);
   }
   .paper-abstract.expanded { max-height: none; }
+  .paper-abstract.expanded::after { content: 'Show less ▴'; position: static; display: block; text-align: right; padding: 4px 0 0; background: none; }
   .paper-abstract p { margin: 4px 0; }
   .paper-abstract ul, .paper-abstract ol { margin: 4px 0 4px 20px; }
   .paper-abstract code { background: var(--tag-bg); padding: 1px 4px; border-radius: 3px; font-size: 12px; }
