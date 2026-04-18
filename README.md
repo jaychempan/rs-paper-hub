@@ -1,194 +1,254 @@
-# RS-Paper-Hub
+<div align="center">
 
-arXiv 遥感 (Remote Sensing) 论文爬取工具。自动从 arXiv `cs.CV` 分类检索 2022 年至今的遥感领域论文，提取结构化元数据并支持 PDF 批量下载。支持断点续传，中断后自动从上次进度恢复。
+# 🛰️ RS-Paper-Hub
 
-## 安装
+**A curated collection of Remote Sensing papers from arXiv, with automated scraping, cleaning, and VLM filtering.**
+
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![arXiv](https://img.shields.io/badge/source-arXiv-b31b1b.svg)](https://arxiv.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+[English](README.md) | [中文](README_zh.md)
+
+</div>
+
+---
+
+## Overview
+
+RS-Paper-Hub automatically scrapes remote sensing papers from arXiv (2020–present), extracts structured metadata, and provides a one-click pipeline for data cleaning, VLM-related paper filtering, and classification.
+
+### Key Features
+
+- **Automated Scraping** — Fetch papers via arXiv API with rate limiting and retry
+- **Incremental Update** — `--update` grabs only the latest papers
+- **Resumable** — Progress tracked in `progress.json`; interrupted runs pick up where they left off
+- **One-Click Pipeline** — `pipeline.py` runs cleaning, filtering, and classification in one command
+- **Data Cleaning** — Extract code repo URLs from abstracts into the `code` field
+- **VLM Filtering** — Keyword-based filtering for Vision-Language Model related papers
+- **Classification** — Auto-label papers as `Method`, `Dataset`, `Survey`, `Application`, etc.
+- **PDF Download** — Batch download with deduplication, organized by year
+
+---
+
+## Quick Start
 
 ```bash
 pip install -r requirements.txt
-```
 
-依赖：`arxiv`, `requests`, `pandas`, `tqdm`
-
-## 快速开始
-
-```bash
-# 爬取少量论文测试
-python main.py --max-results 20
-
-# 爬取全部论文（2022至今），仅获取元数据
+# Scrape all papers
 python main.py
 
-# 爬取并下载 PDF
-python main.py --max-results 50 --download
-
-# 查看当前进度
-python main.py --status
+# One-click: clean + filter + classify
+python pipeline.py
 ```
 
-## 使用说明
+---
 
-### 基础爬取
+## Daily Workflow
 
 ```bash
-# 默认爬取 cs.CV 中 2022-2026 遥感论文，输出到 output/
+# 1. Grab latest papers (last 3 months, skip existing)
+python main.py --update
+
+# 2. Run full pipeline (clean → filter → classify → export)
+python pipeline.py
+```
+
+That's it. All output files (`papers.csv/json`, `papers_vlm.csv/json`) are updated in place.
+
+---
+
+## Usage
+
+### Scraping
+
+```bash
+# Full scrape (2020–present)
 python main.py
 
-# 指定年份范围
+# Custom year range
 python main.py --start-year 2023 --end-year 2025
 
-# 限制数量（调试用）
+# Limit results (for testing)
 python main.py --max-results 100
-```
 
-### 断点续传
+# Incremental (skip existing)
+python main.py --incremental
 
-所有进度自动记录在 `output/progress.json` 中。无论爬取还是下载，中断后重新运行即可自动跳过已完成的部分：
+# Quick update (latest 3 months)
+python main.py --update
 
-```bash
-# 第一次运行，爬了一半中断了
-python main.py --download
-# Ctrl+C
-
-# 再次运行，自动从断点继续
-python main.py --download
-
-# 查看当前进度
+# Check progress
 python main.py --status
-# Scraped: 1234 papers (up to 2024-03) | Downloaded: 800, Failed: 2
-
-# 如需完全重新开始，删除进度文件
-rm output/progress.json
 ```
 
-### PDF 下载
+### Pipeline (Recommended)
 
 ```bash
-# 爬取元数据同时下载 PDF
+# One-click: clean + VLM filter + classify all outputs
+python pipeline.py
+
+# Custom input
+python pipeline.py --input output/papers.json
+```
+
+`pipeline.py` runs the following steps automatically:
+
+1. **Clean** — Extract code URLs from abstracts, fill `code` field
+2. **Save** — Write cleaned `papers.csv` + `papers.json`
+3. **Filter** — Select VLM-related papers by keyword matching
+4. **Classify** — Label each VLM paper as Method / Dataset / Survey / Application
+5. **Export** — Write `papers_vlm.csv/json` and `papers_vlm_annotated.json`
+
+### Individual Tools
+
+You can also run each step separately:
+
+```bash
+# Clean only
+python clean.py --inplace
+
+# VLM filter only
+python filter_vlm.py --input output/papers.json
+
+# Backfill exact dates for existing papers
+python backfill_dates.py
+```
+
+### PDF Download
+
+```bash
+# Scrape + download
 python main.py --download
 
-# 仅下载 PDF（基于已有的 output/papers.csv，不重新爬取）
+# Download only (from existing data)
 python main.py --download-only
 ```
 
-PDF 按年份存放在 `output/pdfs/` 目录下：
+---
 
-```
-output/pdfs/
-├── 2022/
-│   ├── 2201.00769v2_InSAR_Phase_Denoising.pdf
-│   └── ...
-├── 2023/
-├── 2024/
-└── ...
-```
+## CLI Reference
 
-### 增量爬取
+### `main.py`
 
-```bash
-# 跳过已有论文，只爬取新增
-python main.py --incremental
-```
+| Flag | Description | Default |
+|------|-------------|---------|
+| `--start-year` | Start year | 2020 |
+| `--end-year` | End year | 2026 |
+| `--max-results` | Max papers to fetch | unlimited |
+| `--output-dir` | Output directory | `output` |
+| `--update` | Quick update (latest 3 months) | off |
+| `--incremental` | Skip existing papers | off |
+| `--download` | Download PDFs | off |
+| `--download-only` | Download PDFs only (skip scraping) | off |
+| `--with-code` | Query Papers With Code for repos | off |
+| `--status` | Show progress and exit | — |
+| `-v, --verbose` | Verbose logging | off |
 
-### 代码仓库查询（可选）
+### `pipeline.py`
 
-默认不查询代码链接。如需从 Papers With Code 获取代码仓库：
+| Flag | Description | Default |
+|------|-------------|---------|
+| `--input` | Input JSON file | `output/papers.json` |
+| `--output-dir` | Output directory | `output` |
 
-```bash
-python main.py --with-code
-```
+---
 
-### 全部参数
+## Output Schema
 
-| 参数 | 说明 | 默认值 |
-|------|------|--------|
-| `--start-year` | 起始年份 | 2022 |
-| `--end-year` | 结束年份 | 2026 |
-| `--max-results` | 最大论文数量 | 无限制 |
-| `--output-dir` | 输出目录 | `output` |
-| `--download` | 下载 PDF 到本地 | 关 |
-| `--download-only` | 仅下载 PDF（跳过爬取） | 关 |
-| `--with-code` | 查询 Papers With Code 代码链接 | 关 |
-| `--incremental` | 增量模式，跳过已有论文 | 关 |
-| `--status` | 显示当前进度并退出 | - |
-| `-v, --verbose` | 详细日志输出 | 关 |
+All outputs are available in both **CSV** and **JSON** format.
 
-## 输出格式
+| Field | Description | Example |
+|-------|-------------|---------|
+| `Category` | Paper category (VLM output only) | Method, Dataset, Survey |
+| `Type` | arXiv primary category | Computer Vision |
+| `Subtype` | Secondary categories | Image and Video Processing |
+| `Date` | Exact publication date | 2024-03-15 |
+| `Month` | Publication month | 3 |
+| `Year` | Publication year | 2024 |
+| `Institute` | First author affiliation | (limited by arXiv data) |
+| `Title` | Paper title | Hybrid Attention Network for... |
+| `abbr.` | Abbreviation from title | HMANet |
+| `Paper_link` | arXiv URL | http://arxiv.org/abs/2301.12345 |
+| `Abstract` | Full abstract | ... |
+| `code` | Code repository URL | https://github.com/... |
+| `Publication` | Venue (journal/conference) | CVPR 2024 |
+| `BibTex` | BibTeX citation | @article{...} |
+| `Authors` | Author list | Alice, Bob, Charlie |
 
-同时输出 CSV 和 JSON 两种格式到 `output/` 目录。
+---
 
-### 字段说明
-
-| 字段 | 说明 | 示例 |
-|------|------|------|
-| Type | arXiv 主分类 | Computer Vision |
-| Subtype | 其他分类 | Image and Video Processing |
-| Month | 发表月份 | 3 |
-| Year | 发表年份 | 2023 |
-| Institute | 第一作者机构 | (arXiv 数据有限，可能为空) |
-| Title | 论文标题 | Hybrid Attention Network for... |
-| abbr. | 标题中的缩写 | HMANet |
-| Paper_link | arXiv 链接 | http://arxiv.org/abs/2301.12345 |
-| Abstract | 摘要 | ... |
-| code | 代码仓库链接 | (需 `--with-code`) |
-| Publication | 发表期刊/会议 | CVPR 2023 |
-| BibTex | BibTeX 引用 | @article{...} |
-| Authors | 作者列表 | Alice, Bob, Charlie |
-
-## 搜索范围
-
-当前搜索 arXiv `cs.CV`（计算机视觉）分类中标题或摘要包含 "remote sensing" 的论文。
-
-如需调整搜索关键词或分类，编辑 `config.py` 中的 `SEARCH_QUERY`。例如扩展到多个分类：
-
-```python
-SEARCH_QUERY = (
-    '(ti:"remote sensing" OR abs:"remote sensing")'
-    ' AND (cat:cs.CV OR cat:eess.IV OR cat:eess.SP)'
-)
-```
-
-## 速率限制
-
-| 操作 | 限制 | 说明 |
-|------|------|------|
-| 查询元数据 | ~3 秒/请求 | 每次返回最多 100 条，实际吞吐量较高 |
-| 下载 PDF | ~3 秒/文件 | 逐个下载，较慢，建议用 `--download-only` 分开处理 |
-
-建议工作流：先只查询元数据（速度快），确认结果无误后再单独下载 PDF。
-
-## 项目结构
+## Project Structure
 
 ```
 rs-paper-hub/
-├── main.py            # CLI 入口
-├── config.py          # 搜索配置（关键词、日期、分类）
-├── scraper.py         # arXiv API 爬虫（按月分批，断点续传）
-├── parser.py          # 数据解析与 BibTeX 生成
-├── downloader.py      # PDF 下载器（断点续传）
-├── progress.py        # 进度追踪器
-├── pwc_client.py      # Papers With Code 客户端（可选）
-├── requirements.txt   # Python 依赖
-└── output/            # 输出目录
-    ├── papers.csv
-    ├── papers.json
-    ├── progress.json  # 进度记录（自动生成）
-    └── pdfs/          # PDF 文件（按年份分目录）
+├── main.py              # Scraper CLI entry point
+├── pipeline.py          # One-click: clean + filter + classify
+├── config.py            # Search configuration
+├── scraper.py           # arXiv API scraper
+├── parser.py            # Metadata parser & BibTeX generation
+├── downloader.py        # PDF downloader with resume support
+├── progress.py          # Progress tracker
+├── clean.py             # Standalone data cleaning
+├── filter_vlm.py        # Standalone VLM filter & classifier
+├── backfill_dates.py    # Date backfill tool
+├── pwc_client.py        # Papers With Code client
+├── cleaning/
+│   ├── abstract_cleaner.py   # Abstract URL extraction
+│   ├── classifier.py         # Paper classifier (Method/Dataset/Survey/...)
+│   └── filter/
+│       └── vlm_filter.py     # VLM keyword rules
+├── requirements.txt
+└── output/
+    ├── papers.csv/json            # All papers (cleaned)
+    ├── papers_vlm.csv/json        # VLM subset with categories
+    ├── papers_vlm_annotated.json  # Full list with VLM flags
+    └── progress.json              # Scraping progress
 ```
 
-## 网页可视化
+---
 
-启动本地服务器浏览论文数据：
+## Search Scope
+
+Papers are fetched from **all arXiv categories** where the title or abstract contains `"remote sensing"`. To customize, edit `SEARCH_QUERY` in [`config.py`](config.py):
+
+```python
+# Restrict to cs.CV only
+SEARCH_QUERY = '(ti:"remote sensing" OR abs:"remote sensing") AND cat:cs.CV'
+```
+
+---
+
+## Rate Limits
+
+| Operation | Rate | Note |
+|-----------|------|------|
+| Metadata query | ~3s / request | Returns up to 100 results per request |
+| PDF download | ~3s / file | Respect arXiv rate limits |
+
+**Recommended workflow**: scrape metadata first (`python main.py`), then download PDFs separately (`python main.py --download-only`).
+
+---
+
+## Web Viewer
 
 ```bash
-cd /Users/jianchengpan/Projects/rs-paper-hub
 python3 -m http.server 8080
 ```
 
-打开浏览器访问 http://localhost:8080 即可查看。支持搜索、筛选、排序、图表统计、BibTeX 复制和 LaTeX 公式渲染。
+Open http://localhost:8080 — supports search, filtering, sorting, charts, BibTeX copy, and LaTeX rendering.
 
-## 注意事项
+---
 
-- `Institute` 字段依赖 arXiv 提供的 affiliation 信息，大部分论文未提供，可能为空
-- 已下载的 PDF 和已爬取的月份不会重复处理
-- 进度文件 `progress.json` 采用原子写入，中断不会损坏
+## Notes
+
+- `Institute` depends on arXiv affiliation data, which is often unavailable
+- Downloaded PDFs and scraped months are tracked — no duplicates on re-run
+- `progress.json` uses atomic writes — safe against interruption
+
+---
+
+## License
+
+MIT

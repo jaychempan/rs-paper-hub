@@ -15,7 +15,7 @@ import logging
 
 import pandas as pd
 
-from cleaning.vlm_filter import filter_vlm_papers
+from cleaning.filter.vlm_filter import filter_vlm_papers
 from cleaning.classifier import classify_papers
 
 logging.basicConfig(
