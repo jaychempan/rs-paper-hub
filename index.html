@@ -1234,7 +1234,7 @@ function render() {
       <div class="paper-authors"><span class="field-icon">${ICON.authors}</span>${escHtml(p.Authors)}</div>
       <div class="paper-abstract-wrap"><span class="field-icon">${ICON.abstract}</span><div class="paper-abstract" id="abs-${idx}">${renderLatex(p.Abstract)}</div></div>
       <div class="paper-links">
-        <a href="${escHtml(p.Paper_link)}" target="_blank" onclick="event.stopPropagation()">${ICON.arxiv}${t('paper')}</a>
+        <a href="${escHtml(p.Paper_link.replace('/abs/', '/pdf/'))}" target="_blank" onclick="event.stopPropagation()">${ICON.arxiv}${t('paper')}</a>
         ${codeLink}
         <a href="javascript:void(0)" onclick="event.stopPropagation(); showBibtex(${idx})">${ICON.bibtex}${t('bibtex')}</a>
         <a href="${scholarUrl}" target="_blank" onclick="event.stopPropagation()">${ICON.scholar}${t('scholar')}</a>
