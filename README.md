@@ -34,6 +34,7 @@ RS-Paper-Hub automatically scrapes remote sensing and earth observation papers f
 - **Paper Collection** — Collect papers across multiple searches into a personal collection, then view or export them together
 - **BibTeX Batch Export** — Export filtered results, current page, custom range, or collection as timestamped `.bib` file with optional abstracts
 - **Code Discovery** — Automatically extracts code repository URLs from abstracts
+- **RSS/Atom Feeds** — Auto-generated Atom feeds (All / VLM / Agent) for Zotero subscription, updated daily with the last 7 days of papers
 - **PDF Download** — Batch download with deduplication, organized by year
 
 ---
@@ -99,7 +100,7 @@ python pipeline.py
 python pipeline.py --input output/papers.json
 ```
 
-`pipeline.py` runs the following 8 steps (incrementally — each step skips already-processed papers):
+`pipeline.py` runs the following 9 steps (incrementally — each step skips already-processed papers):
 
 1. **Load & Deduplicate** — Remove duplicate papers by `Paper_link`
 2. **Clean** — Extract code URLs from abstracts, fill `code` field
@@ -109,6 +110,7 @@ python pipeline.py --input output/papers.json
 6. **Filter VLM** — Select Vision-Language Model related papers by keyword matching
 7. **Classify VLM** — Refine categories for VLM subset, export `papers_vlm.csv/json`
 8. **Filter & Classify Agent** — Select Agent-related papers by keyword matching, export `papers_agent.csv/json`
+9. **Generate Atom Feeds** — Produce `feed.xml`, `feed_vlm.xml`, `feed_agent.xml` with the last 7 days of papers
 
 ### Standalone Filter Scripts
 
@@ -221,9 +223,10 @@ Papers are automatically tagged with task types based on title and abstract keyw
 ```
 rs-paper-hub/
 ├── main.py              # Scraper CLI entry point
-├── pipeline.py          # One-click: clean + classify + tag + filter VLM & Agent
+├── pipeline.py          # One-click: clean + classify + tag + filter VLM & Agent + RSS
 ├── filter_vlm.py        # Standalone VLM filter script
 ├── filter_agent.py      # Standalone Agent filter script
+├── rss_generator.py     # Atom feed generator for Zotero
 ├── config.py            # Search configuration
 ├── scraper.py           # arXiv API scraper
 ├── parser.py            # Metadata parser & BibTeX generation
@@ -247,6 +250,9 @@ rs-paper-hub/
     ├── papers_vlm_annotated.json    # Full list with VLM flags
     ├── papers_agent.csv/json        # Agent subset with categories
     ├── papers_agent_annotated.json  # Full list with Agent flags
+    ├── feed.xml                     # Atom feed — all papers (last 7 days)
+    ├── feed_vlm.xml                 # Atom feed — VLM papers (last 7 days)
+    ├── feed_agent.xml               # Atom feed — Agent papers (last 7 days)
     └── progress.json                # Scraping progress
 ```
 
@@ -288,6 +294,26 @@ Features include:
 - **LaTeX rendering** — Math formulas rendered via KaTeX
 
 > **Note:** Category and task labels are rule-based and may contain inaccuracies. We are continuously improving them. This does not affect tracking the latest research trends.
+
+---
+
+## RSS Feeds & Zotero Integration
+
+The pipeline automatically generates [Atom](https://en.wikipedia.org/wiki/Atom_(web_standard)) feeds containing the last 7 days of papers. These feeds are designed for Zotero but work with any feed reader.
+
+| Feed | URL | Content |
+|------|-----|---------|
+| All Papers | `https://rspaper.top/output/feed.xml` | All recent papers |
+| VLM Papers | `https://rspaper.top/output/feed_vlm.xml` | VLM subset |
+| Agent Papers | `https://rspaper.top/output/feed_agent.xml` | Agent subset |
+
+### Subscribe in Zotero
+
+1. Open Zotero → **File** → **New Feed** → **From URL**
+2. Paste one of the feed URLs above
+3. Zotero will automatically pull new papers with title, authors, abstract, arXiv link, and code URL
+
+Feeds are updated daily alongside the main pipeline via GitHub Actions.
 
 ---
 

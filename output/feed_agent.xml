@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='utf-8'?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>RS-Paper-Hub — Agent Papers</title>
+  <id>https://rspaper.top/output/feed_agent.xml</id>
+  <link href="https://rspaper.top/output/feed_agent.xml" rel="self" type="application/atom+xml" />
+  <link href="https://rspaper.top" rel="alternate" type="text/html" />
+  <updated>2026-04-19T15:35:36Z</updated>
+  <subtitle>Latest remote sensing papers (last 7 days) — 2 entries</subtitle>
+  <author>
+    <name>RS-Paper-Hub</name>
+    <uri>https://rspaper.top</uri>
+  </author>
+  <entry>
+    <title>GCA Framework: A Gulf-Grounded Dataset and Agentic Pipeline for Climate Decision Support</title>
+    <link href="http://arxiv.org/abs/2604.12306v1" rel="alternate" type="text/html" />
+    <id>http://arxiv.org/abs/2604.12306v1</id>
+    <published>2026-04-14T00:00:00Z</published>
+    <updated>2026-04-14T00:00:00Z</updated>
+    <author>
+      <name>Muhammad Umer Sheikh</name>
+    </author>
+    <author>
+      <name>Khawar Shehzad</name>
+    </author>
+    <author>
+      <name>Salman Khan</name>
+    </author>
+    <author>
+      <name>Fahad Shahbaz Khan</name>
+    </author>
+    <author>
+      <name>Muhammad Haris Khan</name>
+    </author>
+    <summary type="text">Climate decision-making in the Gulf increasingly demands systems that can translate heterogeneous scientific and policy evidence into actionable guidance, yet general-purpose large language models (LLMs) remain weak both in region-specific climate knowledge and grounded interaction with geospatial and forecasting tools. We present the GCA framework, which unifies (i) GCA-DS, a curated Gulf-focused multimodal dataset, and (ii) Gulf Climate Agent (GCA), a tool-augmented agent for climate analysis. GCA-DS comprises ~200k question-answer pairs spanning governmental policies and adaptation plans, NGO and international frameworks, academic literature, and event-driven reporting on heatwaves, dust storms, and floods, complemented with remote-sensing inputs that couple imagery with textual evidence. Building on this foundation, the GCA agent orchestrates a modular tool pipeline grounded in real-time and historical signals and geospatial processing that produces derived indices and interpretable visualizations. Finally, we benchmark open and proprietary LLMs on Gulf climate tasks and show that domain fine-tuning and tool integration substantially improve reliability over general-purpose baselines.</summary>
+    <content type="html">&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Dataset&lt;/p&gt;</content>
+    <category term="Machine Learning" />
+    <category term="Artificial Intelligence" />
+  </entry>
+  <entry>
+    <title>A Multi-Agent Feedback System for Detecting and Describing News Events in Satellite Imagery</title>
+    <link href="http://arxiv.org/abs/2604.12772v1" rel="alternate" type="text/html" />
+    <id>http://arxiv.org/abs/2604.12772v1</id>
+    <published>2026-04-14T00:00:00Z</published>
+    <updated>2026-04-14T00:00:00Z</updated>
+    <author>
+      <name>Madeline Anderson</name>
+    </author>
+    <author>
+      <name>Mikhail Klassen</name>
+    </author>
+    <author>
+      <name>Ash Hoover</name>
+    </author>
+    <author>
+      <name>Kerri Cahoy</name>
+    </author>
+    <summary type="text">Changes in satellite imagery often occur over multiple time steps. Despite the emergence of bi-temporal change captioning datasets, there is a lack of multi-temporal event captioning datasets (at least two images per sequence) in remote sensing. This gap exists because (1) searching for visible events in satellite imagery and (2) labeling multi-temporal sequences require significant time and labor. To address these challenges, we present SkyScraper, an iterative multi-agent workflow that geocodes news articles and synthesizes captions for corresponding satellite image sequences. Our experiments show that SkyScraper successfully finds 5x more events than traditional geocoding methods, demonstrating that agentic feedback is an effective strategy for surfacing new multi-temporal events in satellite imagery. We apply our framework to a large database of global news articles, curating a new multi-temporal captioning dataset with 5,000 sequences. By automatically identifying imagery related to news events, our work also supports journalism and reporting efforts.</summary>
+    <content type="html">&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Method&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Tasks:&lt;/strong&gt; IC;CD&lt;/p&gt;</content>
+    <category term="Computer Vision" />
+    <category term="cs.MA" />
+  </entry>
+</feed>

@@ -74,7 +74,7 @@ def run(input_path: str, output_dir: str):
     # ── Step 1: Clean abstracts → fill code field (incremental) ──
     need_code = [p for p in papers if not p.get("code") or str(p["code"]) in ("", "nan")]
     if need_code:
-        logger.info(f"[1/8] Cleaning abstracts & extracting code URLs ({len(need_code)}/{len(papers)})...")
+        logger.info(f"[1/9] Cleaning abstracts & extracting code URLs ({len(need_code)}/{len(papers)})...")
         code_filled = 0
         for p in need_code:
             clean_abstract(p)
@@ -82,30 +82,30 @@ def run(input_path: str, output_dir: str):
                 code_filled += 1
         logger.info(f"  Code field filled from abstract: {code_filled}")
     else:
-        logger.info("[1/8] Code extraction: all papers already have code field, skipped")
+        logger.info("[1/9] Code extraction: all papers already have code field, skipped")
 
     # ── Step 2: Classify (incremental) ────────────────────
     need_classify = [p for p in papers if not p.get("Category")]
     if need_classify:
-        logger.info(f"[2/8] Classifying papers ({len(need_classify)}/{len(papers)})...")
+        logger.info(f"[2/9] Classifying papers ({len(need_classify)}/{len(papers)})...")
         classify_papers(need_classify)
     else:
-        logger.info("[2/8] Classification: all papers already classified, skipped")
+        logger.info("[2/9] Classification: all papers already classified, skipped")
 
     # ── Step 3: Tag tasks (incremental) ───────────────────
     need_tasks = [p for p in papers if "_tasks" not in p]
     if need_tasks:
-        logger.info(f"[3/8] Tagging tasks ({len(need_tasks)}/{len(papers)})...")
+        logger.info(f"[3/9] Tagging tasks ({len(need_tasks)}/{len(papers)})...")
         tag_all_papers(need_tasks)
     else:
-        logger.info("[3/8] Task tagging: all papers already tagged, skipped")
+        logger.info("[3/9] Task tagging: all papers already tagged, skipped")
 
     all_cat_counter = Counter(p.get("Category", "Other") for p in papers)
     for cat, count in all_cat_counter.most_common():
         logger.info(f"  {cat}: {count}")
 
     # ── Step 3: Save cleaned full dataset ─────────────────
-    logger.info("[4/8] Saving cleaned dataset...")
+    logger.info("[4/9] Saving cleaned dataset...")
     save(
         papers,
         os.path.join(output_dir, "papers.csv"),
@@ -114,12 +114,12 @@ def run(input_path: str, output_dir: str):
     )
 
     # ── Step 4: Filter VLM papers ─────────────────────────
-    logger.info("[5/8] Filtering VLM-related papers...")
+    logger.info("[5/9] Filtering VLM-related papers...")
     matched, annotated = filter_vlm_papers(papers)
     logger.info(f"  VLM-related: {len(matched)} / {len(papers)}")
 
     # ── Step 5: Classify VLM papers ───────────────────────
-    logger.info("[6/8] Classifying VLM papers...")
+    logger.info("[6/9] Classifying VLM papers...")
     classify_papers(matched)
 
 
@@ -148,12 +148,12 @@ def run(input_path: str, output_dir: str):
     logger.info(f"  -> {annotated_path}")
 
     # ── Step 7: Filter Agent papers ──────────────────────
-    logger.info("[7/8] Filtering Agent-related papers...")
+    logger.info("[7/9] Filtering Agent-related papers...")
     agent_matched, agent_annotated = filter_agent_papers(papers)
     logger.info(f"  Agent-related: {len(agent_matched)} / {len(papers)}")
 
     # ── Step 8: Classify Agent papers ────────────────────
-    logger.info("[8/8] Classifying Agent papers...")
+    logger.info("[8/9] Classifying Agent papers...")
     classify_papers(agent_matched)
 
     agent_cat_counter = Counter(p.get("Category", "Other") for p in agent_matched)
@@ -173,6 +173,12 @@ def run(input_path: str, output_dir: str):
     with open(agent_annotated_path, "w", encoding="utf-8") as f:
         json.dump(agent_annotated, f, ensure_ascii=False, indent=2)
     logger.info(f"  -> {agent_annotated_path}")
+
+    # ── Step 9: Generate Atom feeds for Zotero ────────────
+    logger.info("[9/9] Generating Atom feeds...")
+    from rss_generator import generate_feeds
+    generate_feeds(papers, matched, agent_matched, output_dir,
+                   site_url="https://rspaper.top")
 
     # ── Summary ───────────────────────────────────────────
     logger.info("=" * 50)

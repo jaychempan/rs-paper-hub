@@ -36,6 +36,7 @@ RS-Paper-Hub 自动从 arXiv 采集 2020 年至今的遥感论文，提取结构
 - **三标签网页** — 浏览全部论文、VLM 子集、Agent 子集；支持搜索、多维图表筛选、中英双语切换
 - **论文收藏** — 跨搜索收藏论文，统一查看或导出
 - **BibTeX 批量导出** — 导出带时间戳的 `.bib` 文件，可选包含摘要
+- **RSS/Atom 订阅** — 自动生成 Atom feed（全部 / VLM / Agent），支持 Zotero 订阅，每日更新最近 7 天论文
 - **PDF 下载** — 批量下载，自动去重，按年份归档
 
 ---
@@ -104,7 +105,7 @@ python pipeline.py
 python pipeline.py --input output/papers.json
 ```
 
-`pipeline.py` 自动执行以下 8 个步骤（增量处理，已处理的论文自动跳过）：
+`pipeline.py` 自动执行以下 9 个步骤（增量处理，已处理的论文自动跳过）：
 
 1. **加载与去重** — 按 `Paper_link` 去除重复论文
 2. **清洗** — 从摘要提取代码链接，填充 `code` 字段
@@ -114,6 +115,7 @@ python pipeline.py --input output/papers.json
 6. **VLM 筛选** — 按关键词匹配视觉语言模型相关论文，导出 `papers_vlm.csv/json`
 7. **VLM 分类** — 细化 VLM 子集分类
 8. **Agent 筛选与分类** — 按关键词匹配 Agent 相关论文，导出 `papers_agent.csv/json`
+9. **生成 Atom Feed** — 生成 `feed.xml`、`feed_vlm.xml`、`feed_agent.xml`，包含最近 7 天论文
 
 ### 单独筛选工具
 
@@ -229,9 +231,10 @@ python main.py --download-only
 ```
 rs-paper-hub/
 ├── main.py              # 采集器命令行入口
-├── pipeline.py          # 一键处理：清洗 + 分类 + 任务标注 + VLM 筛选 + Agent 筛选
+├── pipeline.py          # 一键处理：清洗 + 分类 + 任务标注 + VLM 筛选 + Agent 筛选 + RSS
 ├── filter_vlm.py        # 单独 VLM 筛选脚本
 ├── filter_agent.py      # 单独 Agent 筛选脚本
+├── rss_generator.py     # Atom feed 生成器（Zotero 订阅）
 ├── config.py            # 搜索配置
 ├── scraper.py           # arXiv API 采集器
 ├── parser.py            # 元数据解析与 BibTeX 生成
@@ -255,6 +258,9 @@ rs-paper-hub/
     ├── papers_vlm_annotated.json    # 完整列表（带 VLM 标注）
     ├── papers_agent.csv/json        # Agent 子集（含分类标签）
     ├── papers_agent_annotated.json  # 完整列表（带 Agent 标注）
+    ├── feed.xml                     # Atom feed — 全部论文（最近 7 天）
+    ├── feed_vlm.xml                 # Atom feed — VLM 论文（最近 7 天）
+    ├── feed_agent.xml               # Atom feed — Agent 论文（最近 7 天）
     └── progress.json                # 采集进度
 ```
 
@@ -303,6 +309,26 @@ python3 -m http.server 8080
 - **中英双语** — 支持中英文界面切换
 - **移动端适配** — 可折叠筛选面板，响应式布局
 - **LaTeX 渲染** — KaTeX 数学公式渲染
+
+---
+
+## RSS 订阅与 Zotero 集成
+
+Pipeline 自动生成 [Atom](https://zh.wikipedia.org/wiki/Atom_(%E6%A0%87%E5%87%86)) feed，包含最近 7 天的论文，可直接用 Zotero 或其他 RSS 阅读器订阅。
+
+| Feed | URL | 内容 |
+|------|-----|------|
+| 全部论文 | `https://rspaper.top/output/feed.xml` | 最近 7 天全部论文 |
+| VLM 论文 | `https://rspaper.top/output/feed_vlm.xml` | VLM 子集 |
+| Agent 论文 | `https://rspaper.top/output/feed_agent.xml` | Agent 子集 |
+
+### 在 Zotero 中订阅
+
+1. 打开 Zotero → **文件** → **新建 Feed** → **从 URL**
+2. 粘贴上方任一 feed URL
+3. Zotero 将自动拉取新论文，包含标题、作者、摘要、arXiv 链接和代码链接
+
+Feed 随每日 GitHub Actions 自动更新。
 
 ---
 
