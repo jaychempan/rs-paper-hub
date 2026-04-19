@@ -18,7 +18,7 @@
 
 ## 概述
 
-RS-Paper-Hub 自动从 arXiv 采集 2020 年至今的遥感论文，提取结构化元数据，并提供一键式数据清洗、任务标注、VLM 筛选、Agent 筛选和自动分类功能。通过 GitHub Actions 每周一至周五自动更新（与 arXiv 发布时间同步）。
+RS-Paper-Hub 自动从 arXiv 爬取遥感与地球观测领域的论文，提取结构化元数据，并提供一键式数据处理流水线，涵盖数据清洗、任务标签标注、VLM 过滤、Agent 过滤以及分类等功能。该库通过 GitHub Actions 每日更新（周一至周五，与 arXiv 公告时间表同步）。
 
 ### 核心功能
 
@@ -348,7 +348,7 @@ Feed 随每日 GitHub Actions 自动更新。
 @software{rs_paper_hub,
   author       = {ML4Sustain},
   title        = {RS-Paper-Hub: A Curated Collection of Remote Sensing Papers from arXiv},
-  year         = {2025},
+  year         = {2026},
   url          = {https://github.com/ML4Sustain/rs-paper-hub},
   note         = {Automated scraping, cleaning, classification, task tagging, VLM filtering, and Agent filtering pipeline for remote sensing papers}
 }

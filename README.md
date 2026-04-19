@@ -336,7 +336,7 @@ If you find RS-Paper-Hub useful in your research or work, please consider citing
 @software{rs_paper_hub,
   author       = {ML4Sustain},
   title        = {RS-Paper-Hub: A Curated Collection of Remote Sensing and Earth Observation Papers from arXiv},
-  year         = {2025},
+  year         = {2026},
   url          = {https://rspaper.top},
   note         = {Automated scraping, cleaning, classification, task tagging, VLM filtering, and Agent filtering pipeline for remote sensing papers}
 }
