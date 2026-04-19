@@ -4,7 +4,7 @@
 
 # RS-Paper-Hub
 
-**arXiv 遥感论文自动采集、清洗与视觉语言模型（VLM）筛选工具**
+**arXiv 遥感论文自动采集、清洗、VLM 筛选与 Agent 筛选工具**
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![arXiv](https://img.shields.io/badge/source-arXiv-b31b1b.svg)](https://arxiv.org/)
@@ -18,19 +18,24 @@
 
 ## 概述
 
-RS-Paper-Hub 自动从 arXiv 采集 2020 年至今的遥感论文，提取结构化元数据，并提供一键式数据清洗、VLM 论文筛选和自动分类功能。
+RS-Paper-Hub 自动从 arXiv 采集 2020 年至今的遥感论文，提取结构化元数据，并提供一键式数据清洗、任务标注、VLM 筛选、Agent 筛选和自动分类功能。通过 GitHub Actions 每周一至周五自动更新（与 arXiv 发布时间同步）。
 
 ### 核心功能
 
 - **自动采集** — 通过 arXiv API 抓取论文，内置限流与重试
+- **每日自动更新** — GitHub Actions 周一至周五 UTC 00:30（北京时间 08:30）自动抓取，与 arXiv 发布时间同步
 - **默认增量** — 自动跳过已有论文，`--update` 抓取最近 7 天新论文
 - **断点续传** — 进度保存在 `progress.json`，中断后自动恢复
-- **一键处理** — `pipeline.py` 一条命令完成去重、清洗、分类、筛选
+- **一键处理** — `pipeline.py` 一条命令完成去重、清洗、分类、任务标注、VLM 筛选、Agent 筛选
 - **自动去重** — Pipeline 按 `Paper_link` 自动去除重复论文
 - **数据清洗** — 从摘要提取代码仓库链接，自动填充 `code` 字段
-- **全量分类** — 所有论文自动标记为 `Method`、`Dataset`、`Survey`、`Application`、`Dataset+Method` 等
-- **VLM 筛选** — 基于关键词规则筛选视觉语言模型相关论文
-- **交互式网页** — 相关度搜索、多维图表筛选、年份范围选择、BibTeX 导出、移动端适配
+- **任务标注** — 自动标注 11 种任务类型：分类、目标检测、变化检测、分割、VQA、图像描述、视觉定位、图文检索、地理定位、超分辨率、三维重建
+- **全量分类** — 所有论文自动标记为 `Method`、`Dataset`、`Survey`
+- **VLM 筛选** — 基于上下文感知的关键词规则筛选视觉语言模型相关论文（避免非 VLM 跨模态/检索等误判）
+- **Agent 筛选** — 基于关键词规则筛选 Agent / 自主决策相关论文（多智能体系统、强化学习 Agent、LLM Agent、Agentic 工作流等）
+- **三标签网页** — 浏览全部论文、VLM 子集、Agent 子集；支持搜索、多维图表筛选、中英双语切换
+- **论文收藏** — 跨搜索收藏论文，统一查看或导出
+- **BibTeX 批量导出** — 导出带时间戳的 `.bib` 文件，可选包含摘要
 - **PDF 下载** — 批量下载，自动去重，按年份归档
 
 ---
@@ -43,7 +48,7 @@ pip install -r requirements.txt
 # 采集全部论文
 python main.py
 
-# 一键处理：清洗 + 筛选 + 分类
+# 一键处理：清洗 + 分类 + 任务标注 + VLM 筛选 + Agent 筛选
 python pipeline.py
 ```
 
@@ -55,11 +60,11 @@ python pipeline.py
 # 1. 抓取最新论文（最近 7 天，默认增量）
 python main.py --update
 
-# 2. 一键处理（去重 → 清洗 → 分类 → 筛选 → 导出）
+# 2. 一键处理（去重 → 清洗 → 分类 → 任务标注 → VLM 筛选 → Agent 筛选 → 导出）
 python pipeline.py
 ```
 
-两条命令搞定。所有输出文件（`papers.csv/json`、`papers_vlm.csv/json`）自动更新。
+两条命令搞定。所有输出文件（`papers.csv/json`、`papers_vlm.csv/json`、`papers_agent.csv/json`）自动更新。
 
 > **注意：** `--incremental` 默认开启，已有论文会自动跳过。如需全量重新采集，请使用 `--no-incremental`。
 
@@ -92,36 +97,38 @@ python main.py --status
 ### 一键处理（推荐）
 
 ```bash
-# 一键：清洗 + VLM 筛选 + 分类
+# 一键：清洗 + 分类 + 任务标注 + VLM 筛选 + Agent 筛选
 python pipeline.py
 
 # 自定义输入
 python pipeline.py --input output/papers.json
 ```
 
-`pipeline.py` 自动执行以下步骤：
+`pipeline.py` 自动执行以下 8 个步骤（增量处理，已处理的论文自动跳过）：
 
 1. **加载与去重** — 按 `Paper_link` 去除重复论文
 2. **清洗** — 从摘要提取代码链接，填充 `code` 字段
-3. **全量分类** — 为所有论文标记 Method / Dataset / Survey / Application / Other
-4. **保存** — 写入清洗后的 `papers.csv` + `papers.json`
-5. **VLM 筛选** — 按关键词匹配 VLM 相关论文
-6. **VLM 分类** — 细化 VLM 子集分类
-7. **导出** — 写入 `papers_vlm.csv/json` 和 `papers_vlm_annotated.json`
+3. **全量分类** — 为所有论文标记 Method / Dataset / Survey
+4. **任务标注** — 标注 11 种任务类型（CLS, OD, CD, SEG, VQA, IC, VG, ITR, GeoLoc, SR, 3D）
+5. **保存** — 写入清洗后的 `papers.csv` + `papers.json`
+6. **VLM 筛选** — 按关键词匹配视觉语言模型相关论文，导出 `papers_vlm.csv/json`
+7. **VLM 分类** — 细化 VLM 子集分类
+8. **Agent 筛选与分类** — 按关键词匹配 Agent 相关论文，导出 `papers_agent.csv/json`
 
-### 单独工具
+### 单独筛选工具
 
-也可以分步执行：
+也可以单独运行各筛选脚本：
 
 ```bash
-# 仅清洗
-python clean.py --inplace
-
 # 仅 VLM 筛选
 python filter_vlm.py --input output/papers.json
 
-# 为已有论文补全精确发布日期（按需）
-python backfill_dates_noneed.py
+# 仅 Agent 筛选
+python filter_agent.py --input output/papers.json
+
+# 预览匹配结果（不保存）
+python filter_vlm.py --dry-run
+python filter_agent.py --dry-run
 ```
 
 ### PDF 下载
@@ -162,6 +169,14 @@ python main.py --download-only
 | `--input` | 输入 JSON 文件 | `output/papers.json` |
 | `--output-dir` | 输出目录 | `output` |
 
+### `filter_vlm.py` / `filter_agent.py`
+
+| 参数 | 说明 | 默认值 |
+|------|------|--------|
+| `--input` | 输入 JSON 文件 | `output/papers.json` |
+| `--output-dir` | 输出目录 | `output` |
+| `--dry-run` | 预览匹配结果，不保存文件 | 关 |
+
 ---
 
 ## 输出字段
@@ -185,6 +200,27 @@ python main.py --download-only
 | `Publication` | 发表期刊/会议 | CVPR 2024 |
 | `BibTex` | BibTeX 引用 | @article{...} |
 | `Authors` | 作者列表 | Alice, Bob, Charlie |
+| `_tasks` | 任务标签（分号分隔） | CLS;OD;SEG |
+
+---
+
+## 任务标签
+
+论文根据标题和摘要关键词自动标注任务类型：
+
+| 标签 | 任务 | 示例 |
+|------|------|------|
+| **CLS** | 分类 | 场景分类、土地利用/覆盖分类 |
+| **OD** | 目标检测 | 目标/车辆/船舶/建筑检测 |
+| **CD** | 变化检测 | 变化检测、双时相分析 |
+| **SEG** | 分割 | 语义/实例/全景/指代分割 |
+| **VQA** | 视觉问答 | VQA、RSVQA |
+| **IC** | 图像描述 | 图像描述生成 |
+| **VG** | 视觉定位 | 视觉定位、短语定位 |
+| **ITR** | 图文检索 | 跨模态检索 |
+| **GeoLoc** | 地理定位 | 地理定位、位置识别 |
+| **SR** | 超分辨率 | 超分辨率、图像增强 |
+| **3D** | 三维重建 | 三维重建、点云、深度估计 |
 
 ---
 
@@ -193,27 +229,33 @@ python main.py --download-only
 ```
 rs-paper-hub/
 ├── main.py              # 采集器命令行入口
-├── pipeline.py          # 一键处理：清洗 + 筛选 + 分类
+├── pipeline.py          # 一键处理：清洗 + 分类 + 任务标注 + VLM 筛选 + Agent 筛选
+├── filter_vlm.py        # 单独 VLM 筛选脚本
+├── filter_agent.py      # 单独 Agent 筛选脚本
 ├── config.py            # 搜索配置
 ├── scraper.py           # arXiv API 采集器
 ├── parser.py            # 元数据解析与 BibTeX 生成
 ├── downloader.py        # PDF 下载器（断点续传）
 ├── progress.py          # 进度追踪器
-├── clean.py             # 单独数据清洗
-├── filter_vlm.py        # 单独 VLM 筛选与分类
-├── backfill_dates.py    # 日期补全工具
 ├── pwc_client.py        # Papers With Code 客户端
 ├── cleaning/
 │   ├── abstract_cleaner.py   # 摘要链接提取
-│   ├── classifier.py         # 论文分类器（Method/Dataset/Survey/...）
+│   ├── classifier.py         # 论文分类器（Method/Dataset/Survey）
+│   ├── task_tagger.py        # 任务标注（11 种任务类型）
 │   └── filter/
-│       └── vlm_filter.py     # VLM 关键词规则
+│       ├── vlm_filter.py     # VLM 关键词规则
+│       └── agent_filter.py   # Agent 关键词规则
+├── .github/workflows/
+│   └── daily-update.yml      # 每日 CI/CD 流水线（周一至周五，与 arXiv 同步）
+├── index.html               # 交互式网页（三标签：全部 / VLM / Agent）
 ├── requirements.txt
 └── output/
-    ├── papers.csv/json            # 全部论文（已清洗）
-    ├── papers_vlm.csv/json        # VLM 子集（含分类标签）
-    ├── papers_vlm_annotated.json  # 完整列表（带 VLM 标注）
-    └── progress.json              # 采集进度
+    ├── papers.csv/json              # 全部论文（已清洗 + 分类 + 标注）
+    ├── papers_vlm.csv/json          # VLM 子集（含分类标签）
+    ├── papers_vlm_annotated.json    # 完整列表（带 VLM 标注）
+    ├── papers_agent.csv/json        # Agent 子集（含分类标签）
+    ├── papers_agent_annotated.json  # 完整列表（带 Agent 标注）
+    └── progress.json                # 采集进度
 ```
 
 ---
@@ -248,13 +290,18 @@ python3 -m http.server 8080
 
 打开 http://localhost:8080 即可查看，功能包括：
 
+- **三数据标签** — 切换浏览全部论文、VLM 子集、Agent 子集
 - **相关度搜索** — 标题匹配优先于摘要匹配
-- **多维图表筛选** — 点击年份/类型/分类柱状图即可筛选，支持多选
+- **多维图表筛选** — 点击年份/类型/分类/任务柱状图即可筛选，支持多选
+- **任务分布图** — 展示 Top 5 任务，其余可折叠查看
 - **年份范围选择** — 单年或自定义范围
-- **论文自动分类** — 所有论文自动标记（Method、Dataset、Survey、Application 等）
+- **论文自动分类** — 所有论文自动标记（Method、Dataset、Survey）
+- **论文收藏** — 跨搜索收藏论文，统一查看或导出
+- **BibTeX 批量导出** — 导出带时间戳的 `.bib` 文件，可选包含摘要
 - **今日新增标记** — 统计栏显示 `+N` 新增数量
+- **Google Scholar 链接** — 一键搜索 Google Scholar
+- **中英双语** — 支持中英文界面切换
 - **移动端适配** — 可折叠筛选面板，响应式布局
-- **BibTeX 导出** — 一键复制，弹窗预览
 - **LaTeX 渲染** — KaTeX 数学公式渲染
 
 ---
@@ -277,7 +324,7 @@ python3 -m http.server 8080
   title        = {RS-Paper-Hub: A Curated Collection of Remote Sensing Papers from arXiv},
   year         = {2025},
   url          = {https://github.com/ML4Sustain/rs-paper-hub},
-  note         = {Automated scraping, cleaning, classification, and VLM filtering pipeline for remote sensing papers}
+  note         = {Automated scraping, cleaning, classification, task tagging, VLM filtering, and Agent filtering pipeline for remote sensing papers}
 }
 ```
 

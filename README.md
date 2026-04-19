@@ -4,7 +4,7 @@
 
 # RS-Paper-Hub
 
-**A curated collection of Remote Sensing & Earth Observation papers from arXiv, with automated scraping, cleaning, task tagging, and VLM filtering.**
+**A curated collection of Remote Sensing & Earth Observation papers from arXiv, with automated scraping, cleaning, task tagging, VLM filtering, and Agent filtering.**
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![arXiv](https://img.shields.io/badge/source-arXiv-b31b1b.svg)](https://arxiv.org/)
@@ -19,19 +19,20 @@
 
 ## Overview
 
-RS-Paper-Hub automatically scrapes remote sensing and earth observation papers from arXiv, extracts structured metadata, and provides a one-click pipeline for data cleaning, task tagging, VLM filtering, and classification. Updated daily via GitHub Actions.
+RS-Paper-Hub automatically scrapes remote sensing and earth observation papers from arXiv, extracts structured metadata, and provides a one-click pipeline for data cleaning, task tagging, VLM filtering, Agent filtering, and classification. Updated daily via GitHub Actions (Mon–Fri, synced with arXiv announcement schedule).
 
 ### Key Features
 
 - **Dual Search Scope** — Covers both "remote sensing" and "earth observation" papers from arXiv
-- **Daily Automated Updates** — GitHub Actions fetches the latest papers (last 7 days) every day
+- **Daily Automated Updates** — GitHub Actions fetches the latest papers (last 7 days) Mon–Fri at 00:30 UTC (08:30 Beijing Time), aligned with arXiv's announcement schedule
 - **Incremental Pipeline** — Only new papers go through cleaning, classification, and tagging; existing data is preserved
 - **Task Tagging** — Auto-tags papers with 11 task types: Classification, Object Detection, Change Detection, Segmentation, VQA, Image Captioning, Visual Grounding, Image-Text Retrieval, Geolocation, Super-Resolution, 3D Reconstruction
 - **Paper Classification** — Labels papers as `Method`, `Dataset`, or `Survey` based on title keywords
-- **VLM Filtering** — Keyword-based filtering for Vision-Language Model related papers (1000+ papers identified)
-- **Interactive Web Viewer** — Search, multi-dimensional chart filtering, task/category/year filters, Google Scholar links, and mobile-friendly UI
+- **VLM Filtering** — Keyword-based filtering for Vision-Language Model related papers with context-aware rules (avoids false positives from non-VLM cross-modal or retrieval terms)
+- **Agent Filtering** — Keyword-based filtering for Agent / Autonomous Decision-Making related papers (multi-agent systems, RL-based agents, LLM agents, agentic workflows, etc.)
+- **Three-Tab Web Viewer** — Browse All Papers, VLM subset, or Agent subset; with search, multi-dimensional chart filtering, task/category/year filters, Google Scholar links, and mobile-friendly UI
 - **Paper Collection** — Collect papers across multiple searches into a personal collection, then view or export them together
-- **BibTeX Batch Export** — Export filtered results, current page, custom range, or collection as `.bib` file with optional abstracts
+- **BibTeX Batch Export** — Export filtered results, current page, custom range, or collection as timestamped `.bib` file with optional abstracts
 - **Code Discovery** — Automatically extracts code repository URLs from abstracts
 - **PDF Download** — Batch download with deduplication, organized by year
 
@@ -45,7 +46,7 @@ pip install -r requirements.txt
 # Scrape all papers
 python main.py
 
-# One-click: clean + classify + tag tasks + filter VLM
+# One-click: clean + classify + tag tasks + filter VLM + filter Agent
 python pipeline.py
 ```
 
@@ -57,11 +58,11 @@ python pipeline.py
 # 1. Grab latest papers (last 7 days, incremental by default)
 python main.py --update
 
-# 2. Run full pipeline (deduplicate → clean → classify → tag → filter → export)
+# 2. Run full pipeline (deduplicate → clean → classify → tag → filter VLM & Agent → export)
 python pipeline.py
 ```
 
-That's it. All output files (`papers.csv/json`, `papers_vlm.csv/json`) are updated in place.
+That's it. All output files (`papers.csv/json`, `papers_vlm.csv/json`, `papers_agent.csv/json`) are updated in place.
 
 > **Note:** `--incremental` is enabled by default — existing papers are always skipped. Use `--no-incremental` to force a full re-fetch.
 
@@ -91,23 +92,37 @@ python main.py --status
 ### Pipeline (Recommended)
 
 ```bash
-# One-click: clean + classify + tag tasks + VLM filter
+# One-click: clean + classify + tag tasks + filter VLM + filter Agent
 python pipeline.py
 
 # Custom input
 python pipeline.py --input output/papers.json
 ```
 
-`pipeline.py` runs the following steps (incrementally — each step skips already-processed papers):
+`pipeline.py` runs the following 8 steps (incrementally — each step skips already-processed papers):
 
 1. **Load & Deduplicate** — Remove duplicate papers by `Paper_link`
 2. **Clean** — Extract code URLs from abstracts, fill `code` field
 3. **Classify** — Label every paper as Method / Dataset / Survey (title-based)
 4. **Tag Tasks** — Assign task labels (CLS, OD, CD, SEG, VQA, IC, VG, ITR, GeoLoc, SR, 3D)
 5. **Save** — Write cleaned `papers.csv` + `papers.json`
-6. **Filter VLM** — Select VLM-related papers by keyword matching
-7. **Classify VLM** — Refine categories for VLM subset
-8. **Export** — Write `papers_vlm.csv/json` and `papers_vlm_annotated.json`
+6. **Filter VLM** — Select Vision-Language Model related papers by keyword matching
+7. **Classify VLM** — Refine categories for VLM subset, export `papers_vlm.csv/json`
+8. **Filter & Classify Agent** — Select Agent-related papers by keyword matching, export `papers_agent.csv/json`
+
+### Standalone Filter Scripts
+
+```bash
+# VLM filter only
+python filter_vlm.py --input output/papers.json
+
+# Agent filter only
+python filter_agent.py --input output/papers.json
+
+# Preview without saving (dry-run)
+python filter_vlm.py --dry-run
+python filter_agent.py --dry-run
+```
 
 ### PDF Download
 
@@ -146,6 +161,14 @@ python main.py --download-only
 |------|-------------|---------|
 | `--input` | Input JSON file | `output/papers.json` |
 | `--output-dir` | Output directory | `output` |
+
+### `filter_vlm.py` / `filter_agent.py`
+
+| Flag | Description | Default |
+|------|-------------|---------|
+| `--input` | Input JSON file | `output/papers.json` |
+| `--output-dir` | Output directory | `output` |
+| `--dry-run` | Preview matches without saving | off |
 
 ---
 
@@ -198,7 +221,9 @@ Papers are automatically tagged with task types based on title and abstract keyw
 ```
 rs-paper-hub/
 ├── main.py              # Scraper CLI entry point
-├── pipeline.py          # One-click: clean + classify + tag + filter
+├── pipeline.py          # One-click: clean + classify + tag + filter VLM & Agent
+├── filter_vlm.py        # Standalone VLM filter script
+├── filter_agent.py      # Standalone Agent filter script
 ├── config.py            # Search configuration
 ├── scraper.py           # arXiv API scraper
 ├── parser.py            # Metadata parser & BibTeX generation
@@ -210,16 +235,19 @@ rs-paper-hub/
 │   ├── classifier.py         # Paper classifier (Method/Dataset/Survey)
 │   ├── task_tagger.py        # Task tagging (11 task types)
 │   └── filter/
-│       └── vlm_filter.py     # VLM keyword rules
+│       ├── vlm_filter.py     # VLM keyword rules
+│       └── agent_filter.py   # Agent keyword rules
 ├── .github/workflows/
-│   └── daily-update.yml      # Daily CI/CD pipeline
-├── index.html               # Interactive web viewer
+│   └── daily-update.yml      # Daily CI/CD pipeline (Mon-Fri, synced with arXiv)
+├── index.html               # Interactive web viewer (3 tabs: All / VLM / Agent)
 ├── requirements.txt
 └── output/
-    ├── papers.csv/json            # All papers (cleaned + classified + tagged)
-    ├── papers_vlm.csv/json        # VLM subset with categories
-    ├── papers_vlm_annotated.json  # Full list with VLM flags
-    └── progress.json              # Scraping progress
+    ├── papers.csv/json              # All papers (cleaned + classified + tagged)
+    ├── papers_vlm.csv/json          # VLM subset with categories
+    ├── papers_vlm_annotated.json    # Full list with VLM flags
+    ├── papers_agent.csv/json        # Agent subset with categories
+    ├── papers_agent_annotated.json  # Full list with Agent flags
+    └── progress.json                # Scraping progress
 ```
 
 ---
@@ -244,6 +272,7 @@ python3 -m http.server 8080
 
 Features include:
 
+- **Three data tabs** — Switch between All Papers, VLM subset, and Agent subset
 - **Quick date filters** — "Today" and "This Week" buttons with red badge counts
 - **Relevance-ranked search** — Title matches prioritized over abstract matches
 - **Multi-dimensional chart filtering** — Click year/type/category/task bars to filter, multi-select supported
@@ -251,9 +280,10 @@ Features include:
 - **Year range selection** — Single year or custom range via dropdown
 - **Paper classification** — All papers labeled as Method, Dataset, or Survey
 - **Paper collection** — Collect papers across multiple searches, then view or export them together
-- **BibTeX batch export** — Export filtered results, current page, custom range, or collection as `.bib` file with optional abstracts
+- **BibTeX batch export** — Export filtered results, current page, custom range, or collection as timestamped `.bib` file with optional abstracts
 - **New papers panel** — Side panel showing today's and this week's papers
 - **Google Scholar links** — One-click search on Google Scholar for each paper
+- **Bilingual UI** — Switch between English and Chinese
 - **Mobile-friendly** — Responsive layout with collapsible filters and wrapping navigation
 - **LaTeX rendering** — Math formulas rendered via KaTeX
 
@@ -282,7 +312,7 @@ If you find RS-Paper-Hub useful in your research or work, please consider citing
   title        = {RS-Paper-Hub: A Curated Collection of Remote Sensing and Earth Observation Papers from arXiv},
   year         = {2025},
   url          = {https://rspaper.top},
-  note         = {Automated scraping, cleaning, classification, task tagging, and VLM filtering pipeline for remote sensing papers}
+  note         = {Automated scraping, cleaning, classification, task tagging, VLM filtering, and Agent filtering pipeline for remote sensing papers}
 }
 ```
 
