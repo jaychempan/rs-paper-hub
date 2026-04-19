@@ -60,7 +60,7 @@ CORE_KEYWORDS = [
     r"open[\-\s]world\s+(?:detection|segmentation|recognition)",
     r"zero[\-\s]shot.*(?:classif|detect|segment|recogni)",
     # Earth Observation + language/VLM
-    r"earth\s+observation.*(?:language|text|caption|foundation\s+model|VLM|MLLM|multimodal)",
+    r"earth\s+observation.*(?:language|text|caption|VLM|MLLM|multimodal)",
     r"(?:language|text|caption|VLM|MLLM|multimodal).*earth\s+observation",
 ]
 
