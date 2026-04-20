@@ -551,7 +551,7 @@
 <div class="stats-bar" id="statsBar"></div>
 <div style="max-width:1200px;margin:0 auto;padding:8px 24px 0;">
   <div id="noteDisclaimer" style="font-size:12px;color:#94a3b8;background:#f8fafc;border:1px dashed #e2e8f0;border-radius:6px;padding:6px 12px;text-align:center;">
-    Note: Category and task labels are rule-based and may contain inaccuracies. We are continuously improving them. This does not affect tracking the latest research trends.
+    Note: There is a delay between the publication date and the announcement date of arXiv papers; Category and task labels are rule-based and may contain inaccuracies. We are continuously improving them. This does not affect tracking the latest research trends.
   </div>
 </div>
 
@@ -769,7 +769,7 @@ const LANG = {
     siteSubtitle: '来自 arXiv 的遥感论文精选合集',
     github: 'GitHub', issues: '问题反馈', docs: '文档', contact: '联系我们',
     statPapers: '论文总数', statTypes: '类型', statYears: '年份', statWithCode: '含代码',
-    noteDisclaimer: '注意：类别和任务标签基于规则生成，可能存在不准确之处。我们正在持续改进。这不影响追踪最新研究趋势。',
+    noteDisclaimer: '注意：arXiv论文发布日期和声明日期存在延迟; 类别和任务标签基于规则生成，可能存在不准确之处。我们正在持续改进。这不影响追踪最新研究趋势。',
     today: '今日', thisWeek: '本周',
     searchAll: '全部', searchTitle: '标题', searchAuthor: '作者', searchAbstract: '摘要',
     searchExactPlaceholder: '搜索标题、作者、摘要（精确短语）...',
@@ -1176,21 +1176,22 @@ function applyFilters() {
   const catSet = chartSel.category.size > 0 ? chartSel.category : null;
   const taskSet = chartSel.task.size > 0 ? chartSel.task : null;
 
-  // Quick date filter dates
+  // Quick date filter dates (aligned with arXiv announcement schedule)
   let qfDateFrom = '';
+  let qfDateTo = '';
   if (quickDateFilter === 'today') {
-    qfDateFrom = new Date().toISOString().slice(0, 10);
+    const ranges = getArxivDateRanges();
+    qfDateFrom = ranges.todayFrom;
+    qfDateTo = ranges.todayTo;
   } else if (quickDateFilter === 'week') {
-    const now = new Date();
-    const mon = new Date(now);
-    const d = mon.getDay();
-    mon.setDate(mon.getDate() - (d === 0 ? 6 : d - 1));
-    qfDateFrom = mon.toISOString().slice(0, 10);
+    const ranges = getArxivDateRanges();
+    qfDateFrom = ranges.weekFrom;
   }
 
   filtered = allPapers.filter(p => {
     // Quick date filter
     if (qfDateFrom && (!p.Date || p.Date < qfDateFrom)) return false;
+    if (qfDateTo && p.Date > qfDateTo) return false;
     // Type filter
     if (typeSet) { if (!typeSet.has(p.Type)) return false; }
     else if (typeDD && p.Type !== typeDD) return false;
@@ -1769,6 +1770,58 @@ function toggleSearchMode() {
   if (document.getElementById('searchInput').value) applyFilters();
 }
 
+/**
+ * Compute "today" and "this week" date ranges based on arXiv announcement schedule.
+ * arXiv announcements converted to Beijing time (UTC+8):
+ *   Mon 8AM: papers submitted Thu-Fri (ET)  -> paper dates: Thu, Fri
+ *   Tue 8AM: papers submitted Fri-Mon (ET)  -> paper dates: Fri, Sat, Sun, Mon
+ *   Wed 8AM: papers submitted Mon-Tue (ET)  -> paper dates: Mon, Tue
+ *   Thu 8AM: papers submitted Tue-Wed (ET)  -> paper dates: Tue, Wed
+ *   Fri 8AM: papers submitted Wed-Thu (ET)  -> paper dates: Wed, Thu
+ *   Sat/Sun: no announcement
+ */
+function getArxivDateRanges() {
+  const now = new Date();
+  const hour = now.getHours();
+  const ref = new Date(now);
+
+  // Before 8 AM Beijing: latest announcement hasn't arrived yet, use previous day
+  if (hour < 8) ref.setDate(ref.getDate() - 1);
+
+  let wd = ref.getDay(); // 0=Sun...6=Sat
+  // No announcements on weekends; roll back to Friday
+  if (wd === 0) { ref.setDate(ref.getDate() - 2); wd = 5; }
+  if (wd === 6) { ref.setDate(ref.getDate() - 1); wd = 5; }
+
+  // ref is now the effective announcement day (Mon=1 ... Fri=5)
+  // Map to paper-date offsets relative to ref
+  let startOff, endOff;
+  if (wd === 1) {       // Mon: Thu-Fri papers
+    startOff = -4; endOff = -3;
+  } else if (wd === 2) { // Tue: Fri-Mon papers
+    startOff = -4; endOff = -1;
+  } else {               // Wed/Thu/Fri: 2-day window
+    startOff = -2; endOff = -1;
+  }
+
+  const todayFrom = new Date(ref);
+  todayFrom.setDate(todayFrom.getDate() + startOff);
+  const todayTo = new Date(ref);
+  todayTo.setDate(todayTo.getDate() + endOff);
+
+  // "This week" starts from Monday announcement's earliest papers (last Thursday)
+  const monday = new Date(ref);
+  monday.setDate(monday.getDate() - (wd - 1)); // go to Monday of this announcement week
+  const weekFrom = new Date(monday);
+  weekFrom.setDate(weekFrom.getDate() - 4); // Monday - 4 = last Thursday
+
+  return {
+    todayFrom: todayFrom.toISOString().slice(0, 10),
+    todayTo:   todayTo.toISOString().slice(0, 10),
+    weekFrom:  weekFrom.toISOString().slice(0, 10),
+  };
+}
+
 function toggleQuickFilter(mode) {
   quickDateFilter = quickDateFilter === mode ? '' : mode;
   document.getElementById('qfToday').classList.toggle('active', quickDateFilter === 'today');
@@ -1777,14 +1830,9 @@ function toggleQuickFilter(mode) {
 }
 
 function updateQuickFilterCounts() {
-  const now = new Date();
-  const todayStr = now.toISOString().slice(0, 10);
-  const monday = new Date(now);
-  const day = monday.getDay();
-  monday.setDate(monday.getDate() - (day === 0 ? 6 : day - 1));
-  const mondayStr = monday.toISOString().slice(0, 10);
-  const todayCount = allPapers.filter(p => p.Date === todayStr).length;
-  const weekCount = allPapers.filter(p => p.Date >= mondayStr).length;
+  const ranges = getArxivDateRanges();
+  const todayCount = allPapers.filter(p => p.Date >= ranges.todayFrom && p.Date <= ranges.todayTo).length;
+  const weekCount = allPapers.filter(p => p.Date >= ranges.weekFrom).length;
   const todayBadge = document.getElementById('qfTodayCount');
   const weekBadge = document.getElementById('qfWeekCount');
   todayBadge.textContent = todayCount;
@@ -1819,24 +1867,19 @@ function switchRecentTab(tab, btn) {
 
 function renderRecentList() {
   const list = document.getElementById('recentList');
-  const now = new Date();
-  const todayStr = now.toISOString().slice(0, 10);
-  const monday = new Date(now);
-  const day = monday.getDay();
-  monday.setDate(monday.getDate() - (day === 0 ? 6 : day - 1));
-  const mondayStr = monday.toISOString().slice(0, 10);
+  const ranges = getArxivDateRanges();
 
   let papers;
   if (recentTab === 'daily') {
-    papers = allPapers.filter(p => p.Date === todayStr);
+    papers = allPapers.filter(p => p.Date >= ranges.todayFrom && p.Date <= ranges.todayTo);
   } else {
-    papers = allPapers.filter(p => p.Date >= mondayStr);
+    papers = allPapers.filter(p => p.Date >= ranges.weekFrom);
   }
   papers.sort((a, b) => (b.Date || '').localeCompare(a.Date || ''));
 
   // Update toggle badge
   const toggle = document.getElementById('recentToggle');
-  const dailyCount = allPapers.filter(p => p.Date === todayStr).length;
+  const dailyCount = allPapers.filter(p => p.Date >= ranges.todayFrom && p.Date <= ranges.todayTo).length;
   toggle.textContent = dailyCount > 0 ? `NEW +${dailyCount}` : t('newPapers');
 
   if (papers.length === 0) {
