@@ -141,11 +141,12 @@ def generate_feeds(
     all_papers: list[dict],
     vlm_papers: list[dict],
     agent_papers: list[dict],
+    uav_papers: list[dict],
     output_dir: str,
     site_url: str = SITE_URL,
     days: int = 7,
 ):
-    """Generate all three Atom feeds."""
+    """Generate all Atom feeds."""
     global SITE_URL
     SITE_URL = site_url
 
@@ -153,6 +154,7 @@ def generate_feeds(
         (all_papers, "RS-Paper-Hub — All Papers", "feed.xml"),
         (vlm_papers, "RS-Paper-Hub — VLM Papers", "feed_vlm.xml"),
         (agent_papers, "RS-Paper-Hub — Agent Papers", "feed_agent.xml"),
+        (uav_papers, "RS-Paper-Hub — UAV Papers", "feed_uav.xml"),
     ]
 
     for papers, title, filename in feeds:

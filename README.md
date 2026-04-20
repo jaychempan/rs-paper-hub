@@ -32,7 +32,8 @@ RS-Paper-Hub automatically scrapes remote sensing and earth observation papers f
 - **Paper Classification** — Labels papers as `Method`, `Dataset`, or `Survey` based on title keywords
 - **VLM Filtering** — Keyword-based filtering for Vision-Language Model related papers with context-aware rules (avoids false positives from non-VLM cross-modal or retrieval terms)
 - **Agent Filtering** — Keyword-based filtering for Agent / Autonomous Decision-Making related papers (multi-agent systems, RL-based agents, LLM agents, agentic workflows, etc.)
-- **Three-Tab Web Viewer** — Browse All Papers, VLM subset, or Agent subset; with search, multi-dimensional chart filtering, task/category/year filters, Google Scholar links, and mobile-friendly UI
+- **UAV Filtering** — Keyword-based filtering for UAV / drone related papers (unmanned aerial vehicles, drone-based remote sensing, aerial photogrammetry, etc.)
+- **Four-Tab Web Viewer** — Browse All Papers, VLM subset, Agent subset, or UAV subset; with search, multi-dimensional chart filtering, task/category/year filters, Google Scholar links, and mobile-friendly UI
 - **Clickable Tag Filtering** — Click any tag (date, type, category, task, VLM, etc.) on a paper card to filter by that value; stack multiple tags for progressive filtering, click again to remove
 - **Paper Collection** — Collect papers across multiple searches into a personal collection, then view or export them together
 - **BibTeX Batch Export** — Export filtered results, current page, custom range, or collection as timestamped `.bib` file with optional abstracts
@@ -230,6 +231,7 @@ rs-paper-hub/
 ├── pipeline.py          # One-click: clean + classify + tag + filter VLM & Agent + RSS
 ├── filter_vlm.py        # Standalone VLM filter script
 ├── filter_agent.py      # Standalone Agent filter script
+├── filter_uav.py        # Standalone UAV filter script
 ├── rss_generator.py     # Atom feed generator for Zotero
 ├── config.py            # Search configuration
 ├── scraper.py           # arXiv API scraper
@@ -243,10 +245,11 @@ rs-paper-hub/
 │   ├── task_tagger.py        # Task tagging (11 task types)
 │   └── filter/
 │       ├── vlm_filter.py     # VLM keyword rules
-│       └── agent_filter.py   # Agent keyword rules
+│       ├── agent_filter.py   # Agent keyword rules
+│       └── uav_filter.py     # UAV keyword rules
 ├── .github/workflows/
 │   └── daily-update.yml      # Daily CI/CD pipeline (Mon-Fri, synced with arXiv)
-├── index.html               # Interactive web viewer (3 tabs: All / VLM / Agent)
+├── index.html               # Interactive web viewer (4 tabs: All / VLM / Agent / UAV)
 ├── groups/                  # Paper groups for curated reading lists
 │   ├── index.json           # Group registry (key, label, file)
 │   └── *.json               # Individual group files (arrays of arXiv URLs)
@@ -257,9 +260,12 @@ rs-paper-hub/
     ├── papers_vlm_annotated.json    # Full list with VLM flags
     ├── papers_agent.csv/json        # Agent subset with categories
     ├── papers_agent_annotated.json  # Full list with Agent flags
+    ├── papers_uav.csv/json          # UAV subset with categories
+    ├── papers_uav_annotated.json    # Full list with UAV flags
     ├── feed.xml                     # Atom feed — all papers (last 7 days)
     ├── feed_vlm.xml                 # Atom feed — VLM papers (last 7 days)
     ├── feed_agent.xml               # Atom feed — Agent papers (last 7 days)
+    ├── feed_uav.xml                 # Atom feed — UAV papers (last 7 days)
     └── progress.json                # Scraping progress
 ```
 
@@ -314,6 +320,7 @@ The pipeline automatically generates [Atom](https://en.wikipedia.org/wiki/Atom_(
 | All Papers | `https://rspaper.top/output/feed.xml` | All recent papers |
 | VLM Papers | `https://rspaper.top/output/feed_vlm.xml` | VLM subset |
 | Agent Papers | `https://rspaper.top/output/feed_agent.xml` | Agent subset |
+| UAV Papers | `https://rspaper.top/output/feed_uav.xml` | UAV subset |
 
 ### Subscribe in Zotero
 

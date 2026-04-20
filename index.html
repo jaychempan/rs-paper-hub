@@ -9,6 +9,7 @@
 <link rel="alternate" type="application/atom+xml" title="RS Papers - All" href="output/feed.xml">
 <link rel="alternate" type="application/atom+xml" title="RS Papers - VLM" href="output/feed_vlm.xml">
 <link rel="alternate" type="application/atom+xml" title="RS Papers - Agent" href="output/feed_agent.xml">
+<link rel="alternate" type="application/atom+xml" title="RS Papers - UAV" href="output/feed_uav.xml">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
@@ -546,6 +547,7 @@
         <a href="output/feed.xml" target="_blank">All Papers</a>
         <a href="output/feed_vlm.xml" target="_blank">VLM Papers</a>
         <a href="output/feed_agent.xml" target="_blank">Agent Papers</a>
+        <a href="output/feed_uav.xml" target="_blank">UAV Papers</a>
       </div>
     </span>
     <a href="javascript:void(0)" id="langToggle" onclick="toggleLang()" style="cursor:pointer;font-weight:600;position:relative;top:-0.5px;">中文</a>
@@ -768,7 +770,7 @@ const LANG = {
     exportRange: 'Export range:',
     includeAbstracts: 'Include abstracts',
     downloadBib: 'Download .bib', exportGroup: 'Export Group', groupNamePlaceholder: 'Group name',
-    ds_all: 'All Papers', ds_vlm: 'Vision-Language Model', ds_agent: 'Agent',
+    ds_all: 'All Papers', ds_vlm: 'Vision-Language Model', ds_agent: 'Agent', ds_uav: 'UAV',
     noBibtex: 'No BibTeX available',
     scholar: 'Scholar',
     before: 'Before', more: 'more',
@@ -812,7 +814,7 @@ const LANG = {
     exportRange: '导出范围：',
     includeAbstracts: '包含摘要',
     downloadBib: '下载 .bib', exportGroup: '导出研究组', groupNamePlaceholder: '研究组名称',
-    ds_all: '全部论文', ds_vlm: '视觉语言模型', ds_agent: 'Agent',
+    ds_all: '全部论文', ds_vlm: '视觉语言模型', ds_agent: 'Agent', ds_uav: '无人机',
     noBibtex: '暂无引用信息',
     scholar: '谷歌学术',
     before: '早于', more: '更多',
@@ -977,6 +979,7 @@ const TASK_NAMES = {
 };
 const DATA_SOURCES = [
   { label: 'All Papers', file: 'papers.json', key: 'all' },
+  { label: 'UAV', file: 'papers_uav.json', key: 'uav' },
   { label: 'Vision-Language Model', file: 'papers_vlm.json', key: 'vlm' },
   { label: 'Agent', file: 'papers_agent.json', key: 'agent' },
 ];

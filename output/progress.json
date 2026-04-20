@@ -3,10 +3,10 @@
     "last_year": null,
     "last_month": null,
     "total_scraped": 5580,
-    "completed": true
+    "completed": false
   },
   "downloaded": [],
   "failed": [],
-  "updated_at": "2026-04-20T04:02:06.465414",
+  "updated_at": "2026-04-20T18:12:07.789195",
   "last_new_count": 0
 }

@@ -205,6 +205,7 @@
         <a href="../output/feed.xml" target="_blank" data-i18n="rssAll">All Papers</a>
         <a href="../output/feed_vlm.xml" target="_blank" data-i18n="rssVlm">VLM Papers</a>
         <a href="../output/feed_agent.xml" target="_blank" data-i18n="rssAgent">Agent Papers</a>
+        <a href="../output/feed_uav.xml" target="_blank" data-i18n="rssUav">UAV Papers</a>
       </div>
     </span>
     <a href="javascript:void(0)" id="langToggle" onclick="toggleLang()">中文</a>
@@ -333,6 +334,7 @@
   <li><strong>All Papers:</strong> <code>output/feed.xml</code></li>
   <li><strong>VLM Papers:</strong> <code>output/feed_vlm.xml</code></li>
   <li><strong>Agent Papers:</strong> <code>output/feed_agent.xml</code></li>
+  <li><strong>UAV Papers:</strong> <code>output/feed_uav.xml</code></li>
 </ul>
 
 <h3 data-i18n="rss2Title">Using with Zotero</h3>
@@ -349,7 +351,7 @@
 
 <section id="pipeline">
 <h2 data-i18n="pipeline">Pipeline</h2>
-<p data-i18n="pipelineIntro">The data processing pipeline consists of 9 steps:</p>
+<p data-i18n="pipelineIntro">The data processing pipeline consists of 11 steps:</p>
 
 <div class="pipeline">
   <div class="pipeline-step"><div class="num">1</div><div class="label" data-i18n="step1">Fetch arXiv</div></div>
@@ -518,7 +520,7 @@ python main.py --verbose</code></pre>
 const LANG = {
   en: {
     home: 'Home', github: 'GitHub', issues: 'Issues', docs: 'Docs', contact: 'Contact',
-    rssAll: 'All Papers', rssVlm: 'VLM Papers', rssAgent: 'Agent Papers',
+    rssAll: 'All Papers', rssVlm: 'VLM Papers', rssAgent: 'Agent Papers', rssUav: 'UAV Papers',
     gettingStarted: 'Getting Started', technical: 'Technical',
     overview: 'Overview', features: 'Features', webViewer: 'Web Viewer Guide', rssZotero: 'RSS & Zotero',
     pipeline: 'Pipeline', cli: 'CLI Reference', schema: 'Output Schema', taskTags: 'Task Tags', submitGroup: 'Submit Group',
@@ -544,7 +546,7 @@ const LANG = {
     rssIntro: 'RS Paper Hub provides RSS feeds that can be used with any RSS reader or integrated with Zotero:',
     rss1Title: 'Available RSS Feeds', rss2Title: 'Using with Zotero', rss2Desc: 'In Zotero, go to File → New Feed, and paste one of the RSS URLs above. Zotero will automatically fetch new papers as they are added.',
     rss3Title: 'Direct JSON Download', rss3Desc: 'For programmatic access, JSON files are also available:',
-    pipelineIntro: 'The data processing pipeline consists of 9 steps:',
+    pipelineIntro: 'The data processing pipeline consists of 11 steps:',
     step1: 'Fetch arXiv', step2: 'Filter RS', step3: 'Extract Metadata', step4: 'VLM Detection', step5: 'Agent Detection', step6: 'Task Tagging', step7: 'Classification', step8: 'Generate Feeds', step9: 'Deploy',
     step1Desc: 'Query the arXiv API for recent submissions in relevant categories', step2Desc: 'Apply keyword-based filtering to identify remote sensing papers', step3Desc: 'Parse paper titles, abstracts, authors, and dates', step4Desc: 'Use regex patterns to identify vision-language model related papers', step5Desc: 'Identify AI agent related papers in remote sensing', step6Desc: 'Classify papers into 11 task categories based on content', step7Desc: 'Categorize as Method, Survey, or Dataset', step8Desc: 'Create RSS feeds and JSON outputs', step9Desc: 'Update the website with new data',
     cliIntro: 'Run the pipeline using Python:',
@@ -561,7 +563,7 @@ const LANG = {
   },
   zh: {
     home: '首页', github: 'GitHub', issues: '问题反馈', docs: '文档', contact: '联系我们',
-    rssAll: '全部论文', rssVlm: 'VLM 论文', rssAgent: 'Agent 论文',
+    rssAll: '全部论文', rssVlm: 'VLM 论文', rssAgent: 'Agent 论文', rssUav: 'UAV 论文',
     gettingStarted: '入门', technical: '技术文档',
     overview: '项目简介', features: '核心功能', webViewer: '网页使用指南', rssZotero: 'RSS 与 Zotero',
     pipeline: '处理流程', cli: '命令行参考', schema: '输出格式', taskTags: '任务标签', submitGroup: '提交研究组',
@@ -587,7 +589,7 @@ const LANG = {
     rssIntro: 'RS Paper Hub 提供 RSS 订阅源，可配合任何 RSS 阅读器或 Zotero 使用：',
     rss1Title: '可用 RSS 订阅源', rss2Title: '配合 Zotero 使用', rss2Desc: '在 Zotero 中，转到文件 → 新建订阅源，然后粘贴上述 RSS URL。Zotero 将自动获取新添加的论文。',
     rss3Title: '直接下载 JSON', rss3Desc: '为了方便程序调用，也提供 JSON 文件下载：',
-    pipelineIntro: '数据处理流程包含 9 个步骤：',
+    pipelineIntro: '数据处理流程包含 11 个步骤：',
     step1: '获取 arXiv', step2: '筛选遥感', step3: '提取元数据', step4: 'VLM 检测', step5: 'Agent 检测', step6: '任务标记', step7: '分类', step8: '生成订阅源', step9: '部署',
     step1Desc: '查询 arXiv API 获取相关类别的最新提交', step2Desc: '使用关键词筛选识别遥感论文', step3Desc: '解析论文标题、摘要、作者和日期', step4Desc: '使用正则表达式识别视觉语言模型相关论文', step5Desc: '识别遥感中的 AI Agent 相关论文', step6Desc: '根据内容将论文分为 11 个任务类别', step7Desc: '分类为方法、综述或数据集', step8Desc: '创建 RSS 订阅源和 JSON 输出', step9Desc: '更新网站数据',
     cliIntro: '使用 Python 运行处理流程：',

@@ -36,7 +36,8 @@ RS-Paper-Hub 自动从 arXiv 爬取遥感与地球观测领域的论文，提取
 - **全量分类** — 所有论文自动标记为 `Method`、`Dataset`、`Survey`
 - **VLM 筛选** — 基于上下文感知的关键词规则筛选视觉语言模型相关论文（避免非 VLM 跨模态/检索等误判）
 - **Agent 筛选** — 基于关键词规则筛选 Agent / 自主决策相关论文（多智能体系统、强化学习 Agent、LLM Agent、Agentic 工作流等）
-- **三标签网页** — 浏览全部论文、VLM 子集、Agent 子集；支持搜索、多维图表筛选、中英双语切换
+- **UAV 筛选** — 基于关键词规则筛选无人机相关论文（UAV、drone、无人机遥感、航空摄影测量等）
+- **四标签网页** — 浏览全部论文、VLM 子集、Agent 子集、UAV 子集；支持搜索、多维图表筛选、中英双语切换
 - **标签点击筛选** — 点击论文卡片上的任意标签（日期、类型、类别、任务、VLM 等）即可筛选同类论文；支持多标签叠加筛选，再次点击取消
 - **论文收藏** — 跨搜索收藏论文，统一查看或导出
 - **BibTeX 批量导出** — 导出带时间戳的 `.bib` 文件，可选包含摘要
@@ -239,6 +240,7 @@ rs-paper-hub/
 ├── pipeline.py          # 一键处理：清洗 + 分类 + 任务标注 + VLM 筛选 + Agent 筛选 + RSS
 ├── filter_vlm.py        # 单独 VLM 筛选脚本
 ├── filter_agent.py      # 单独 Agent 筛选脚本
+├── filter_uav.py        # 单独 UAV 筛选脚本
 ├── rss_generator.py     # Atom feed 生成器（Zotero 订阅）
 ├── config.py            # 搜索配置
 ├── scraper.py           # arXiv API 采集器
@@ -252,10 +254,11 @@ rs-paper-hub/
 │   ├── task_tagger.py        # 任务标注（11 种任务类型）
 │   └── filter/
 │       ├── vlm_filter.py     # VLM 关键词规则
-│       └── agent_filter.py   # Agent 关键词规则
+│       ├── agent_filter.py   # Agent 关键词规则
+│       └── uav_filter.py     # UAV 关键词规则
 ├── .github/workflows/
 │   └── daily-update.yml      # 每日 CI/CD 流水线（周一至周五，与 arXiv 同步）
-├── index.html               # 交互式网页（三标签：全部 / VLM / Agent）
+├── index.html               # 交互式网页（四标签：全部 / VLM / Agent / UAV）
 ├── groups/                  # 论文研究组（策展式阅读列表）
 │   ├── index.json           # 研究组注册表（key、label、file）
 │   └── *.json               # 各研究组文件（arXiv 链接数组）
@@ -266,9 +269,12 @@ rs-paper-hub/
     ├── papers_vlm_annotated.json    # 完整列表（带 VLM 标注）
     ├── papers_agent.csv/json        # Agent 子集（含分类标签）
     ├── papers_agent_annotated.json  # 完整列表（带 Agent 标注）
+    ├── papers_uav.csv/json          # UAV 子集（含分类标签）
+    ├── papers_uav_annotated.json    # 完整列表（带 UAV 标注）
     ├── feed.xml                     # Atom feed — 全部论文（最近 7 天）
     ├── feed_vlm.xml                 # Atom feed — VLM 论文（最近 7 天）
     ├── feed_agent.xml               # Atom feed — Agent 论文（最近 7 天）
+    ├── feed_uav.xml                 # Atom feed — UAV 论文（最近 7 天）
     └── progress.json                # 采集进度
 ```
 
@@ -330,6 +336,7 @@ Pipeline 自动生成 [Atom](https://zh.wikipedia.org/wiki/Atom_(%E6%A0%87%E5%87
 | 全部论文 | `https://rspaper.top/output/feed.xml` | 最近 7 天全部论文 |
 | VLM 论文 | `https://rspaper.top/output/feed_vlm.xml` | VLM 子集 |
 | Agent 论文 | `https://rspaper.top/output/feed_agent.xml` | Agent 子集 |
+| UAV 论文 | `https://rspaper.top/output/feed_uav.xml` | UAV 子集 |
 
 ### 在 Zotero 中订阅
 

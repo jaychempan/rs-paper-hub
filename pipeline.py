@@ -18,6 +18,7 @@ import pandas as pd
 from cleaning.abstract_cleaner import clean_abstract
 from cleaning.filter.vlm_filter import filter_vlm_papers
 from cleaning.filter.agent_filter import filter_agent_papers
+from cleaning.filter.uav_filter import filter_uav_papers
 from cleaning.classifier import classify_papers
 from cleaning.task_tagger import tag_all_papers
 
@@ -74,7 +75,7 @@ def run(input_path: str, output_dir: str):
     # ── Step 1: Clean abstracts → fill code field (incremental) ──
     need_code = [p for p in papers if not p.get("code") or str(p["code"]) in ("", "nan")]
     if need_code:
-        logger.info(f"[1/9] Cleaning abstracts & extracting code URLs ({len(need_code)}/{len(papers)})...")
+        logger.info(f"[1/11] Cleaning abstracts & extracting code URLs ({len(need_code)}/{len(papers)})...")
         code_filled = 0
         for p in need_code:
             clean_abstract(p)
@@ -82,30 +83,30 @@ def run(input_path: str, output_dir: str):
                 code_filled += 1
         logger.info(f"  Code field filled from abstract: {code_filled}")
     else:
-        logger.info("[1/9] Code extraction: all papers already have code field, skipped")
+        logger.info("[1/11] Code extraction: all papers already have code field, skipped")
 
     # ── Step 2: Classify (incremental) ────────────────────
     need_classify = [p for p in papers if not p.get("Category")]
     if need_classify:
-        logger.info(f"[2/9] Classifying papers ({len(need_classify)}/{len(papers)})...")
+        logger.info(f"[2/11] Classifying papers ({len(need_classify)}/{len(papers)})...")
         classify_papers(need_classify)
     else:
-        logger.info("[2/9] Classification: all papers already classified, skipped")
+        logger.info("[2/11] Classification: all papers already classified, skipped")
 
     # ── Step 3: Tag tasks (incremental) ───────────────────
     need_tasks = [p for p in papers if "_tasks" not in p]
     if need_tasks:
-        logger.info(f"[3/9] Tagging tasks ({len(need_tasks)}/{len(papers)})...")
+        logger.info(f"[3/11] Tagging tasks ({len(need_tasks)}/{len(papers)})...")
         tag_all_papers(need_tasks)
     else:
-        logger.info("[3/9] Task tagging: all papers already tagged, skipped")
+        logger.info("[3/11] Task tagging: all papers already tagged, skipped")
 
     all_cat_counter = Counter(p.get("Category", "Other") for p in papers)
     for cat, count in all_cat_counter.most_common():
         logger.info(f"  {cat}: {count}")
 
     # ── Step 3: Save cleaned full dataset ─────────────────
-    logger.info("[4/9] Saving cleaned dataset...")
+    logger.info("[4/11] Saving cleaned dataset...")
     save(
         papers,
         os.path.join(output_dir, "papers.csv"),
@@ -114,12 +115,12 @@ def run(input_path: str, output_dir: str):
     )
 
     # ── Step 4: Filter VLM papers ─────────────────────────
-    logger.info("[5/9] Filtering VLM-related papers...")
+    logger.info("[5/11] Filtering VLM-related papers...")
     matched, annotated = filter_vlm_papers(papers)
     logger.info(f"  VLM-related: {len(matched)} / {len(papers)}")
 
     # ── Step 5: Classify VLM papers ───────────────────────
-    logger.info("[6/9] Classifying VLM papers...")
+    logger.info("[6/11] Classifying VLM papers...")
     classify_papers(matched)
 
 
@@ -148,12 +149,12 @@ def run(input_path: str, output_dir: str):
     logger.info(f"  -> {annotated_path}")
 
     # ── Step 7: Filter Agent papers ──────────────────────
-    logger.info("[7/9] Filtering Agent-related papers...")
+    logger.info("[7/11] Filtering Agent-related papers...")
     agent_matched, agent_annotated = filter_agent_papers(papers)
     logger.info(f"  Agent-related: {len(agent_matched)} / {len(papers)}")
 
     # ── Step 8: Classify Agent papers ────────────────────
-    logger.info("[8/9] Classifying Agent papers...")
+    logger.info("[8/11] Classifying Agent papers...")
     classify_papers(agent_matched)
 
     agent_cat_counter = Counter(p.get("Category", "Other") for p in agent_matched)
@@ -174,20 +175,49 @@ def run(input_path: str, output_dir: str):
         json.dump(agent_annotated, f, ensure_ascii=False, indent=2)
     logger.info(f"  -> {agent_annotated_path}")
 
-    # ── Step 9: Generate Atom feeds for Zotero ────────────
-    logger.info("[9/9] Generating Atom feeds...")
+    # ── Step 9: Filter UAV papers ────────────────────────
+    logger.info("[9/11] Filtering UAV-related papers...")
+    uav_matched, uav_annotated = filter_uav_papers(papers)
+    logger.info(f"  UAV-related: {len(uav_matched)} / {len(papers)}")
+
+    # ── Step 10: Classify UAV papers ─────────────────────
+    logger.info("[10/11] Classifying UAV papers...")
+    classify_papers(uav_matched)
+
+    uav_cat_counter = Counter(p.get("Category", "Other") for p in uav_matched)
+    for cat, count in uav_cat_counter.most_common():
+        logger.info(f"  {cat}: {count}")
+
+    # ── Save UAV outputs ─────────────────────────────────
+    logger.info("Saving UAV outputs...")
+    save(
+        uav_matched,
+        os.path.join(output_dir, "papers_uav.csv"),
+        os.path.join(output_dir, "papers_uav.json"),
+        ALL_COLUMNS,
+    )
+
+    uav_annotated_path = os.path.join(output_dir, "papers_uav_annotated.json")
+    with open(uav_annotated_path, "w", encoding="utf-8") as f:
+        json.dump(uav_annotated, f, ensure_ascii=False, indent=2)
+    logger.info(f"  -> {uav_annotated_path}")
+
+    # ── Step 11: Generate Atom feeds for Zotero ──────────
+    logger.info("[11/11] Generating Atom feeds...")
     from rss_generator import generate_feeds
-    generate_feeds(papers, matched, agent_matched, output_dir,
+    generate_feeds(papers, matched, agent_matched, uav_matched, output_dir,
                    site_url="https://rspaper.top")
 
     # ── Summary ───────────────────────────────────────────
     logger.info("=" * 50)
-    logger.info(f"Done! Total: {len(papers)} | VLM: {len(matched)} | Agent: {len(agent_matched)}")
-    logger.info(f"  papers.csv/json           - all {len(papers)} papers (cleaned)")
-    logger.info(f"  papers_vlm.csv/json       - {len(matched)} VLM papers (with Category)")
-    logger.info(f"  papers_vlm_annotated.json - full list with VLM flags")
-    logger.info(f"  papers_agent.csv/json     - {len(agent_matched)} Agent papers (with Category)")
+    logger.info(f"Done! Total: {len(papers)} | VLM: {len(matched)} | Agent: {len(agent_matched)} | UAV: {len(uav_matched)}")
+    logger.info(f"  papers.csv/json             - all {len(papers)} papers (cleaned)")
+    logger.info(f"  papers_vlm.csv/json         - {len(matched)} VLM papers (with Category)")
+    logger.info(f"  papers_vlm_annotated.json   - full list with VLM flags")
+    logger.info(f"  papers_agent.csv/json       - {len(agent_matched)} Agent papers (with Category)")
     logger.info(f"  papers_agent_annotated.json - full list with Agent flags")
+    logger.info(f"  papers_uav.csv/json         - {len(uav_matched)} UAV papers (with Category)")
+    logger.info(f"  papers_uav_annotated.json   - full list with UAV flags")
 
 
 def main():
