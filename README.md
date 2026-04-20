@@ -11,6 +11,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Website](https://img.shields.io/badge/website-rspaper.top-4f46e5.svg)](https://rspaper.top)
 [![Team](https://img.shields.io/badge/team-ML4Sustain-green.svg?logo=github)](https://github.com/ML4Sustain)
+[![Docs](https://img.shields.io/badge/docs-online-blue.svg)](https://rspaper.top/docs/)
 
 [English](README.md) | [中文](README_zh.md) | [Live Demo](https://rspaper.top)
 
@@ -32,6 +33,7 @@ RS-Paper-Hub automatically scrapes remote sensing and earth observation papers f
 - **VLM Filtering** — Keyword-based filtering for Vision-Language Model related papers with context-aware rules (avoids false positives from non-VLM cross-modal or retrieval terms)
 - **Agent Filtering** — Keyword-based filtering for Agent / Autonomous Decision-Making related papers (multi-agent systems, RL-based agents, LLM agents, agentic workflows, etc.)
 - **Three-Tab Web Viewer** — Browse All Papers, VLM subset, or Agent subset; with search, multi-dimensional chart filtering, task/category/year filters, Google Scholar links, and mobile-friendly UI
+- **Clickable Tag Filtering** — Click any tag (date, type, category, task, VLM, etc.) on a paper card to filter by that value; stack multiple tags for progressive filtering, click again to remove
 - **Paper Collection** — Collect papers across multiple searches into a personal collection, then view or export them together
 - **BibTeX Batch Export** — Export filtered results, current page, custom range, or collection as timestamped `.bib` file with optional abstracts
 - **Code Discovery** — Automatically extracts code repository URLs from abstracts

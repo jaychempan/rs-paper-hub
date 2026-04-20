@@ -11,6 +11,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Website](https://img.shields.io/badge/website-rspaper.top-4f46e5.svg)](https://rspaper.top)
 [![Team](https://img.shields.io/badge/team-ML4Sustain-green.svg?logo=github)](https://github.com/ML4Sustain)
+[![Docs](https://img.shields.io/badge/docs-online-blue.svg)](https://rspaper.top/docs/)
 
 [English](README.md) | [中文](README_zh.md)
 
@@ -36,6 +37,7 @@ RS-Paper-Hub 自动从 arXiv 爬取遥感与地球观测领域的论文，提取
 - **VLM 筛选** — 基于上下文感知的关键词规则筛选视觉语言模型相关论文（避免非 VLM 跨模态/检索等误判）
 - **Agent 筛选** — 基于关键词规则筛选 Agent / 自主决策相关论文（多智能体系统、强化学习 Agent、LLM Agent、Agentic 工作流等）
 - **三标签网页** — 浏览全部论文、VLM 子集、Agent 子集；支持搜索、多维图表筛选、中英双语切换
+- **标签点击筛选** — 点击论文卡片上的任意标签（日期、类型、类别、任务、VLM 等）即可筛选同类论文；支持多标签叠加筛选，再次点击取消
 - **论文收藏** — 跨搜索收藏论文，统一查看或导出
 - **BibTeX 批量导出** — 导出带时间戳的 `.bib` 文件，可选包含摘要
 - **RSS/Atom 订阅** — 自动生成 Atom feed（全部 / VLM / Agent），支持 Zotero 订阅，每日更新最近 7 天论文
