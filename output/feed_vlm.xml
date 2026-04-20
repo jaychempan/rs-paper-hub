@@ -4,8 +4,8 @@
   <id>https://rspaper.top/output/feed_vlm.xml</id>
   <link href="https://rspaper.top/output/feed_vlm.xml" rel="self" type="application/atom+xml" />
   <link href="https://rspaper.top" rel="alternate" type="text/html" />
-  <updated>2026-04-20T10:19:45Z</updated>
-  <subtitle>Latest remote sensing papers (last 7 days) — 11 entries</subtitle>
+  <updated>2026-04-20T16:47:14Z</updated>
+  <subtitle>Latest remote sensing papers (last 7 days) — 8 entries</subtitle>
   <author>
     <name>RS-Paper-Hub</name>
     <uri>https://rspaper.top</uri>
@@ -252,86 +252,5 @@
 &lt;p&gt;&lt;strong&gt;Tasks:&lt;/strong&gt; IC&lt;/p&gt;</content>
     <category term="Computer Vision" />
     <category term="Artificial Intelligence" />
-  </entry>
-  <entry>
-    <title>GTPBD-MM: A Global Terraced Parcel and Boundary Dataset with Multi-Modality</title>
-    <link href="http://arxiv.org/abs/2604.12315v1" rel="alternate" type="text/html" />
-    <id>http://arxiv.org/abs/2604.12315v1</id>
-    <published>2026-04-14T00:00:00Z</published>
-    <updated>2026-04-14T00:00:00Z</updated>
-    <author>
-      <name>Zhiwei Zhang</name>
-    </author>
-    <author>
-      <name>Xingyuan Zeng</name>
-    </author>
-    <author>
-      <name>Xinkai Kong</name>
-    </author>
-    <author>
-      <name>Kunquan Zhang</name>
-    </author>
-    <author>
-      <name>Haoyuan Liang</name>
-    </author>
-    <author>
-      <name>Bohan Shi</name>
-    </author>
-    <author>
-      <name>Juepeng Zheng</name>
-    </author>
-    <author>
-      <name>Jianxi Huang</name>
-    </author>
-    <author>
-      <name>Yutong Lu</name>
-    </author>
-    <author>
-      <name>Haohuan Fu</name>
-    </author>
-    <summary type="text">Agricultural parcel extraction plays an important role in remote sensing-based agricultural monitoring, supporting parcel surveying, precision management, and ecological assessment. However, existing public benchmarks mainly focus on regular and relatively flat farmland scenes. In contrast, terraced parcels in mountainous regions exhibit stepped terrain, pronounced elevation variation, irregular boundaries, and strong cross-regional heterogeneity, making parcel extraction a more challenging problem that jointly requires visual recognition, semantic discrimination, and terrain-aware geometric understanding. Although recent studies have advanced visual parcel benchmarks and image-text farmland understanding, a unified benchmark for complex terraced parcel extraction under aligned image-text-DEM settings remains absent. To fill this gap, we present GTPBD-MM, the first multimodal benchmark for global terraced parcel extraction. Built upon GTPBD, GTPBD-MM integrates high-resolution optical imagery, structured text descriptions, and DEM data, and supports systematic evaluation under Image-only, Image+Text, and Image+Text+DEM settings. We further propose Elevation and Text guided Terraced parcel network (ETTerra), a multimodal baseline for terraced parcel delineation. Extensive experiments demonstrate that textual semantics and terrain geometry provide complementary cues beyond visual appearance alone, yielding more accurate, coherent, and structurally consistent delineation results in complex terraced scenes.</summary>
-    <content type="html">&lt;p&gt;&lt;strong&gt;Publication:&lt;/strong&gt; 15 pages, 11 figures&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Dataset&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Tasks:&lt;/strong&gt; 3D&lt;/p&gt;</content>
-    <category term="Computer Vision" />
-    <category term="Multimedia" />
-  </entry>
-  <entry>
-    <title>A Multi-Agent Feedback System for Detecting and Describing News Events in Satellite Imagery</title>
-    <link href="http://arxiv.org/abs/2604.12772v1" rel="alternate" type="text/html" />
-    <id>http://arxiv.org/abs/2604.12772v1</id>
-    <published>2026-04-14T00:00:00Z</published>
-    <updated>2026-04-14T00:00:00Z</updated>
-    <author>
-      <name>Madeline Anderson</name>
-    </author>
-    <author>
-      <name>Mikhail Klassen</name>
-    </author>
-    <author>
-      <name>Ash Hoover</name>
-    </author>
-    <author>
-      <name>Kerri Cahoy</name>
-    </author>
-    <summary type="text">Changes in satellite imagery often occur over multiple time steps. Despite the emergence of bi-temporal change captioning datasets, there is a lack of multi-temporal event captioning datasets (at least two images per sequence) in remote sensing. This gap exists because (1) searching for visible events in satellite imagery and (2) labeling multi-temporal sequences require significant time and labor. To address these challenges, we present SkyScraper, an iterative multi-agent workflow that geocodes news articles and synthesizes captions for corresponding satellite image sequences. Our experiments show that SkyScraper successfully finds 5x more events than traditional geocoding methods, demonstrating that agentic feedback is an effective strategy for surfacing new multi-temporal events in satellite imagery. We apply our framework to a large database of global news articles, curating a new multi-temporal captioning dataset with 5,000 sequences. By automatically identifying imagery related to news events, our work also supports journalism and reporting efforts.</summary>
-    <content type="html">&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Method&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Tasks:&lt;/strong&gt; IC;CD&lt;/p&gt;</content>
-    <category term="Computer Vision" />
-    <category term="cs.MA" />
-  </entry>
-  <entry>
-    <title>Optimizing Earth Observation Satellite Schedules under Unknown Operational Constraints: An Active Constraint Acquisition Approach</title>
-    <link href="http://arxiv.org/abs/2604.13283v1" rel="alternate" type="text/html" />
-    <id>http://arxiv.org/abs/2604.13283v1</id>
-    <published>2026-04-14T00:00:00Z</published>
-    <updated>2026-04-14T00:00:00Z</updated>
-    <author>
-      <name>Mohamed-Bachir Belaid</name>
-    </author>
-    <summary type="text">Earth Observation (EO) satellite scheduling (deciding which imaging tasks to perform and when) is a well-studied combinatorial optimization problem. Existing methods typically assume that the operational constraint model is fully specified in advance. In practice, however, constraints governing separation between observations, power budgets, and thermal limits are often embedded in engineering artefacts or high-fidelity simulators rather than in explicit mathematical models. We study EO scheduling under \emph{unknown constraints}: the objective is known, but feasibility must be learned interactively from a binary oracle. Working with a simplified model restricted to pairwise separation and global capacity constraints, we introduce Conservative Constraint Acquisition~(CCA), a domain-specific procedure designed to identify justified constraints efficiently in practice while limiting unnecessary tightening of the learned model. Embedded in the \textsc{Learn\&amp;Optimize} framework, CCA supports an interactive search process that alternates optimization under a learned constraint model with targeted oracle queries. On synthetic instances with up to 50~tasks and dense constraint networks, L\&amp;O improves over a no-knowledge greedy baseline and uses far fewer main oracle queries than a two-phase acquire-then-solve baseline (FAO). For $n\leq 30$, the average gap drops from 65--68\% (Priority Greedy) to 17.7--35.8\% using L\&amp;O. At $n{=}50$, where the CP-SAT reference is the best feasible solution found in 120~s, L\&amp;O improves on FAO on average (17.9\% vs.\ 20.3\%) while using 21.3 main queries instead of 100 and about $5\times$ less execution time.</summary>
-    <content type="html">&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Method&lt;/p&gt;</content>
-    <category term="Artificial Intelligence" />
-    <category term="Machine Learning" />
   </entry>
 </feed>

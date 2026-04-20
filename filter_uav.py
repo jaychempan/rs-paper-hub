@@ -96,7 +96,7 @@ def main():
     columns = [
         "Category", "Type", "Subtype", "Date", "Month", "Year", "Institute",
         "Title", "abbr.", "Paper_link", "Abstract",
-        "code", "Publication", "BibTex", "Authors", "_tasks",
+        "code", "Publication", "BibTex", "Authors", "_tasks", "_added_date",
     ]
 
     uav_papers = [{k: v for k, v in p.items() if k in columns} for p in matched]

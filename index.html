@@ -1225,7 +1225,7 @@ function renderStats(papers) {
   `;
   // Compute new paper count from arXiv announcement schedule
   const ranges = getArxivDateRanges();
-  const newCount = allPapers.filter(p => p.Date >= ranges.todayFrom && p.Date <= ranges.todayTo).length;
+  const newCount = allPapers.filter(p => ranges.todayFrom && (p._added_date || '') >= ranges.todayFrom && (p._added_date || '') <= ranges.todayTo).length;
   const badge = document.getElementById('newBadge');
   if (badge) {
     badge.style.cssText = `font-size:12px;color:${newCount > 0 ? '#10b981' : '#94a3b8'};font-weight:500;margin-left:4px`;
@@ -1255,24 +1255,30 @@ function applyFilters() {
   const catSet = chartSel.category.size > 0 ? chartSel.category : null;
   const taskSet = chartSel.task.size > 0 ? chartSel.task : null;
 
-  // Quick date filter dates (aligned with arXiv announcement schedule)
+  // Quick date filter (uses _added_date for today/week)
   let qfDateFrom = '';
   let qfDateTo = '';
+  let qfUseAdded = false;
   if (quickDateFilter === 'today') {
     const ranges = getArxivDateRanges();
     qfDateFrom = ranges.todayFrom;
     qfDateTo = ranges.todayTo;
+    qfUseAdded = true;
   } else if (quickDateFilter === 'week') {
     const ranges = getArxivDateRanges();
     qfDateFrom = ranges.weekFrom;
+    qfUseAdded = true;
   }
 
   filtered = allPapers.filter(p => {
     // Group filter
     if (groupFilter && !groupFilter.has(p.Paper_link.replace(/v\d+$/, ''))) return false;
-    // Quick date filter
-    if (qfDateFrom && (!p.Date || p.Date < qfDateFrom)) return false;
-    if (qfDateTo && p.Date > qfDateTo) return false;
+    // Quick date filter (by _added_date)
+    if (qfUseAdded) {
+      const ad = p._added_date || '';
+      if (qfDateFrom && ad < qfDateFrom) return false;
+      if (qfDateTo && ad > qfDateTo) return false;
+    }
     // Exact date from tag click
     if (tagDateFilter && (p.Date || (p.Year + '-' + String(p.Month).padStart(2,'0'))) !== tagDateFilter) return false;
     // Type filter
@@ -1914,44 +1920,30 @@ function toggleSearchMode() {
  * "This week" starts from Fri of the previous week (Mon announcement).
  */
 function getArxivDateRanges() {
-  const now = new Date();
-  const hour = now.getHours();
-  const ref = new Date(now);
-
-  // Before 8 AM Beijing: latest announcement hasn't arrived yet, use previous day
-  if (hour < 8) ref.setDate(ref.getDate() - 1);
-
-  let wd = ref.getDay(); // 0=Sun...6=Sat
-  // No announcements on weekends; roll back to Friday
-  if (wd === 0) { ref.setDate(ref.getDate() - 2); wd = 5; }
-  if (wd === 6) { ref.setDate(ref.getDate() - 1); wd = 5; }
-
-  // ref is now the effective announcement day (Mon=1 ... Fri=5)
-  // Map to paper-date offsets relative to ref
-  let startOff, endOff;
-  if (wd === 1) {       // Mon: Fri papers only
-    startOff = -3; endOff = -3;
-  } else if (wd === 2) { // Tue: Sat-Mon papers (weekend batch)
-    startOff = -3; endOff = -1;
-  } else {               // Wed/Thu/Fri: previous day only
-    startOff = -1; endOff = -1;
+  // Helper: format Date as YYYY-MM-DD in Beijing time
+  function toBJDate(d) {
+    const y = d.getFullYear(), m = d.getMonth() + 1, day = d.getDate();
+    return `${y}-${String(m).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
   }
 
-  const todayFrom = new Date(ref);
-  todayFrom.setDate(todayFrom.getDate() + startOff);
-  const todayTo = new Date(ref);
-  todayTo.setDate(todayTo.getDate() + endOff);
+  // "Today" = papers whose _added_date equals today (Beijing time)
+  const today = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Shanghai' }));
+  const todayStr = toBJDate(today);
 
-  // "This week" starts from Monday announcement's papers (last Friday)
-  const monday = new Date(ref);
-  monday.setDate(monday.getDate() - (wd - 1)); // go to Monday of this announcement week
-  const weekFrom = new Date(monday);
-  weekFrom.setDate(weekFrom.getDate() - 3); // Monday - 3 = last Friday
+  const addedToday = allPapers.filter(p => (p._added_date || '') === todayStr);
+  const todayDate = addedToday.length > 0 ? todayStr : '';
+
+  // "This Week" = from Monday of the current natural week (Beijing time)
+  const wd = today.getDay(); // 0=Sun, 1=Mon...
+  const mon = new Date(today);
+  mon.setDate(mon.getDate() - (wd === 0 ? 6 : wd - 1));
+  const weekFrom = toBJDate(mon);
 
   return {
-    todayFrom: todayFrom.toISOString().slice(0, 10),
-    todayTo:   todayTo.toISOString().slice(0, 10),
-    weekFrom:  weekFrom.toISOString().slice(0, 10),
+    todayFrom: todayDate,
+    todayTo:   todayDate,
+    weekFrom:  weekFrom,
+    useAddedDate: true,
   };
 }
 
@@ -1964,8 +1956,8 @@ function toggleQuickFilter(mode) {
 
 function updateQuickFilterCounts() {
   const ranges = getArxivDateRanges();
-  const todayCount = allPapers.filter(p => p.Date >= ranges.todayFrom && p.Date <= ranges.todayTo).length;
-  const weekCount = allPapers.filter(p => p.Date >= ranges.weekFrom).length;
+  const todayCount = allPapers.filter(p => ranges.todayFrom && (p._added_date || '') >= ranges.todayFrom && (p._added_date || '') <= ranges.todayTo).length;
+  const weekCount = allPapers.filter(p => (p._added_date || '') >= ranges.weekFrom).length;
   const todayBadge = document.getElementById('qfTodayCount');
   const weekBadge = document.getElementById('qfWeekCount');
   todayBadge.textContent = todayCount;
@@ -2004,15 +1996,15 @@ function renderRecentList() {
 
   let papers;
   if (recentTab === 'daily') {
-    papers = allPapers.filter(p => p.Date >= ranges.todayFrom && p.Date <= ranges.todayTo);
+    papers = allPapers.filter(p => ranges.todayFrom && (p._added_date || '') >= ranges.todayFrom && (p._added_date || '') <= ranges.todayTo);
   } else {
-    papers = allPapers.filter(p => p.Date >= ranges.weekFrom);
+    papers = allPapers.filter(p => (p._added_date || '') >= ranges.weekFrom);
   }
   papers.sort((a, b) => (b.Date || '').localeCompare(a.Date || ''));
 
   // Update toggle badge
   const toggle = document.getElementById('recentToggle');
-  const dailyCount = allPapers.filter(p => p.Date >= ranges.todayFrom && p.Date <= ranges.todayTo).length;
+  const dailyCount = allPapers.filter(p => ranges.todayFrom && (p._added_date || '') >= ranges.todayFrom && (p._added_date || '') <= ranges.todayTo).length;
   toggle.textContent = dailyCount > 0 ? `NEW +${dailyCount}` : t('newPapers');
 
   if (papers.length === 0) {

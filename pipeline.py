@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 ALL_COLUMNS = [
     "Category", "Type", "Subtype", "Date", "Month", "Year", "Institute",
     "Title", "abbr.", "Paper_link", "Abstract",
-    "code", "Publication", "BibTex", "Authors", "_tasks",
+    "code", "Publication", "BibTex", "Authors", "_tasks", "_added_date",
 ]
 
 VLM_COLUMNS = ["Category"] + ALL_COLUMNS
@@ -71,6 +71,16 @@ def run(input_path: str, output_dir: str):
     papers = list(seen.values())
     if len(papers) < before:
         logger.info(f"  Deduplicated: {before} -> {len(papers)} ({before - len(papers)} duplicates removed)")
+
+    # ── Stamp _added_date for new papers ─────────────────
+    from datetime import date
+    today_str = date.today().isoformat()
+    new_count = sum(1 for p in papers if not p.get("_added_date"))
+    for p in papers:
+        if not p.get("_added_date"):
+            p["_added_date"] = today_str
+    if new_count:
+        logger.info(f"  Stamped _added_date={today_str} on {new_count} new papers")
 
     # ── Step 1: Clean abstracts → fill code field (incremental) ──
     need_code = [p for p in papers if not p.get("code") or str(p["code"]) in ("", "nan")]
