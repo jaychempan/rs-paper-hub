@@ -365,7 +365,7 @@
 
 <section id="cli">
 <h2 data-i18n="cli">CLI Reference</h2>
-<p>Run the pipeline using Python:</p>
+<p data-i18n="cliIntro">Run the pipeline using Python:</p>
 
 <pre><code>python main.py [--category CAT] [--max-results N] [--output DIR]</code></pre>
 
@@ -400,7 +400,7 @@ python main.py --verbose</code></pre>
 
 <section id="schema">
 <h2 data-i18n="schema">Output Schema</h2>
-<p>Each paper entry in the JSON output contains the following fields:</p>
+<p data-i18n="schemaIntro">Each paper entry in the JSON output contains the following fields:</p>
 
 <div class="table-wrap">
 <table>
@@ -428,7 +428,7 @@ python main.py --verbose</code></pre>
 
 <section id="task-tags">
 <h2 data-i18n="taskTags">Task Tags</h2>
-<p>Papers are automatically tagged with one or more of the following 11 task types:</p>
+<p data-i18n="taskTagsIntro">Papers are automatically tagged with one or more of the following 11 task types:</p>
 
 <div class="table-wrap">
 <table>
@@ -490,7 +490,11 @@ const LANG = {
     pipelineIntro: 'The data processing pipeline consists of 9 steps:',
     step1: 'Fetch arXiv', step2: 'Filter RS', step3: 'Extract Metadata', step4: 'VLM Detection', step5: 'Agent Detection', step6: 'Task Tagging', step7: 'Classification', step8: 'Generate Feeds', step9: 'Deploy',
     step1Desc: 'Query the arXiv API for recent submissions in relevant categories', step2Desc: 'Apply keyword-based filtering to identify remote sensing papers', step3Desc: 'Parse paper titles, abstracts, authors, and dates', step4Desc: 'Use regex patterns to identify vision-language model related papers', step5Desc: 'Identify AI agent related papers in remote sensing', step6Desc: 'Classify papers into 11 task categories based on content', step7Desc: 'Categorize as Method, Survey, or Dataset', step8Desc: 'Create RSS feeds and JSON outputs', step9Desc: 'Update the website with new data',
-    cli1Title: 'Arguments', cli2Title: 'Examples', footer: 'RS Paper Hub - A curated collection of remote sensing papers from arXiv',
+    cliIntro: 'Run the pipeline using Python:',
+    cli1Title: 'Arguments', cli2Title: 'Examples',
+    schemaIntro: 'Each paper entry in the JSON output contains the following fields:',
+    taskTagsIntro: 'Papers are automatically tagged with one or more of the following 11 task types:',
+    footer: 'RS Paper Hub - A curated collection of remote sensing papers from arXiv',
   },
   zh: {
     home: '首页', github: 'GitHub', issues: '问题反馈', docs: '文档', contact: '联系我们',
@@ -520,7 +524,11 @@ const LANG = {
     pipelineIntro: '数据处理流程包含 9 个步骤：',
     step1: '获取 arXiv', step2: '筛选遥感', step3: '提取元数据', step4: 'VLM 检测', step5: 'Agent 检测', step6: '任务标记', step7: '分类', step8: '生成订阅源', step9: '部署',
     step1Desc: '查询 arXiv API 获取相关类别的最新提交', step2Desc: '使用关键词筛选识别遥感论文', step3Desc: '解析论文标题、摘要、作者和日期', step4Desc: '使用正则表达式识别视觉语言模型相关论文', step5Desc: '识别遥感中的 AI Agent 相关论文', step6Desc: '根据内容将论文分为 11 个任务类别', step7Desc: '分类为方法、综述或数据集', step8Desc: '创建 RSS 订阅源和 JSON 输出', step9Desc: '更新网站数据',
-    cli1Title: '参数', cli2Title: '示例', footer: '遥感论文社 - 来自 arXiv 的遥感论文精选合集',
+    cliIntro: '使用 Python 运行处理流程：',
+    cli1Title: '参数', cli2Title: '示例',
+    schemaIntro: 'JSON 输出中每篇论文包含以下字段：',
+    taskTagsIntro: '论文会自动标记以下 11 种任务类型中的一种或多种：',
+    footer: '遥感论文社 - 来自 arXiv 的遥感论文精选合集',
   }
 };
 
