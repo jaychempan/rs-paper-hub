@@ -24,7 +24,7 @@
   ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 3px; }
   ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.25); }
   html { scrollbar-width: thin; scrollbar-color: rgba(0,0,0,0.15) transparent; }
-  html, body { overflow-x: hidden; }
+  body { overflow-x: clip; }
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
 
   /* Header */
@@ -71,9 +71,12 @@
 
   /* Sidebar */
   .sidebar {
-    width: 260px; flex-shrink: 0; position: sticky; top: 0;
+    width: 260px; flex-shrink: 0;
     background: var(--card); border-right: 1px solid var(--border);
-    padding: 20px 0; height: calc(100vh - 120px); overflow-y: auto;
+    padding: 20px 0;
+  }
+  .sidebar-inner {
+    position: sticky; top: 0; max-height: 100vh; overflow-y: auto; padding: 0;
   }
   .sidebar-section { margin-bottom: 8px; }
   .sidebar-title {
@@ -210,6 +213,7 @@
 
 <div class="docs-container">
 <aside class="sidebar">
+<div class="sidebar-inner">
   <div class="sidebar-section">
     <div class="sidebar-title" data-i18n="gettingStarted">Getting Started</div>
     <ul class="sidebar-nav">
@@ -226,8 +230,10 @@
       <li><a href="#cli"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg><span data-i18n="cli">CLI Reference</span></a></li>
       <li><a href="#schema"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span data-i18n="schema">Output Schema</span></a></li>
       <li><a href="#task-tags"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span data-i18n="taskTags">Task Tags</span></a></li>
+      <li><a href="#submit-group"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span data-i18n="submitGroup">Submit Group</span></a></li>
     </ul>
   </div>
+</div>
 </aside>
 
 <main class="content">
@@ -459,6 +465,39 @@ python main.py --verbose</code></pre>
 </div>
 </section>
 
+<section id="submit-group">
+<h2 data-i18n="submitGroup">Submit Group</h2>
+<p data-i18n="submitGroupIntro">You can create a custom paper group to curate and share a reading list with the community. Groups appear in the "All Groups" dropdown on the main page.</p>
+
+<h3 data-i18n="sgStep1Title">1. Prepare your paper list</h3>
+<p data-i18n="sgStep1Desc">Create a JSON file containing an array of arXiv paper links. You can use the "Export Group" button in the Export dialog (By author). Or create it manually — each link should be a full arXiv abstract URL:</p>
+<div class="code-block"><pre><code>[
+  "http://arxiv.org/abs/2401.12345v1",
+  "http://arxiv.org/abs/2401.67890v2"
+]</code></pre></div>
+
+<h3 data-i18n="sgStep2Title">2. Register your group</h3>
+<p data-i18n="sgStep2Desc">Add an entry to <code>groups/index.json</code> with your group's meta</p>
+<div class="code-block"><pre><code>[
+  {
+    "key": "my-group",
+    "label": "My Research Group",
+    "label_zh": "我的研究组",
+    "file": "my-group.json"
+  }
+]</code></pre></div>
+<table>
+  <tr><th data-i18n="sgFieldName">Field</th><th data-i18n="sgFieldDesc">Description</th></tr>
+  <tr><td><code>key</code></td><td data-i18n="sgKeyDesc">Unique identifier for your group (use lowercase and hyphens)</td></tr>
+  <tr><td><code>label</code></td><td data-i18n="sgLabelDesc">Display name in English</td></tr>
+  <tr><td><code>label_zh</code></td><td data-i18n="sgLabelZhDesc">Display name in Chinese (optional)</td></tr>
+  <tr><td><code>file</code></td><td data-i18n="sgFileDesc">Filename of your paper list JSON (placed in the <code>groups/</code> directory)</td></tr>
+</table>
+
+<h3 data-i18n="sgStep3Title">3. Submit a Pull Request</h3>
+<p data-i18n="sgStep3Desc">Fork the repository, add your JSON file to the <code>groups/</code> directory, update <code>groups/index.json</code>, and submit a Pull Request. Once merged, your group will appear in the dropdown for all users.</p>
+</section>
+
 </main>
 </div>
 
@@ -478,7 +517,7 @@ const LANG = {
     rssAll: 'All Papers', rssVlm: 'VLM Papers', rssAgent: 'Agent Papers',
     gettingStarted: 'Getting Started', technical: 'Technical',
     overview: 'Overview', features: 'Features', webViewer: 'Web Viewer Guide', rssZotero: 'RSS & Zotero',
-    pipeline: 'Pipeline', cli: 'CLI Reference', schema: 'Output Schema', taskTags: 'Task Tags',
+    pipeline: 'Pipeline', cli: 'CLI Reference', schema: 'Output Schema', taskTags: 'Task Tags', submitGroup: 'Submit Group',
     siteTitle: 'RS Paper Hub', siteSubtitle: 'A curated collection of remote sensing papers from arXiv',
     overviewDesc1: 'RS Paper Hub is an automated system that collects, filters, and categorizes remote sensing papers from arXiv. It helps researchers stay updated with the latest developments in remote sensing, vision-language models, and AI agents.',
     overviewDesc2: 'The project provides multiple ways to access papers: a web interface, RSS feeds, and direct JSON downloads. All papers are automatically tagged with categories, tasks, and VLM-related keywords.',
@@ -507,6 +546,12 @@ const LANG = {
     cli1Title: 'Arguments', cli2Title: 'Examples',
     schemaIntro: 'Each paper entry in the JSON output contains the following fields:',
     taskTagsIntro: 'Papers are automatically tagged with one or more of the following 11 task types:',
+    submitGroupIntro: 'You can create a custom paper group to curate and share a reading list with the community. Groups appear in the "All Groups" dropdown on the main page.',
+    sgStep1Title: '1. Prepare your paper list', sgStep1Desc: 'Create a JSON file containing an array of arXiv paper links. You can use the "Export Group" button in the Export dialog on the home page to generate this file directly. Or create it manually — each link should be a full arXiv abstract URL:',
+    sgStep2Title: '2. Register your group', sgStep2Desc: 'Add an entry to groups/index.json with your group\'s metadata:',
+    sgFieldName: 'Field', sgFieldDesc: 'Description',
+    sgKeyDesc: 'Unique identifier for your group (use lowercase and hyphens)', sgLabelDesc: 'Display name in English', sgLabelZhDesc: 'Display name in Chinese (optional)', sgFileDesc: 'Filename of your paper list JSON (placed in the groups/ directory)',
+    sgStep3Title: '3. Submit a Pull Request', sgStep3Desc: 'Fork the repository, add your JSON file to the groups/ directory, update groups/index.json, and submit a Pull Request. Once merged, your group will appear in the dropdown for all users.',
     footer: 'RS Paper Hub - A curated collection of remote sensing papers from arXiv',
   },
   zh: {
@@ -514,7 +559,7 @@ const LANG = {
     rssAll: '全部论文', rssVlm: 'VLM 论文', rssAgent: 'Agent 论文',
     gettingStarted: '入门', technical: '技术文档',
     overview: '项目简介', features: '核心功能', webViewer: '网页使用指南', rssZotero: 'RSS 与 Zotero',
-    pipeline: '处理流程', cli: '命令行参考', schema: '输出格式', taskTags: '任务标签',
+    pipeline: '处理流程', cli: '命令行参考', schema: '输出格式', taskTags: '任务标签', submitGroup: '提交研究组',
     siteTitle: '遥感论文社', siteSubtitle: '来自 arXiv 的遥感论文精选合集',
     overviewDesc1: 'RS Paper Hub 是一个自动化系统，从 arXiv 收集、筛选和整理遥感论文。帮助研究人员及时了解遥感、视觉语言模型和 AI Agent 领域的最新进展。',
     overviewDesc2: '该项目提供多种访问论文的方式：网页界面、RSS 订阅和直接下载 JSON。所有论文都会自动标记类别、任务和 VLM 相关关键词。',
@@ -543,6 +588,12 @@ const LANG = {
     cli1Title: '参数', cli2Title: '示例',
     schemaIntro: 'JSON 输出中每篇论文包含以下字段：',
     taskTagsIntro: '论文会自动标记以下 11 种任务类型中的一种或多种：',
+    submitGroupIntro: '您可以创建自定义论文组，整理并与社区分享阅读列表。创建的论文组会显示在主页的"所有研究组"下拉菜单中。',
+    sgStep1Title: '1. 准备论文列表', sgStep1Desc: '创建一个 JSON 文件，包含 arXiv 论文链接数组。您可以在主页的导出对话框中使用"导出研究组"按钮直接生成此文件（如按照作者名称），也可以手动创建——每个链接为完整的 arXiv 摘要 URL：',
+    sgStep2Title: '2. 注册您的研究组', sgStep2Desc: '在 groups/index.json 中添加您的研究组信息：',
+    sgFieldName: '字段', sgFieldDesc: '说明',
+    sgKeyDesc: '研究组唯一标识（使用小写字母和连字符）', sgLabelDesc: '英文显示名称', sgLabelZhDesc: '中文显示名称（可选）', sgFileDesc: '论文列表 JSON 文件名（放在 groups/ 目录下）',
+    sgStep3Title: '3. 提交 Pull Request', sgStep3Desc: 'Fork 本仓库，将 JSON 文件添加到 groups/ 目录，更新 groups/index.json，然后提交 Pull Request。合并后，您的研究组将显示在下拉菜单中供所有用户使用。',
     footer: '遥感论文社 - 来自 arXiv 的遥感论文精选合集',
   }
 };
@@ -572,12 +623,9 @@ function toggleLang() {
   applyLang();
 }
 
-// Sidebar active state & smooth scroll
+// Sidebar: close mobile sidebar on link click
 document.querySelectorAll('.sidebar-nav a').forEach(link => {
   link.addEventListener('click', function(e) {
-    document.querySelectorAll('.sidebar-nav a').forEach(l => l.classList.remove('active'));
-    this.classList.add('active');
-    // Close mobile sidebar
     document.querySelector('.sidebar').classList.remove('open');
     document.querySelector('.sidebar-overlay').classList.remove('show');
   });
@@ -591,10 +639,23 @@ if (location.hash) {
   }
 }
 
-// Back to top button
+// Scroll spy: highlight current section in sidebar
+const spySections = document.querySelectorAll('main section[id]');
+const spyLinks = document.querySelectorAll('.sidebar-nav a');
+function updateScrollSpy() {
+  let current = '';
+  spySections.forEach(sec => {
+    if (sec.getBoundingClientRect().top <= 80) current = sec.id;
+  });
+  spyLinks.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+}
 window.addEventListener('scroll', () => {
+  updateScrollSpy();
   document.getElementById('backTop').classList.toggle('show', window.scrollY > 300);
 });
+updateScrollSpy();
 
 // Close RSS dropdown when clicking outside
 document.addEventListener('click', function(e) {

@@ -275,7 +275,8 @@
     background-repeat: no-repeat; background-position: right 10px center;
   }
   #yearFilter, #yearFromFilter, #yearToFilter { border-color: #fcd34d; color: #92400e; background-color: #fffbeb; }
-  #typeFilter { border-color: #a5b4fc; color: #4f46e5; background-color: #eef2ff; }
+  #typeFilter { border-color: #a5b4fc; color: #4f46e5; background-color: #eef2ff; max-width: 160px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
+  #groupFilter { max-width: 160px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
   #categoryFilter { border-color: #93c5fd; color: #1e40af; background-color: #eff6ff; }
   #monthFilter { border-color: #fcd34d; color: #92400e; background-color: #fffbeb; }
   #vlmFilter, #vlmKeywordFilter { border-color: #f9a8d4; color: #9d174d; background-color: #fdf2f8; }
@@ -607,6 +608,7 @@
     </select>
     <select id="vlmKeywordFilter" style="display:none;max-width:180px;"></select>
     <select id="taskFilter" style="display:none;"></select>
+    <select id="groupFilter" style="display:none;"><option value="">All Groups</option></select>
     <div class="sort-group">
       <button class="sort-btn active" data-sort="newest">New</button>
       <button class="sort-btn" data-sort="oldest">Old</button>
@@ -714,7 +716,13 @@
       <input type="checkbox" id="exportAbstract" style="width:16px;height:16px;cursor:pointer;">
       <span id="exportLabelAbstract">Include abstracts</span>
     </label>
-    <button class="copy-btn" onclick="doExport()" style="width:100%;">Download .bib</button>
+    <div style="display:flex;gap:8px;">
+      <button class="copy-btn" onclick="doExport()" style="flex:1;" id="exportBibBtn">Download .bib</button>
+      <button class="copy-btn" onclick="doExportGroup()" style="flex:1;background:#7c3aed;" id="exportGroupBtn">Export Group</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+      <input type="text" id="exportGroupName" placeholder="Group name" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;outline:none;">
+    </div>
   </div>
 </div>
 
@@ -726,7 +734,7 @@ const LANG = {
   en: {
     siteTitle: 'RS Paper Hub',
     siteSubtitle: 'A curated collection of remote sensing papers from arXiv',
-    github: 'GitHub', issues: 'Issues', docs: 'Docs', contact: 'Contact',
+    github: 'GitHub', issues: 'Issues', docs: 'Docs', contact: 'Contact', groups: 'Groups', showAll: 'Show All', allGroups: 'All Groups', submitGroup: 'Submit Group',
     statPapers: 'Papers', statTypes: 'Types', statYears: 'Years', statWithCode: 'With Code',
     noteDisclaimer: 'Note: arXiv papers have a 2–3 day publication-to-announcement delay; category/task labels are rule-based and may be imprecise — we are continuously improving them.',
     today: 'Today', thisWeek: 'This Week',
@@ -735,7 +743,7 @@ const LANG = {
     searchFuzzyPlaceholder: 'Search title, author, abstract (split-word fuzzy)...',
     exact: 'Exact', fuzzy: 'Fuzzy',
     collection: 'Collection', export_: 'Export', filters: 'Filters',
-    allTypes: 'All Types', allYears: 'All Years', customRange: 'Custom Range...',
+    allTypes: 'All Types', allYears: 'All Years', customRange: 'Range',
     allMonths: 'All Months',
     monthNames: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
     allCategories: 'All Categories', allVLM: 'All VLM', vlmOnly: 'VLM Only', nonVLM: 'Non-VLM',
@@ -759,7 +767,7 @@ const LANG = {
     exportPage: 'Export current page only',
     exportRange: 'Export range:',
     includeAbstracts: 'Include abstracts',
-    downloadBib: 'Download .bib',
+    downloadBib: 'Download .bib', exportGroup: 'Export Group', groupNamePlaceholder: 'Group name',
     ds_all: 'All Papers', ds_vlm: 'Vision-Language Model', ds_agent: 'Agent',
     noBibtex: 'No BibTeX available',
     scholar: 'Scholar',
@@ -770,7 +778,7 @@ const LANG = {
   zh: {
     siteTitle: '遥感论文社',
     siteSubtitle: '来自 arXiv 的遥感论文精选合集',
-    github: 'GitHub', issues: '问题反馈', docs: '文档', contact: '联系我们',
+    github: 'GitHub', issues: '问题反馈', docs: '文档', contact: '联系我们', groups: '研究组', showAll: '显示全部', allGroups: '所有研究组', submitGroup: '提交研究组',
     statPapers: '论文总数', statTypes: '类型', statYears: '年份', statWithCode: '含代码',
     noteDisclaimer: '注意：arXiv 论文发布与公告存在 2–3 天延迟；类别/任务标签基于规则，可能不完全准确，我们正在持续优化。',
     today: '今日', thisWeek: '本周',
@@ -779,7 +787,7 @@ const LANG = {
     searchFuzzyPlaceholder: '搜索标题、作者、摘要（分词模糊）...',
     exact: '精确', fuzzy: '模糊',
     collection: '收藏夹', export_: '导出', filters: '筛选',
-    allTypes: '所有类型', allYears: '所有年份', customRange: '自定义范围...',
+    allTypes: '所有类型', allYears: '所有年份', customRange: '范围',
     allMonths: '所有月份',
     monthNames: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
     allCategories: '所有类别', allVLM: '所有 VLM', vlmOnly: '仅 VLM', nonVLM: '非 VLM',
@@ -803,7 +811,7 @@ const LANG = {
     exportPage: '仅导出当前页',
     exportRange: '导出范围：',
     includeAbstracts: '包含摘要',
-    downloadBib: '下载 .bib',
+    downloadBib: '下载 .bib', exportGroup: '导出研究组', groupNamePlaceholder: '研究组名称',
     ds_all: '全部论文', ds_vlm: '视觉语言模型', ds_agent: 'Agent',
     noBibtex: '暂无引用信息',
     scholar: '谷歌学术',
@@ -926,7 +934,9 @@ function applyLang() {
   document.getElementById('exportLabelPage').textContent = t('exportPage');
   document.getElementById('exportLabelRange').textContent = t('exportRange');
   document.getElementById('exportLabelAbstract').textContent = t('includeAbstracts');
-  document.querySelector('#exportModal .copy-btn').textContent = t('downloadBib');
+  document.getElementById('exportBibBtn').textContent = t('downloadBib');
+  document.getElementById('exportGroupBtn').textContent = t('exportGroup');
+  document.getElementById('exportGroupName').placeholder = t('groupNamePlaceholder');
   const exportAvailLabel = document.getElementById('exportAvailLabel');
   if (exportAvailLabel) exportAvailLabel.textContent = t('filteredAvail');
   // Data source tabs
@@ -943,6 +953,7 @@ function applyLang() {
     if (chartsVisible) renderCharts();
     renderRecentList();
   }
+  renderGroupSelect();
 }
 
 function toggleLang() {
@@ -976,6 +987,9 @@ let chartsVisible = false;
 let codeOnly = false;
 let quickDateFilter = ''; // '', 'today', 'week'
 let tagDateFilter = ''; // exact date like '2026-04-17' from tag click
+let groupFilter = null; // Set of Paper_links or null
+let groupLabel = '';
+let groupList = []; // loaded from groups/index.json
 let collection = new Map(); // Paper_link -> paper object
 let collectionView = false;
 let fuzzySearch = false;
@@ -1022,6 +1036,9 @@ async function loadData(file) {
   document.getElementById('yearRangeGroup').style.display = 'none';
   chartSel.year.clear(); chartSel.type.clear(); chartSel.category.clear(); chartSel.task.clear();
   quickDateFilter = ''; tagDateFilter = ''; for (const k in activeTags) delete activeTags[k];
+  groupFilter = null; groupLabel = '';
+  const grpSel = document.getElementById('groupFilter'); if (grpSel) grpSel.value = '';
+  updateGroupUI();
   document.getElementById('qfToday').classList.remove('active');
   document.getElementById('qfWeek').classList.remove('active');
   document.getElementById('searchInput').value = '';
@@ -1067,6 +1084,7 @@ async function loadData(file) {
 
 async function init() {
   initDataSourceSelect();
+  initGroups();
   const activeBtn = document.querySelector('#dataSource button.active');
   const ds = DATA_SOURCES.find(d => d.key === (activeBtn ? activeBtn.dataset.key : 'all')) || DATA_SOURCES[0];
   await loadData(ds.file);
@@ -1194,6 +1212,8 @@ function applyFilters() {
   }
 
   filtered = allPapers.filter(p => {
+    // Group filter
+    if (groupFilter && !groupFilter.has(p.Paper_link.replace(/v\d+$/, ''))) return false;
     // Quick date filter
     if (qfDateFrom && (!p.Date || p.Date < qfDateFrom)) return false;
     if (qfDateTo && p.Date > qfDateTo) return false;
@@ -1585,21 +1605,7 @@ function closeExportDialog() {
 
 function doExport() {
   const withAbstract = document.getElementById('exportAbstract').checked;
-  const scope = document.querySelector('input[name="exportScope"]:checked').value;
-
-  let papers;
-  if (scope === 'collection') {
-    papers = [...collection.values()];
-  } else if (scope === 'page') {
-    const start = (currentPage - 1) * PER_PAGE;
-    papers = filtered.slice(start, start + PER_PAGE);
-  } else if (scope === 'range') {
-    const from = Math.max(1, parseInt(document.getElementById('exportFrom').value) || 1);
-    const to = Math.min(filtered.length, parseInt(document.getElementById('exportTo').value) || filtered.length);
-    papers = filtered.slice(from - 1, to);
-  } else {
-    papers = filtered;
-  }
+  const papers = getExportPapers();
 
   const bibtex = papers.map(p => {
     // Use existing BibTeX if available
@@ -1637,6 +1643,33 @@ function doExport() {
   const now = new Date();
   const ts = now.getFullYear() + String(now.getMonth()+1).padStart(2,'0') + String(now.getDate()).padStart(2,'0') + '_' + String(now.getHours()).padStart(2,'0') + String(now.getMinutes()).padStart(2,'0') + String(now.getSeconds()).padStart(2,'0');
   a.download = 'rs_papers_export_' + ts + '.bib';
+  a.click();
+  URL.revokeObjectURL(url);
+  closeExportDialog();
+}
+
+function getExportPapers() {
+  const scope = document.querySelector('input[name="exportScope"]:checked').value;
+  if (scope === 'collection') return [...collection.values()];
+  if (scope === 'page') { const s = (currentPage - 1) * PER_PAGE; return filtered.slice(s, s + PER_PAGE); }
+  if (scope === 'range') {
+    const from = Math.max(1, parseInt(document.getElementById('exportFrom').value) || 1);
+    const to = Math.min(filtered.length, parseInt(document.getElementById('exportTo').value) || filtered.length);
+    return filtered.slice(from - 1, to);
+  }
+  return filtered;
+}
+
+function doExportGroup() {
+  const papers = getExportPapers();
+  const links = papers.map(p => p.Paper_link).filter(Boolean);
+  const json = JSON.stringify(links, null, 2);
+  const name = (document.getElementById('exportGroupName').value.trim() || 'my-group').replace(/[^a-zA-Z0-9_\u4e00-\u9fff-]/g, '-');
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = name + '.json';
   a.click();
   URL.revokeObjectURL(url);
   closeExportDialog();
@@ -1736,6 +1769,7 @@ document.getElementById('vlmFilter').addEventListener('change', applyFilters);
 document.getElementById('vlmKeywordFilter').addEventListener('change', applyFilters);
 document.getElementById('taskFilter').addEventListener('change', () => { if (!_chartDriven) chartSel.task.clear(); applyFilters(); });
 document.getElementById('categoryFilter').addEventListener('change', () => { if (!_chartDriven) chartSel.category.clear(); applyFilters(); });
+document.getElementById('groupFilter').addEventListener('change', onGroupChange);
 document.querySelectorAll('.sort-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
@@ -1944,6 +1978,61 @@ document.addEventListener('click', function(e) {
   var dd = document.querySelector('.rss-dropdown');
   if (dd && !dd.contains(e.target)) dd.classList.remove('open');
 });
+
+// Group feature
+async function initGroups() {
+  try {
+    const resp = await fetch('./groups/index.json');
+    if (!resp.ok) return;
+    groupList = await resp.json();
+    renderGroupSelect();
+  } catch(e) { /* groups not available */ }
+}
+
+function renderGroupSelect() {
+  const sel = document.getElementById('groupFilter');
+  if (!sel || !groupList.length) { if (sel) sel.style.display = 'none'; return; }
+  sel.style.display = '';
+  sel.innerHTML = `<option value="">${t('allGroups')}</option>`;
+  groupList.forEach(g => {
+    const label = currentLang === 'zh' ? (g.label_zh || g.label) : g.label;
+    const o = document.createElement('option');
+    o.value = g.file;
+    o.textContent = label;
+    if (groupLabel && groupLabel === g.file) o.selected = true;
+    sel.appendChild(o);
+  });
+  const submit = document.createElement('option');
+  submit.value = '__submit__';
+  submit.textContent = '📝 ' + t('submitGroup');
+  sel.appendChild(submit);
+}
+
+async function onGroupChange() {
+  const sel = document.getElementById('groupFilter');
+  const file = sel.value;
+  if (!file) { clearGroupFilter(); return; }
+  if (file === '__submit__') { sel.value = groupLabel || ''; window.open('docs/index.html#submit-group', '_blank'); return; }
+  try {
+    const resp = await fetch('./groups/' + file);
+    if (!resp.ok) { alert('Failed to load ' + file); return; }
+    const links = await resp.json();
+    groupFilter = new Set(links.map(l => l.replace(/v\d+$/, '')));
+    groupLabel = file;
+    updateGroupUI();
+    applyFilters();
+  } catch(e) { alert('Error loading group data'); }
+}
+
+function clearGroupFilter() {
+  groupFilter = null;
+  groupLabel = '';
+  document.getElementById('groupFilter').value = '';
+  updateGroupUI();
+  applyFilters();
+}
+
+function updateGroupUI() {}
 
 init();
 </script>
