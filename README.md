@@ -36,6 +36,7 @@ RS-Paper-Hub automatically scrapes remote sensing and earth observation papers f
 - **Clickable Tag Filtering** — Click any tag (date, type, category, task, VLM, etc.) on a paper card to filter by that value; stack multiple tags for progressive filtering, click again to remove
 - **Paper Collection** — Collect papers across multiple searches into a personal collection, then view or export them together
 - **BibTeX Batch Export** — Export filtered results, current page, custom range, or collection as timestamped `.bib` file with optional abstracts
+- **Group Export** — Export selected papers as a Group JSON file for sharing curated reading lists; submit via PR to make it available to all users
 - **Code Discovery** — Automatically extracts code repository URLs from abstracts
 - **RSS/Atom Feeds** — Auto-generated Atom feeds (All / VLM / Agent) for Zotero subscription, updated daily with the last 7 days of papers
 - **PDF Download** — Batch download with deduplication, organized by year
@@ -246,6 +247,9 @@ rs-paper-hub/
 ├── .github/workflows/
 │   └── daily-update.yml      # Daily CI/CD pipeline (Mon-Fri, synced with arXiv)
 ├── index.html               # Interactive web viewer (3 tabs: All / VLM / Agent)
+├── groups/                  # Paper groups for curated reading lists
+│   ├── index.json           # Group registry (key, label, file)
+│   └── *.json               # Individual group files (arrays of arXiv URLs)
 ├── requirements.txt
 └── output/
     ├── papers.csv/json              # All papers (cleaned + classified + tagged)
@@ -290,6 +294,7 @@ Features include:
 - **Paper classification** — All papers labeled as Method, Dataset, or Survey
 - **Paper collection** — Collect papers across multiple searches, then view or export them together
 - **BibTeX batch export** — Export filtered results, current page, custom range, or collection as timestamped `.bib` file with optional abstracts
+- **Group export & sharing** — Export papers as a Group JSON file with custom name; groups appear in "All Groups" dropdown for quick filtering. Submit your group via PR to share with the community ([learn more](https://rspaper.top/docs/#submit-group))
 - **New papers panel** — Side panel showing today's and this week's papers
 - **Google Scholar links** — One-click search on Google Scholar for each paper
 - **Bilingual UI** — Switch between English and Chinese

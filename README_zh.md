@@ -40,6 +40,7 @@ RS-Paper-Hub 自动从 arXiv 爬取遥感与地球观测领域的论文，提取
 - **标签点击筛选** — 点击论文卡片上的任意标签（日期、类型、类别、任务、VLM 等）即可筛选同类论文；支持多标签叠加筛选，再次点击取消
 - **论文收藏** — 跨搜索收藏论文，统一查看或导出
 - **BibTeX 批量导出** — 导出带时间戳的 `.bib` 文件，可选包含摘要
+- **研究组导出与分享** — 将筛选论文导出为研究组 JSON 文件，自定义命名；通过 PR 提交后可供所有用户使用
 - **RSS/Atom 订阅** — 自动生成 Atom feed（全部 / VLM / Agent），支持 Zotero 订阅，每日更新最近 7 天论文
 - **PDF 下载** — 批量下载，自动去重，按年份归档
 
@@ -255,6 +256,9 @@ rs-paper-hub/
 ├── .github/workflows/
 │   └── daily-update.yml      # 每日 CI/CD 流水线（周一至周五，与 arXiv 同步）
 ├── index.html               # 交互式网页（三标签：全部 / VLM / Agent）
+├── groups/                  # 论文研究组（策展式阅读列表）
+│   ├── index.json           # 研究组注册表（key、label、file）
+│   └── *.json               # 各研究组文件（arXiv 链接数组）
 ├── requirements.txt
 └── output/
     ├── papers.csv/json              # 全部论文（已清洗 + 分类 + 标注）
@@ -308,6 +312,7 @@ python3 -m http.server 8080
 - **论文自动分类** — 所有论文自动标记（Method、Dataset、Survey）
 - **论文收藏** — 跨搜索收藏论文，统一查看或导出
 - **BibTeX 批量导出** — 导出带时间戳的 `.bib` 文件，可选包含摘要
+- **研究组导出与分享** — 将论文导出为研究组 JSON 文件，自定义命名；研究组显示在"所有研究组"下拉菜单中，提交 PR 可与社区共享（[详细教程](https://rspaper.top/docs/#submit-group)）
 - **今日新增标记** — 统计栏显示 `+N` 新增数量
 - **Google Scholar 链接** — 一键搜索 Google Scholar
 - **中英双语** — 支持中英文界面切换
