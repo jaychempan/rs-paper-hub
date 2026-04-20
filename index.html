@@ -387,8 +387,9 @@
   .tag.vlm { background: #fce7f3; color: #9d174d; }
   .tag.vlm-kw { background: #ede9fe; color: #5b21b6; font-size: 11px; }
   .tag.task { background: #fff7ed; color: #c2410c; font-size: 11px; font-weight: 600; }
-  .tag.clickable { cursor: pointer; transition: filter 0.15s; }
+  .tag.clickable { cursor: pointer; transition: filter 0.15s, box-shadow 0.15s; }
   .tag.clickable:hover { filter: brightness(0.88); }
+  .tag.clickable.active { box-shadow: 0 0 0 2px currentColor; filter: brightness(0.92); }
   .field-icon { display: inline; vertical-align: middle; margin-right: 4px; opacity: 0.5; }
   .paper-authors { font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; padding-left: 20px; position: relative; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .paper-authors.expanded { white-space: normal; overflow: visible; text-overflow: unset; }
@@ -974,6 +975,7 @@ let currentPage = 1;
 let chartsVisible = false;
 let codeOnly = false;
 let quickDateFilter = ''; // '', 'today', 'week'
+let tagDateFilter = ''; // exact date like '2026-04-17' from tag click
 let collection = new Map(); // Paper_link -> paper object
 let collectionView = false;
 let fuzzySearch = false;
@@ -1019,7 +1021,7 @@ async function loadData(file) {
   yearSelect.innerHTML = `<option value="">${t('allYears')}</option>`;
   document.getElementById('yearRangeGroup').style.display = 'none';
   chartSel.year.clear(); chartSel.type.clear(); chartSel.category.clear(); chartSel.task.clear();
-  quickDateFilter = '';
+  quickDateFilter = ''; tagDateFilter = '';
   document.getElementById('qfToday').classList.remove('active');
   document.getElementById('qfWeek').classList.remove('active');
   document.getElementById('searchInput').value = '';
@@ -1157,7 +1159,10 @@ function renderStats(papers) {
   }
 }
 
+let _tagDriven = false;
 function applyFilters() {
+  if (!_tagDriven) { tagDateFilter = ''; activeTag.field = ''; activeTag.value = ''; }
+  _tagDriven = false;
   const q = document.getElementById('searchInput').value.toLowerCase().trim();
   const typeDD = document.getElementById('typeFilter').value;
   const yearVal = document.getElementById('yearFilter').value;
@@ -1192,6 +1197,8 @@ function applyFilters() {
     // Quick date filter
     if (qfDateFrom && (!p.Date || p.Date < qfDateFrom)) return false;
     if (qfDateTo && p.Date > qfDateTo) return false;
+    // Exact date from tag click
+    if (tagDateFilter && (p.Date || (p.Year + '-' + String(p.Month).padStart(2,'0'))) !== tagDateFilter) return false;
     // Type filter
     if (typeSet) { if (!typeSet.has(p.Type)) return false; }
     else if (typeDD && p.Type !== typeDD) return false;
@@ -1269,7 +1276,11 @@ function sortCompare(a, b) {
 }
 function applySorting() { filtered.sort(sortCompare); }
 
+const activeTag = { field: '', value: '' };
+
 function filterByTag(field, value) {
+  // Toggle: click same tag again to clear
+  const isToggleOff = (activeTag.field === field && activeTag.value === value);
   // Reset chart selections and quick date filter
   chartSel.year.clear(); chartSel.type.clear(); chartSel.category.clear(); chartSel.task.clear();
   quickDateFilter = '';
@@ -1285,32 +1296,37 @@ function filterByTag(field, value) {
   document.getElementById('vlmKeywordFilter').value = '';
   document.getElementById('categoryFilter').value = '';
   document.getElementById('taskFilter').value = '';
-  // Set the target filter
-  switch (field) {
-    case 'date': {
-      const year = String(value).substring(0, 4);
-      document.getElementById('yearFilter').value = year;
-      break;
+  tagDateFilter = '';
+  _tagDriven = true;
+
+  if (isToggleOff) {
+    activeTag.field = ''; activeTag.value = '';
+  } else {
+    activeTag.field = field; activeTag.value = value;
+    switch (field) {
+      case 'date':
+        tagDateFilter = value;
+        break;
+      case 'type':
+        document.getElementById('typeFilter').value = value;
+        break;
+      case 'subtype':
+        document.getElementById('searchInput').value = value;
+        document.getElementById('searchScope').value = 'all';
+        break;
+      case 'category':
+        document.getElementById('categoryFilter').value = value;
+        break;
+      case 'vlm':
+        document.getElementById('vlmFilter').value = 'true';
+        break;
+      case 'vlmkw':
+        document.getElementById('vlmKeywordFilter').value = value;
+        break;
+      case 'task':
+        document.getElementById('taskFilter').value = value;
+        break;
     }
-    case 'type':
-      document.getElementById('typeFilter').value = value;
-      break;
-    case 'subtype':
-      document.getElementById('searchInput').value = value;
-      document.getElementById('searchScope').value = 'all';
-      break;
-    case 'category':
-      document.getElementById('categoryFilter').value = value;
-      break;
-    case 'vlm':
-      document.getElementById('vlmFilter').value = 'true';
-      break;
-    case 'vlmkw':
-      document.getElementById('vlmKeywordFilter').value = value;
-      break;
-    case 'task':
-      document.getElementById('taskFilter').value = value;
-      break;
   }
   applyFilters();
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1336,18 +1352,20 @@ function render() {
     return;
   }
 
+  const _ta = (f, v) => (activeTag.field === f && activeTag.value === v) ? ' active' : '';
   list.innerHTML = page.map((p, localIdx) => {
     const idx = start + localIdx;
+    const pDate = p.Date || (p.Year + '-' + String(p.Month).padStart(2,'0'));
     const pubTag = p.Publication ? `<span class="tag pub">${escHtml(p.Publication.substring(0, 60))}</span>` : '';
     const codeLink = p.code && p.code.trim() ? `<a href="${escHtml(p.code)}" target="_blank">${ICON.github}${t('code')}</a>` : '';
-    const catTag = p.Category ? `<span class="tag category clickable" onclick="event.stopPropagation(); filterByTag('category','${escHtml(p.Category)}')">${escHtml(p.Category)}</span>` : '';
-    const vlmTag = p._is_vlm ? `<span class="tag vlm clickable" onclick="event.stopPropagation(); filterByTag('vlm','true')">VLM</span>` : '';
+    const catTag = p.Category ? `<span class="tag category clickable${_ta('category',p.Category)}" onclick="event.stopPropagation(); filterByTag('category','${escHtml(p.Category)}')">${escHtml(p.Category)}</span>` : '';
+    const vlmTag = p._is_vlm ? `<span class="tag vlm clickable${_ta('vlm','true')}" onclick="event.stopPropagation(); filterByTag('vlm','true')">VLM</span>` : '';
     const vlmKwTags = (p._vlm_keywords || '').split(';').filter(k => k.trim()).map(k => {
       const raw = k.trim().replace(/'/g, "\\'");
-      return `<span class="tag vlm-kw clickable" onclick="event.stopPropagation(); filterByTag('vlmkw','${raw}')">${escHtml(cleanRegexLabel(k))}</span>`;
+      return `<span class="tag vlm-kw clickable${_ta('vlmkw',k.trim())}" onclick="event.stopPropagation(); filterByTag('vlmkw','${raw}')">${escHtml(cleanRegexLabel(k))}</span>`;
     }).join('');
     const taskTags = (p._tasks || '').split(';').filter(t => t.trim()).map(t => {
-      return `<span class="tag task clickable" onclick="event.stopPropagation(); filterByTag('task','${t}')">${escHtml(TASK_NAMES[t] || t)}</span>`;
+      return `<span class="tag task clickable${_ta('task',t)}" onclick="event.stopPropagation(); filterByTag('task','${t}')">${escHtml(TASK_NAMES[t] || t)}</span>`;
     }).join('');
     const scholarUrl = 'https://scholar.google.com/scholar?q=' + encodeURIComponent(p.Title);
     const isCollected = collection.has(p.Paper_link);
@@ -1356,9 +1374,9 @@ function render() {
     <div class="paper-card" onclick="toggleAbstract(event, ${idx})">
       <div class="paper-title"><a href="${escHtml(p.Paper_link)}" target="_blank" onclick="event.stopPropagation()">${renderLatex(p.Title)}</a></div>
       <div class="paper-meta">
-        <span class="tag year clickable" onclick="event.stopPropagation(); filterByTag('date','${p.Date || (p.Year + '-' + String(p.Month).padStart(2,'0'))}')">${p.Date || (p.Year + '-' + String(p.Month).padStart(2,'0'))}</span>
-        <span class="tag clickable" onclick="event.stopPropagation(); filterByTag('type','${escHtml(p.Type)}')">${escHtml(p.Type)}</span>
-        ${p.Subtype ? `<span class="tag clickable" onclick="event.stopPropagation(); filterByTag('subtype','${escHtml(p.Subtype.substring(0, 50))}')">${escHtml(p.Subtype.substring(0, 50))}</span>` : ''}
+        <span class="tag year clickable${_ta('date',pDate)}" onclick="event.stopPropagation(); filterByTag('date','${pDate}')">${pDate}</span>
+        <span class="tag clickable${_ta('type',p.Type)}" onclick="event.stopPropagation(); filterByTag('type','${escHtml(p.Type)}')">${escHtml(p.Type)}</span>
+        ${p.Subtype ? `<span class="tag clickable${_ta('subtype',p.Subtype)}" onclick="event.stopPropagation(); filterByTag('subtype','${escHtml(p.Subtype.substring(0, 50))}')">${escHtml(p.Subtype.substring(0, 50))}</span>` : ''}
         ${pubTag}
         ${catTag}${vlmTag}${vlmKwTags}${taskTags}
       </div>
