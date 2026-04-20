@@ -2022,6 +2022,8 @@ async function onGroupChange() {
     const links = await resp.json();
     groupFilter = new Set(links.map(l => l.replace(/v\d+$/, '')));
     groupLabel = file;
+    document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.sort-btn[data-sort="newest"]').classList.add('active');
     updateGroupUI();
     applyFilters();
   } catch(e) { alert('Error loading group data'); }
