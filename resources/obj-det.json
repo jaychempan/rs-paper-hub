@@ -3,5 +3,5 @@
   { "name": "DIOR", "url": "https://gcheng-nwpu.github.io/#Datasets", "desc": "23,463 images with 192K instances across 20 object classes" },
   { "name": "xView", "url": "http://xviewdataset.org/", "desc": "1M+ object instances in satellite imagery, 60 fine-grained classes" },
   { "name": "FAIR1M", "url": "https://www.gaofen-challenge.com/benchmark", "desc": "Fine-grained oriented detection with 1M+ instances, 37 categories" },
-  { "name": "LAE-1M", "url": "https://jianchengpan.space/projects/LAE/", "desc": "1M+ aerial elements for layout analysis in remote sensing images" }
+  { "name": "LAE-1M", "url": "https://jianchengpan.space/projects/LAE/", "desc": "Approximately 1M labeled object instances across about 1,600 categories." }
 ]
