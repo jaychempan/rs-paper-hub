@@ -309,6 +309,14 @@
     <h4 data-i18n="feat9Title">Group Export & Sharing</h4>
     <p data-i18n="feat9Desc">Export selected papers as a Group JSON file with a custom name. Groups appear in the "All Groups" dropdown for quick filtering. Submit your group via PR, or set up auto-updated groups by author name — the pipeline keeps them in sync daily.</p>
   </div>
+  <div class="feature-card">
+    <h4 data-i18n="feat10Title">Skills Page</h4>
+    <p data-i18n="feat10Desc">A curated collection of research skills — coding, writing, workflows and beyond. Browse community-contributed tools and methodologies to boost your research productivity.</p>
+  </div>
+  <div class="feature-card">
+    <h4 data-i18n="feat11Title">Venues Page</h4>
+    <p data-i18n="feat11Desc">Quick-reference directory of key journals and conferences in remote sensing and related AI/CV fields, organized by category with direct links to official sites.</p>
+  </div>
 </div>
 </section>
 
@@ -348,6 +356,13 @@
 
 <h3 data-i18n="viewer5Title">Recent Papers Panel</h3>
 <p data-i18n="viewer5Desc">Click the "NEW PAPERS" button on the right side to view papers published today or this week.</p>
+
+<h3 data-i18n="viewer7Title">Skills & Venues Pages</h3>
+<ul>
+  <li data-i18n="viewer7a">Use the floating sidebar on the left (or bottom bar on mobile) to switch between Papers, Skills, and Venues pages</li>
+  <li data-i18n="viewer7b">The Skills page features community-contributed research tools and methodologies for coding, writing, and more</li>
+  <li data-i18n="viewer7c">The Venues page provides a categorized directory of key journals and conferences in remote sensing and AI/CV fields with direct links</li>
+</ul>
 </section>
 
 <section id="rss-zotero">
@@ -580,6 +595,9 @@ const LANG = {
     viewer3Title: 'Charts & Visualization', viewer3Desc: 'Click "Charts" to view distribution visualizations. Click on bars to filter by that category. Multiple selections are supported.',
     viewer4Title: 'Paper Actions', viewer4a: 'Click on paper title to open the arXiv page', viewer4b: 'Click on abstract to expand/collapse', viewer4c: 'Collect papers to your personal collection', viewer4d: 'Export filtered results or collection as BibTeX', viewer4e: 'View BibTeX citation or open in Google Scholar',
     viewer5Title: 'Recent Papers Panel', viewer5Desc: 'Click the "NEW PAPERS" button on the right side to view papers published today or this week.',
+    viewer7Title: 'Skills & Venues Pages', viewer7a: 'Use the floating sidebar on the left (or bottom bar on mobile) to switch between Papers, Skills, and Venues pages', viewer7b: 'The Skills page features community-contributed research tools and methodologies for coding, writing, and more', viewer7c: 'The Venues page provides a categorized directory of key journals and conferences in remote sensing and AI/CV fields with direct links',
+    feat10Title: 'Skills Page', feat10Desc: 'A curated collection of research skills — coding, writing, workflows and beyond. Browse community-contributed tools and methodologies to boost your research productivity.',
+    feat11Title: 'Venues Page', feat11Desc: 'Quick-reference directory of key journals and conferences in remote sensing and related AI/CV fields, organized by category with direct links to official sites.',
     rssIntro: 'RS Paper Hub provides RSS feeds that can be used with any RSS reader or integrated with Zotero:',
     rss1Title: 'Available RSS Feeds', rss2Title: 'Using with Zotero', rss2Desc: 'In Zotero, go to File → New Feed, and paste one of the RSS URLs above. Zotero will automatically fetch new papers as they are added.',
     rss3Title: 'Direct JSON Download', rss3Desc: 'For programmatic access, JSON files are also available:',
@@ -625,6 +643,9 @@ const LANG = {
     viewer3Title: '图表与可视化', viewer3Desc: '点击"图表"查看分布可视化。点击柱状图可按该类别筛选。',
     viewer4Title: '论文操作', viewer4a: '点击论文标题打开 arXiv 页面', viewer4b: '点击摘要展开/折叠', viewer4c: '将论文收藏到个人收藏夹', viewer4d: '将筛选结果或收藏夹导出为 BibTeX', viewer4e: '查看 BibTeX 引用或打开谷歌学术',
     viewer5Title: '近期论文面板', viewer5Desc: '点击右侧的"最新论文"按钮查看今日或本周发布的论文。',
+    viewer7Title: '技能工具与期刊会议页', viewer7a: '使用左侧悬浮导航栏（移动端为底部栏）在论文、技能工具和期刊会议页面之间切换', viewer7b: '技能工具页汇集社区贡献的科研技能与工具方法，涵盖编程、写作等领域', viewer7c: '期刊会议页按分类提供遥感及 AI/CV 领域核心期刊与会议的官网直达链接',
+    feat10Title: '技能工具页', feat10Desc: '汇集阅读、写作、编程等科研技能，浏览社区贡献的工具与方法，提升科研效率。',
+    feat11Title: '期刊会议页', feat11Desc: '遥感及相关 AI/CV 领域核心期刊与会议快速导航，按类别分组，直达官网。',
     rssIntro: 'RS Paper Hub 提供 RSS 订阅源，可配合任何 RSS 阅读器或 Zotero 使用：',
     rss1Title: '可用 RSS 订阅源', rss2Title: '配合 Zotero 使用', rss2Desc: '在 Zotero 中，转到文件 → 新建订阅源，然后粘贴上述 RSS URL。Zotero 将自动获取新添加的论文。',
     rss3Title: '直接下载 JSON', rss3Desc: '为了方便程序调用，也提供 JSON 文件下载：',
