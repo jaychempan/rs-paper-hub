@@ -283,12 +283,12 @@
     <p data-i18n="feat2Desc">Each paper is automatically tagged with one or more task types: Classification, Retrieval, Geolocation, VQA, Captioning, Change Detection, Object Detection, Visual Grounding, Segmentation, Super-Resolution, and 3D Reconstruction.</p>
   </div>
   <div class="feature-card">
-    <h4 data-i18n="feat3Title">VLM Filtering</h4>
-    <p data-i18n="feat3Desc">Papers related to Vision-Language Models are automatically detected and can be filtered separately.</p>
+    <h4 data-i18n="feat3Title">Topic Filtering</h4>
+    <p data-i18n="feat3Desc">Papers related to VLM, Agent, UAV, and SAR are automatically detected via keyword matching and can be browsed as separate data sources.</p>
   </div>
   <div class="feature-card">
-    <h4 data-i18n="feat4Title">Agent Filtering</h4>
-    <p data-i18n="feat4Desc">Papers related to AI Agents in remote sensing are automatically identified and can be filtered separately.</p>
+    <h4 data-i18n="feat4Title">Trends & Statistics</h4>
+    <p data-i18n="feat4Desc">Interactive trend dashboards showing yearly/monthly paper distributions and top author rankings across all data sources, with click-to-drill-down details.</p>
   </div>
   <div class="feature-card">
     <h4 data-i18n="feat5Title">Paper Classification</h4>
@@ -317,6 +317,10 @@
   <div class="feature-card">
     <h4 data-i18n="feat11Title">Venues Page</h4>
     <p data-i18n="feat11Desc">Quick-reference directory of key journals and conferences in remote sensing and related AI/CV fields, organized by category with direct links to official sites.</p>
+  </div>
+  <div class="feature-card">
+    <h4 data-i18n="feat12Title">Resources Page</h4>
+    <p data-i18n="feat12Desc">Community-driven collection of remote sensing datasets and tools, organized by category. Contribute via Pull Request.</p>
   </div>
 </div>
 </section>
@@ -376,6 +380,7 @@
   <li><strong>VLM Papers:</strong> <code>output/feed_vlm.xml</code></li>
   <li><strong>Agent Papers:</strong> <code>output/feed_agent.xml</code></li>
   <li><strong>UAV Papers:</strong> <code>output/feed_uav.xml</code></li>
+  <li><strong>SAR Papers:</strong> <code>output/feed_sar.xml</code></li>
 </ul>
 
 <h3 data-i18n="rss2Title">Using with Zotero</h3>
@@ -387,6 +392,8 @@
   <li><code>output/papers.json</code> - All papers</li>
   <li><code>output/papers_vlm.json</code> - VLM papers</li>
   <li><code>output/papers_agent.json</code> - Agent papers</li>
+  <li><code>output/papers_uav.json</code> - UAV papers</li>
+  <li><code>output/papers_sar.json</code> - SAR papers</li>
 </ul>
 </section>
 
@@ -401,9 +408,9 @@
   <div class="pipeline-arrow">→</div>
   <div class="pipeline-step"><div class="num">3</div><div class="label" data-i18n="step3">Extract Metadata</div></div>
   <div class="pipeline-arrow">→</div>
-  <div class="pipeline-step"><div class="num">4</div><div class="label" data-i18n="step4">VLM Detection</div></div>
+  <div class="pipeline-step"><div class="num">4</div><div class="label" data-i18n="step4">Topic Detection</div></div>
   <div class="pipeline-arrow">→</div>
-  <div class="pipeline-step"><div class="num">5</div><div class="label" data-i18n="step5">Agent Detection</div></div>
+  <div class="pipeline-step"><div class="num">5</div><div class="label" data-i18n="step5">Task Tagging</div></div>
   <div class="pipeline-arrow">→</div>
   <div class="pipeline-step"><div class="num">6</div><div class="label" data-i18n="step6">Task Tagging</div></div>
   <div class="pipeline-arrow">→</div>
@@ -411,15 +418,17 @@
   <div class="pipeline-arrow">→</div>
   <div class="pipeline-step"><div class="num">8</div><div class="label" data-i18n="step8">Generate Feeds</div></div>
   <div class="pipeline-arrow">→</div>
-  <div class="pipeline-step"><div class="num">9</div><div class="label" data-i18n="step9">Deploy</div></div>
+  <div class="pipeline-step"><div class="num">9</div><div class="label" data-i18n="step8b">Generate Trends</div></div>
+  <div class="pipeline-arrow">→</div>
+  <div class="pipeline-step"><div class="num">10</div><div class="label" data-i18n="step9">Deploy</div></div>
 </div>
 
 <ul>
   <li data-i18n="step1Desc"><strong>Fetch arXiv:</strong> Query the arXiv API for recent submissions in relevant categories</li>
   <li data-i18n="step2Desc"><strong>Filter RS:</strong> Apply keyword-based filtering to identify remote sensing papers</li>
   <li data-i18n="step3Desc"><strong>Extract Metadata:</strong> Parse paper titles, abstracts, authors, and dates</li>
-  <li data-i18n="step4Desc"><strong>VLM Detection:</strong> Use regex patterns to identify vision-language model related papers</li>
-  <li data-i18n="step5Desc"><strong>Agent Detection:</strong> Identify AI agent related papers in remote sensing</li>
+  <li data-i18n="step4Desc"><strong>Topic Detection:</strong> Use keyword matching to filter VLM, Agent, UAV, and SAR related papers</li>
+  <li data-i18n="step5Desc"><strong>Task Tagging:</strong> Classify papers into 11 task categories based on content</li>
   <li data-i18n="step6Desc"><strong>Task Tagging:</strong> Classify papers into 11 task categories based on content</li>
   <li data-i18n="step7Desc"><strong>Classification:</strong> Categorize as Method, Survey, or Dataset</li>
   <li data-i18n="step8Desc"><strong>Generate Feeds:</strong> Create RSS feeds and JSON outputs</li>
@@ -609,7 +618,7 @@ python main.py --verbose</code></pre>
 const LANG = {
   en: {
     home: 'Home', github: 'GitHub', issues: 'Issues', docs: 'Docs', contact: 'Contact',
-    rssAll: 'All Papers', rssVlm: 'VLM Papers', rssAgent: 'Agent Papers', rssUav: 'UAV Papers',
+    rssAll: 'All Papers', rssVlm: 'VLM Papers', rssAgent: 'Agent Papers', rssUav: 'UAV Papers', rssSar: 'SAR Papers',
     gettingStarted: 'Getting Started', technical: 'Technical',
     overview: 'Overview', features: 'Features', webViewer: 'Web Viewer Guide', rssZotero: 'RSS & Zotero',
     pipeline: 'Pipeline', cli: 'CLI Reference', schema: 'Output Schema', taskTags: 'Task Tags', submitGroup: 'Submit Group',
@@ -618,8 +627,8 @@ const LANG = {
     overviewDesc2: 'The project provides multiple ways to access papers: a web interface, RSS feeds, and direct JSON downloads. All papers are automatically tagged with categories, tasks, and VLM-related keywords.',
     feat1Title: 'Daily Automated Updates', feat1Desc: 'Papers are fetched and processed automatically every day, ensuring you always have access to the latest research.',
     feat2Title: 'Task Tagging (11 types)', feat2Desc: 'Each paper is automatically tagged with one or more task types: Classification, Retrieval, Geolocation, VQA, Captioning, Change Detection, Object Detection, Visual Grounding, Segmentation, Super-Resolution, and 3D Reconstruction.',
-    feat3Title: 'VLM Filtering', feat3Desc: 'Papers related to Vision-Language Models are automatically detected and can be filtered separately.',
-    feat4Title: 'Agent Filtering', feat4Desc: 'Papers related to AI Agents in remote sensing are automatically identified and can be filtered separately.',
+    feat3Title: 'Topic Filtering', feat3Desc: 'Papers related to VLM, Agent, UAV, and SAR are automatically detected via keyword matching and can be browsed as separate data sources.',
+    feat4Title: 'Trends & Statistics', feat4Desc: 'Interactive trend dashboards showing yearly/monthly paper distributions and top author rankings across all data sources, with click-to-drill-down details.',
     feat5Title: 'Paper Classification', feat5Desc: 'Papers are classified into Method, Survey, or Dataset categories using rule-based patterns.',
     feat6Title: 'Paper Collection & BibTeX Export', feat6Desc: 'Collect favorite papers and export them as BibTeX for easy reference management.',
     feat7Title: 'RSS Feeds & Zotero', feat7Desc: 'Subscribe to RSS feeds for all papers, VLM papers, or Agent papers. Integrate with Zotero for automatic bibliography management.',
@@ -635,12 +644,13 @@ const LANG = {
     viewer7Title: 'Skills & Venues Pages', viewer7a: 'Use the floating sidebar on the left (or bottom bar on mobile) to switch between Papers, Skills, and Venues pages', viewer7b: 'The Skills page features community-contributed research tools and methodologies for coding, writing, and more', viewer7c: 'The Venues page provides a categorized directory of key journals and conferences in remote sensing and AI/CV fields with direct links',
     feat10Title: 'Skills Page', feat10Desc: 'A curated collection of research skills — coding, writing, workflows and beyond. Browse community-contributed tools and methodologies to boost your research productivity.',
     feat11Title: 'Venues Page', feat11Desc: 'Quick-reference directory of key journals and conferences in remote sensing and related AI/CV fields, organized by category with direct links to official sites.',
+    feat12Title: 'Resources Page', feat12Desc: 'Community-driven collection of remote sensing datasets and tools, organized by category. Contribute via Pull Request.',
     rssIntro: 'RS Paper Hub provides RSS feeds that can be used with any RSS reader or integrated with Zotero:',
     rss1Title: 'Available RSS Feeds', rss2Title: 'Using with Zotero', rss2Desc: 'In Zotero, go to File → New Feed, and paste one of the RSS URLs above. Zotero will automatically fetch new papers as they are added.',
     rss3Title: 'Direct JSON Download', rss3Desc: 'For programmatic access, JSON files are also available:',
-    pipelineIntro: 'The data processing pipeline consists of 11 steps:',
-    step1: 'Fetch arXiv', step2: 'Filter RS', step3: 'Extract Metadata', step4: 'VLM Detection', step5: 'Agent Detection', step6: 'Task Tagging', step7: 'Classification', step8: 'Generate Feeds', step9: 'Deploy',
-    step1Desc: 'Query the arXiv API for recent submissions in relevant categories', step2Desc: 'Apply keyword-based filtering to identify remote sensing papers', step3Desc: 'Parse paper titles, abstracts, authors, and dates', step4Desc: 'Use regex patterns to identify vision-language model related papers', step5Desc: 'Identify AI agent related papers in remote sensing', step6Desc: 'Classify papers into 11 task categories based on content', step7Desc: 'Categorize as Method, Survey, or Dataset', step8Desc: 'Create RSS feeds and JSON outputs', step9Desc: 'Update the website with new data',
+    pipelineIntro: 'The data processing pipeline consists of 15 steps:',
+    step1: 'Fetch arXiv', step2: 'Filter RS', step3: 'Extract Metadata', step4: 'Topic Detection', step5: 'Task Tagging', step6: 'Task Tagging', step7: 'Classification', step8: 'Generate Feeds', step8b: 'Generate Trends', step9: 'Deploy',
+    step1Desc: 'Query the arXiv API for recent submissions in relevant categories', step2Desc: 'Apply keyword-based filtering to identify remote sensing papers', step3Desc: 'Parse paper titles, abstracts, authors, and dates', step4Desc: 'Use keyword matching to filter VLM, Agent, UAV, and SAR related papers', step5Desc: 'Classify papers into 11 task categories based on content', step6Desc: 'Classify papers into 11 task categories based on content', step7Desc: 'Categorize as Method, Survey, or Dataset', step8Desc: 'Create RSS feeds and JSON outputs', step8bDesc: 'Generate trend statistics (incremental)', step9Desc: 'Update the website with new data',
     cliIntro: 'Run the pipeline using Python:',
     cli1Title: 'Arguments', cli2Title: 'Examples',
     schemaIntro: 'Each paper entry in the JSON output contains the following fields:',
@@ -664,7 +674,7 @@ const LANG = {
   },
   zh: {
     home: '首页', github: 'GitHub', issues: '问题反馈', docs: '文档', contact: '联系我们',
-    rssAll: '全部论文', rssVlm: 'VLM 论文', rssAgent: 'Agent 论文', rssUav: 'UAV 论文',
+    rssAll: '全部论文', rssVlm: 'VLM 论文', rssAgent: 'Agent 论文', rssUav: 'UAV 论文', rssSar: 'SAR 论文',
     gettingStarted: '入门', technical: '技术文档',
     overview: '项目简介', features: '核心功能', webViewer: '网页使用指南', rssZotero: 'RSS 与 Zotero',
     pipeline: '处理流程', cli: '命令行参考', schema: '输出格式', taskTags: '任务标签', submitGroup: '提交研究组',
@@ -673,8 +683,8 @@ const LANG = {
     overviewDesc2: '该项目提供多种访问论文的方式：网页界面、RSS 订阅和直接下载 JSON。所有论文都会自动标记类别、任务和 VLM 相关关键词。',
     feat1Title: '每日自动更新', feat1Desc: '论文每天自动获取和处理，确保您始终能够访问最新研究成果。',
     feat2Title: '任务标签 (11种)', feat2Desc: '每篇论文自动标记一个或多个任务类型：分类、图像文本检索、地理位置、视觉问答、图像描述、变化检测、目标检测、视觉定位、分割、超分辨率和三维重建。',
-    feat3Title: 'VLM 筛选', feat3Desc: '与视觉语言模型相关的论文会自动检测，可单独筛选。',
-    feat4Title: 'Agent 筛选', feat4Desc: '遥感中与 AI Agent 相关的论文会自动识别，可单独筛选。',
+    feat3Title: '主题筛选', feat3Desc: 'VLM、Agent、UAV、SAR 相关论文通过关键词自动检测，可作为独立数据源浏览。',
+    feat4Title: '趋势统计', feat4Desc: '交互式趋势面板，展示各数据源的年度/月度论文分布与高产作者排名，支持点击下钻查看详情。',
     feat5Title: '论文分类', feat5Desc: '使用基于规则的方法将论文分类为方法、综述或数据集。',
     feat6Title: '论文收藏与 BibTeX 导出', feat6Desc: '收藏感兴趣的论文并导出为 BibTeX 格式，方便参考文献管理。',
     feat7Title: 'RSS 订阅与 Zotero', feat7Desc: '订阅全部论文、VLM 论文或 Agent 论文的 RSS 订阅源。可与 Zotero 集成实现自动文献管理。',
@@ -690,12 +700,13 @@ const LANG = {
     viewer7Title: '技能工具与期刊会议页', viewer7a: '使用左侧悬浮导航栏（移动端为底部栏）在论文、技能工具和期刊会议页面之间切换', viewer7b: '技能工具页汇集社区贡献的科研技能与工具方法，涵盖编程、写作等领域', viewer7c: '期刊会议页按分类提供遥感及 AI/CV 领域核心期刊与会议的官网直达链接',
     feat10Title: '技能工具页', feat10Desc: '汇集阅读、写作、编程等科研技能，浏览社区贡献的工具与方法，提升科研效率。',
     feat11Title: '期刊会议页', feat11Desc: '遥感及相关 AI/CV 领域核心期刊与会议快速导航，按类别分组，直达官网。',
+    feat12Title: '资源页', feat12Desc: '社区共建的遥感数据集与工具汇总，按类别分组，欢迎通过 PR 贡献。',
     rssIntro: 'RS Paper Hub 提供 RSS 订阅源，可配合任何 RSS 阅读器或 Zotero 使用：',
     rss1Title: '可用 RSS 订阅源', rss2Title: '配合 Zotero 使用', rss2Desc: '在 Zotero 中，转到文件 → 新建订阅源，然后粘贴上述 RSS URL。Zotero 将自动获取新添加的论文。',
     rss3Title: '直接下载 JSON', rss3Desc: '为了方便程序调用，也提供 JSON 文件下载：',
-    pipelineIntro: '数据处理流程包含 11 个步骤：',
-    step1: '获取 arXiv', step2: '筛选遥感', step3: '提取元数据', step4: 'VLM 检测', step5: 'Agent 检测', step6: '任务标记', step7: '分类', step8: '生成订阅源', step9: '部署',
-    step1Desc: '查询 arXiv API 获取相关类别的最新提交', step2Desc: '使用关键词筛选识别遥感论文', step3Desc: '解析论文标题、摘要、作者和日期', step4Desc: '使用正则表达式识别视觉语言模型相关论文', step5Desc: '识别遥感中的 AI Agent 相关论文', step6Desc: '根据内容将论文分为 11 个任务类别', step7Desc: '分类为方法、综述或数据集', step8Desc: '创建 RSS 订阅源和 JSON 输出', step9Desc: '更新网站数据',
+    pipelineIntro: '数据处理流程包含 15 个步骤：',
+    step1: '获取 arXiv', step2: '筛选遥感', step3: '提取元数据', step4: '主题检测', step5: '任务标记', step6: '任务标记', step7: '分类', step8: '生成订阅源', step8b: '生成趋势', step9: '部署',
+    step1Desc: '查询 arXiv API 获取相关类别的最新提交', step2Desc: '使用关键词筛选识别遥感论文', step3Desc: '解析论文标题、摘要、作者和日期', step4Desc: '使用关键词匹配筛选 VLM、Agent、UAV、SAR 相关论文', step5Desc: '根据内容将论文分为 11 个任务类别', step6Desc: '根据内容将论文分为 11 个任务类别', step7Desc: '分类为方法、综述或数据集', step8Desc: '创建 RSS 订阅源和 JSON 输出', step8bDesc: '生成趋势统计数据（增量更新）', step9Desc: '更新网站数据',
     cliIntro: '使用 Python 运行处理流程：',
     cli1Title: '参数', cli2Title: '示例',
     schemaIntro: 'JSON 输出中每篇论文包含以下字段：',

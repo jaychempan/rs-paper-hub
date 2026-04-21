@@ -4,7 +4,7 @@
 
 # RS-Paper-Hub
 
-**A curated collection of Remote Sensing & Earth Observation papers from arXiv, with automated scraping, cleaning, task tagging, VLM filtering, and Agent filtering.**
+**A curated collection of Remote Sensing & Earth Observation papers from arXiv, with automated scraping, cleaning, task tagging, topic filtering (VLM, Agent, UAV, SAR), and trend statistics.**
 
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![arXiv](https://img.shields.io/badge/Source-arXiv-b31b1b.svg)](https://arxiv.org/)
@@ -21,7 +21,7 @@
 
 ## Overview
 
-RS-Paper-Hub automatically scrapes remote sensing and earth observation papers from arXiv, extracts structured metadata, and provides a one-click pipeline for data cleaning, task tagging, VLM filtering, Agent filtering, and classification. Updated daily via GitHub Actions (Mon–Fri, synced with arXiv announcement schedule).
+RS-Paper-Hub automatically scrapes remote sensing and earth observation papers from arXiv, extracts structured metadata, and provides a one-click pipeline for data cleaning, task tagging, topic filtering (VLM, Agent, UAV, SAR), classification, and trend statistics. Updated daily via GitHub Actions (Mon–Fri, synced with arXiv announcement schedule).
 
 ### Key Features
 
@@ -33,13 +33,15 @@ RS-Paper-Hub automatically scrapes remote sensing and earth observation papers f
 - **VLM Filtering** — Keyword-based filtering for Vision-Language Model related papers with context-aware rules (avoids false positives from non-VLM cross-modal or retrieval terms)
 - **Agent Filtering** — Keyword-based filtering for Agent / Autonomous Decision-Making related papers (multi-agent systems, RL-based agents, LLM agents, agentic workflows, etc.)
 - **UAV Filtering** — Keyword-based filtering for UAV / drone related papers (unmanned aerial vehicles, drone-based remote sensing, aerial photogrammetry, etc.)
-- **Four-Tab Web Viewer** — Browse All Papers, UAV subset, VLM subset, or Agent subset; with search, multi-dimensional chart filtering, task/category/year filters, Google Scholar links, and mobile-friendly UI
+- **SAR Filtering** — Keyword-based filtering for SAR (Synthetic Aperture Radar) related papers (InSAR, PolSAR, Sentinel-1, despeckling, deformation monitoring, etc.)
+- **Trends & Statistics** — Interactive trend dashboards showing yearly/monthly paper distributions and top author rankings across all data sources, with incremental updates and click-to-drill-down author details
+- **Five-Tab Web Viewer** — Browse All Papers, VLM subset, UAV subset, Agent subset, or SAR subset; with search, multi-dimensional chart filtering, task/category/year filters, Google Scholar links, and mobile-friendly UI
 - **Clickable Tag Filtering** — Click any tag (date, type, category, task, VLM, etc.) on a paper card to filter by that value; stack multiple tags for progressive filtering, click again to remove
 - **Paper Collection** — Collect papers across multiple searches into a personal collection, then view or export them together
 - **BibTeX Batch Export** — Export filtered results, current page, custom range, or collection as timestamped `.bib` file with optional abstracts
 - **Group Export** — Export selected papers as a Group JSON file for sharing curated reading lists; submit via PR to make it available to all users
 - **Code Discovery** — Automatically extracts code repository URLs from abstracts
-- **RSS/Atom Feeds** — Auto-generated Atom feeds (All / VLM / Agent) for Zotero subscription, updated daily with the last 7 days of papers
+- **RSS/Atom Feeds** — Auto-generated Atom feeds (All / VLM / Agent / UAV / SAR) for Zotero subscription, updated daily with the last 7 days of papers
 - **PDF Download** — Batch download with deduplication, organized by year
 
 ---
@@ -52,7 +54,7 @@ pip install -r requirements.txt
 # Scrape all papers
 python main.py
 
-# One-click: clean + classify + tag tasks + filter VLM + filter Agent
+# One-click: clean + classify + tag tasks + filter VLM/Agent/UAV/SAR + trends
 python pipeline.py
 ```
 
@@ -64,11 +66,11 @@ python pipeline.py
 # 1. Grab latest papers (last 7 days, incremental by default)
 python main.py --update
 
-# 2. Run full pipeline (deduplicate → clean → classify → tag → filter VLM & Agent → export)
+# 2. Run full pipeline (deduplicate → clean → classify → tag → filter VLM/Agent/UAV/SAR → trends → export)
 python pipeline.py
 ```
 
-That's it. All output files (`papers.csv/json`, `papers_vlm.csv/json`, `papers_agent.csv/json`) are updated in place.
+That's it. All output files (`papers.csv/json`, `papers_vlm.csv/json`, `papers_agent.csv/json`, `papers_uav.csv/json`, `papers_sar.csv/json`) are updated in place.
 
 > **Note:** `--incremental` is enabled by default — existing papers are always skipped. Use `--no-incremental` to force a full re-fetch.
 
@@ -98,24 +100,27 @@ python main.py --status
 ### Pipeline (Recommended)
 
 ```bash
-# One-click: clean + classify + tag tasks + filter VLM + filter Agent
+# One-click: clean + classify + tag tasks + filter VLM/Agent/UAV/SAR + trends
 python pipeline.py
 
 # Custom input
 python pipeline.py --input output/papers.json
 ```
 
-`pipeline.py` runs the following 9 steps (incrementally — each step skips already-processed papers):
+`pipeline.py` runs the following 15 steps (incrementally — each step skips already-processed papers):
 
 1. **Load & Deduplicate** — Remove duplicate papers by `Paper_link`
 2. **Clean** — Extract code URLs from abstracts, fill `code` field
 3. **Classify** — Label every paper as Method / Dataset / Survey (title-based)
 4. **Tag Tasks** — Assign task labels (CLS, OD, CD, SEG, VQA, IC, VG, ITR, GeoLoc, SR, 3D)
 5. **Save** — Write cleaned `papers.csv` + `papers.json`
-6. **Filter VLM** — Select Vision-Language Model related papers by keyword matching
-7. **Classify VLM** — Refine categories for VLM subset, export `papers_vlm.csv/json`
-8. **Filter & Classify Agent** — Select Agent-related papers by keyword matching, export `papers_agent.csv/json`
-9. **Generate Atom Feeds** — Produce `feed.xml`, `feed_vlm.xml`, `feed_agent.xml` with the last 7 days of papers
+6. **Filter VLM** — Select Vision-Language Model related papers, export `papers_vlm.csv/json`
+7. **Filter Agent** — Select Agent-related papers, export `papers_agent.csv/json`
+8. **Filter UAV** — Select UAV-related papers, export `papers_uav.csv/json`
+9. **Filter SAR** — Select SAR-related papers, export `papers_sar.csv/json`
+10. **Update Groups** — Auto-update author-based paper groups
+11. **Generate Atom Feeds** — Produce `feed.xml`, `feed_vlm.xml`, `feed_agent.xml`, `feed_uav.xml` with the last 7 days of papers
+12. **Generate Trends** — Compute/update trend statistics (incremental) to `trends/trends.json`
 
 ### Standalone Filter Scripts
 
@@ -228,7 +233,7 @@ Papers are automatically tagged with task types based on title and abstract keyw
 ```
 rs-paper-hub/
 ├── main.py              # Scraper CLI entry point
-├── pipeline.py          # One-click: clean + classify + tag + filter VLM & Agent + RSS
+├── pipeline.py          # One-click: clean + classify + tag + filter VLM/Agent/UAV/SAR + trends
 ├── filter_vlm.py        # Standalone VLM filter script
 ├── filter_agent.py      # Standalone Agent filter script
 ├── filter_uav.py        # Standalone UAV filter script
@@ -246,10 +251,11 @@ rs-paper-hub/
 │   └── filter/
 │       ├── vlm_filter.py     # VLM keyword rules
 │       ├── agent_filter.py   # Agent keyword rules
-│       └── uav_filter.py     # UAV keyword rules
+│       ├── uav_filter.py     # UAV keyword rules
+│       └── sar_filter.py     # SAR keyword rules
 ├── .github/workflows/
 │   └── daily-update.yml      # Daily CI/CD pipeline (Mon-Fri, synced with arXiv)
-├── index.html               # Interactive web viewer (4 tabs: All / UAV / VLM / Agent)
+├── index.html               # Interactive web viewer (5 tabs: All / VLM / UAV / Agent / SAR)
 ├── groups/                  # Paper groups for curated reading lists
 │   ├── index.json           # Group registry (key, label, file; auto+authors for auto-update)
 │   └── *.json               # Individual group files (arrays of arXiv URLs)
@@ -263,11 +269,16 @@ rs-paper-hub/
     ├── papers_agent_annotated.json  # Full list with Agent flags
     ├── papers_uav.csv/json          # UAV subset with categories
     ├── papers_uav_annotated.json    # Full list with UAV flags
+    ├── papers_sar.csv/json          # SAR subset with categories
+    ├── papers_sar_annotated.json    # Full list with SAR flags
     ├── feed.xml                     # Atom feed — all papers (last 7 days)
     ├── feed_vlm.xml                 # Atom feed — VLM papers (last 7 days)
     ├── feed_agent.xml               # Atom feed — Agent papers (last 7 days)
     ├── feed_uav.xml                 # Atom feed — UAV papers (last 7 days)
-    └── progress.json                # Scraping progress
+    ├── feed_sar.xml                 # Atom feed — SAR papers (last 7 days)
+    ├── progress.json                # Scraping progress
+    └── trends/
+        └── trends.json              # Trend statistics (yearly, monthly, top authors)
 ```
 
 ---
@@ -292,7 +303,7 @@ python3 -m http.server 8080
 
 Features include:
 
-- **Three data tabs** — Switch between All Papers, UAV subset, VLM subset, and Agent subset
+- **Five data tabs** — Switch between All Papers, VLM subset, UAV subset, Agent subset, and SAR subset (with dropdown for overflow tabs)
 - **Quick date filters** — "Today" and "This Week" buttons with red badge counts
 - **Relevance-ranked search** — Title matches prioritized over abstract matches
 - **Multi-dimensional chart filtering** — Click year/type/category/task bars to filter, multi-select supported
@@ -309,6 +320,7 @@ Features include:
 - **Skills page** — A curated collection of research skills (coding, writing, workflows and more) with community contributions welcome
 - **Venues page** — Quick-reference directory of key journals and conferences in remote sensing and related AI/CV fields, organized by category
 - **Resources page** — Community-driven collection of remote sensing datasets and tools, loaded from `resources/` JSON files — contribute via PR ([learn more](https://rspaper.top/docs/#submit-resource))
+- **Trends page** — Interactive statistics dashboard with yearly/monthly paper distributions and top author rankings; click authors to see their individual publication timeline
 - **Mobile-friendly** — Responsive layout with collapsible filters and wrapping navigation
 - **LaTeX rendering** — Math formulas rendered via KaTeX
 
@@ -326,6 +338,7 @@ The pipeline automatically generates [Atom](https://en.wikipedia.org/wiki/Atom_(
 | VLM Papers | `https://rspaper.top/output/feed_vlm.xml` | VLM subset |
 | Agent Papers | `https://rspaper.top/output/feed_agent.xml` | Agent subset |
 | UAV Papers | `https://rspaper.top/output/feed_uav.xml` | UAV subset |
+| SAR Papers | `https://rspaper.top/output/feed_sar.xml` | SAR subset |
 
 ### Subscribe in Zotero
 

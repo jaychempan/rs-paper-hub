@@ -4,7 +4,7 @@
 
 # RS-Paper-Hub
 
-**arXiv 遥感论文自动采集、清洗、VLM 筛选与 Agent 筛选工具**
+**arXiv 遥感论文自动采集、清洗、主题筛选（VLM / Agent / UAV / SAR）与趋势统计工具**
 
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![arXiv](https://img.shields.io/badge/Source-arXiv-b31b1b.svg)](https://arxiv.org/)
@@ -21,7 +21,7 @@
 
 ## 概述
 
-RS-Paper-Hub 自动从 arXiv 爬取遥感与地球观测领域的论文，提取结构化元数据，并提供一键式数据处理流水线，涵盖数据清洗、任务标签标注、VLM 过滤、Agent 过滤以及分类等功能。该库通过 GitHub Actions 每日更新（周一至周五，与 arXiv 公告时间表同步）。
+RS-Paper-Hub 自动从 arXiv 爬取遥感与地球观测领域的论文，提取结构化元数据，并提供一键式数据处理流水线，涵盖数据清洗、任务标签标注、主题筛选（VLM / Agent / UAV / SAR）、分类以及趋势统计等功能。该库通过 GitHub Actions 每日更新（周一至周五，与 arXiv 公告时间表同步）。
 
 ### 核心功能
 
@@ -37,13 +37,15 @@ RS-Paper-Hub 自动从 arXiv 爬取遥感与地球观测领域的论文，提取
 - **VLM 筛选** — 基于上下文感知的关键词规则筛选视觉语言模型相关论文（避免非 VLM 跨模态/检索等误判）
 - **Agent 筛选** — 基于关键词规则筛选 Agent / 自主决策相关论文（多智能体系统、强化学习 Agent、LLM Agent、Agentic 工作流等）
 - **UAV 筛选** — 基于关键词规则筛选无人机相关论文（UAV、drone、无人机遥感、航空摄影测量等）
-- **四标签网页** — 浏览全部论文、无人机子集、VLM 子集、Agent 子集；支持搜索、多维图表筛选、中英双语切换
+- **SAR 筛选** — 基于关键词规则筛选合成孔径雷达相关论文（InSAR、PolSAR、Sentinel-1、去斑、形变监测等）
+- **趋势统计** — 交互式趋势面板，展示各数据源的年度/月度论文分布与高产作者排名，支持增量更新与点击下钻查看详情
+- **五标签网页** — 浏览全部论文、VLM 子集、无人机子集、Agent 子集、SAR 子集；支持搜索、多维图表筛选、中英双语切换
 - **标签点击筛选** — 点击论文卡片上的任意标签（日期、类型、类别、任务、VLM 等）即可筛选同类论文；支持多标签叠加筛选，再次点击取消
 - **论文收藏** — 跨搜索收藏论文，统一查看或导出
 - **BibTeX 批量导出** — 导出带时间戳的 `.bib` 文件，可选包含摘要
 - **研究组导出与分享** — 将筛选论文导出为研究组 JSON 文件，自定义命名；通过 PR 提交后可供所有用户使用
 - **按作者自动更新研究组** — 在 `groups/index.json` 中设置 `"auto": true` 和 `"authors": [...]`，pipeline 自动按作者名匹配论文，每日更新研究组文件
-- **RSS/Atom 订阅** — 自动生成 Atom feed（全部 / VLM / Agent），支持 Zotero 订阅，每日更新最近 7 天论文
+- **RSS/Atom 订阅** — 自动生成 Atom feed（全部 / VLM / Agent / UAV / SAR），支持 Zotero 订阅，每日更新最近 7 天论文
 - **PDF 下载** — 批量下载，自动去重，按年份归档
 
 ---
@@ -56,7 +58,7 @@ pip install -r requirements.txt
 # 采集全部论文
 python main.py
 
-# 一键处理：清洗 + 分类 + 任务标注 + VLM 筛选 + Agent 筛选
+# 一键处理：清洗 + 分类 + 任务标注 + VLM/Agent/UAV/SAR 筛选 + 趋势统计
 python pipeline.py
 ```
 
@@ -68,11 +70,11 @@ python pipeline.py
 # 1. 抓取最新论文（最近 7 天，默认增量）
 python main.py --update
 
-# 2. 一键处理（去重 → 清洗 → 分类 → 任务标注 → VLM 筛选 → Agent 筛选 → 导出）
+# 2. 一键处理（去重 → 清洗 → 分类 → 任务标注 → VLM/Agent/UAV/SAR 筛选 → 趋势统计 → 导出）
 python pipeline.py
 ```
 
-两条命令搞定。所有输出文件（`papers.csv/json`、`papers_vlm.csv/json`、`papers_agent.csv/json`）自动更新。
+两条命令搞定。所有输出文件（`papers.csv/json`、`papers_vlm.csv/json`、`papers_agent.csv/json`、`papers_uav.csv/json`、`papers_sar.csv/json`）自动更新。
 
 > **注意：** `--incremental` 默认开启，已有论文会自动跳过。如需全量重新采集，请使用 `--no-incremental`。
 
@@ -112,7 +114,7 @@ python pipeline.py
 python pipeline.py --input output/papers.json
 ```
 
-`pipeline.py` 自动执行以下 9 个步骤（增量处理，已处理的论文自动跳过）：
+`pipeline.py` 自动执行以下 15 个步骤（增量处理，已处理的论文自动跳过）：
 
 1. **加载与去重** — 按 `Paper_link` 去除重复论文
 2. **清洗** — 从摘要提取代码链接，填充 `code` 字段
@@ -120,9 +122,12 @@ python pipeline.py --input output/papers.json
 4. **任务标注** — 标注 11 种任务类型（CLS, OD, CD, SEG, VQA, IC, VG, ITR, GeoLoc, SR, 3D）
 5. **保存** — 写入清洗后的 `papers.csv` + `papers.json`
 6. **VLM 筛选** — 按关键词匹配视觉语言模型相关论文，导出 `papers_vlm.csv/json`
-7. **VLM 分类** — 细化 VLM 子集分类
-8. **Agent 筛选与分类** — 按关键词匹配 Agent 相关论文，导出 `papers_agent.csv/json`
-9. **生成 Atom Feed** — 生成 `feed.xml`、`feed_vlm.xml`、`feed_agent.xml`，包含最近 7 天论文
+7. **Agent 筛选** — 按关键词匹配 Agent 相关论文，导出 `papers_agent.csv/json`
+8. **UAV 筛选** — 按关键词匹配无人机相关论文，导出 `papers_uav.csv/json`
+9. **SAR 筛选** — 按关键词匹配 SAR 相关论文，导出 `papers_sar.csv/json`
+10. **更新研究组** — 按作者自动更新研究组文件
+11. **生成 Atom Feed** — 生成 `feed.xml`、`feed_vlm.xml`、`feed_agent.xml`、`feed_uav.xml`，包含最近 7 天论文
+12. **生成趋势统计** — 计算/更新趋势统计数据（增量更新）至 `trends/trends.json`
 
 ### 单独筛选工具
 
@@ -238,7 +243,7 @@ python main.py --download-only
 ```
 rs-paper-hub/
 ├── main.py              # 采集器命令行入口
-├── pipeline.py          # 一键处理：清洗 + 分类 + 任务标注 + VLM 筛选 + Agent 筛选 + RSS
+├── pipeline.py          # 一键处理：清洗 + 分类 + 任务标注 + VLM/Agent/UAV/SAR 筛选 + 趋势统计
 ├── filter_vlm.py        # 单独 VLM 筛选脚本
 ├── filter_agent.py      # 单独 Agent 筛选脚本
 ├── filter_uav.py        # 单独 UAV 筛选脚本
@@ -256,10 +261,11 @@ rs-paper-hub/
 │   └── filter/
 │       ├── vlm_filter.py     # VLM 关键词规则
 │       ├── agent_filter.py   # Agent 关键词规则
-│       └── uav_filter.py     # UAV 关键词规则
+│       ├── uav_filter.py     # UAV 关键词规则
+│       └── sar_filter.py     # SAR 关键词规则
 ├── .github/workflows/
 │   └── daily-update.yml      # 每日 CI/CD 流水线（周一至周五，与 arXiv 同步）
-├── index.html               # 交互式网页（四标签：全部 / 无人机 / VLM / Agent）
+├── index.html               # 交互式网页（五标签：全部 / VLM / 无人机 / Agent / SAR）
 ├── groups/                  # 论文研究组（策展式阅读列表）
 │   ├── index.json           # 研究组注册表（key、label、file；auto+authors 支持自动更新）
 │   └── *.json               # 各研究组文件（arXiv 链接数组）
@@ -273,11 +279,16 @@ rs-paper-hub/
     ├── papers_agent_annotated.json  # 完整列表（带 Agent 标注）
     ├── papers_uav.csv/json          # UAV 子集（含分类标签）
     ├── papers_uav_annotated.json    # 完整列表（带 UAV 标注）
+    ├── papers_sar.csv/json          # SAR 子集（含分类标签）
+    ├── papers_sar_annotated.json    # 完整列表（带 SAR 标注）
     ├── feed.xml                     # Atom feed — 全部论文（最近 7 天）
     ├── feed_vlm.xml                 # Atom feed — VLM 论文（最近 7 天）
     ├── feed_agent.xml               # Atom feed — Agent 论文（最近 7 天）
     ├── feed_uav.xml                 # Atom feed — UAV 论文（最近 7 天）
-    └── progress.json                # 采集进度
+    ├── feed_sar.xml                 # Atom feed — SAR 论文（最近 7 天）
+    ├── progress.json                # 采集进度
+    └── trends/
+        └── trends.json              # 趋势统计数据（年度、月度、高产作者）
 ```
 
 ---
@@ -312,7 +323,7 @@ python3 -m http.server 8080
 
 打开 http://localhost:8080 即可查看，功能包括：
 
-- **三数据标签** — 切换浏览全部论文、无人机子集、VLM 子集、Agent 子集
+- **五数据标签** — 切换浏览全部论文、VLM 子集、无人机子集、Agent 子集、SAR 子集（超出显示区的标签自动折叠为下拉菜单）
 - **相关度搜索** — 标题匹配优先于摘要匹配
 - **多维图表筛选** — 点击年份/类型/分类/任务柱状图即可筛选，支持多选
 - **任务分布图** — 展示 Top 5 任务，其余可折叠查看
@@ -328,6 +339,7 @@ python3 -m http.server 8080
 - **技能工具页** — 汇集阅读、写作、编程等科研技能，欢迎社区贡献分享
 - **期刊会议页** — 遥感及相关 AI/CV 领域核心期刊与会议官网快速导航，按类别分组
 - **资源页** — 社区共建的遥感数据集与工具汇总，数据存储在 `resources/` 目录的 JSON 文件中，欢迎通过 PR 贡献（[详细教程](https://rspaper.top/docs/#submit-resource)）
+- **趋势页** — 交互式统计面板，展示年度/月度论文分布与高产作者排名；点击作者可查看其个人发表时间线
 - **移动端适配** — 可折叠筛选面板，响应式布局
 - **LaTeX 渲染** — KaTeX 数学公式渲染
 
@@ -343,6 +355,7 @@ Pipeline 自动生成 [Atom](https://zh.wikipedia.org/wiki/Atom_(%E6%A0%87%E5%87
 | VLM 论文 | `https://rspaper.top/output/feed_vlm.xml` | VLM 子集 |
 | Agent 论文 | `https://rspaper.top/output/feed_agent.xml` | Agent 子集 |
 | UAV 论文 | `https://rspaper.top/output/feed_uav.xml` | UAV 子集 |
+| SAR 论文 | `https://rspaper.top/output/feed_sar.xml` | SAR 子集 |
 
 ### 在 Zotero 中订阅
 
