@@ -1,0 +1,11 @@
+[
+  { "name": "IEEE Trans. Pattern Analysis and Machine Intelligence", "abbr": "TPAMI", "url": "https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=34" },
+  { "name": "International Journal of Computer Vision", "abbr": "IJCV", "url": "https://www.springer.com/journal/11263" },
+  { "name": "IEEE Trans. Image Processing", "abbr": "TIP", "url": "https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=83" },
+  { "name": "Journal of Machine Learning Research", "abbr": "JMLR", "url": "https://jmlr.org/" },
+  { "name": "IEEE Trans. Neural Networks and Learning Systems", "abbr": "TNNLS", "url": "https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=5962385" },
+  { "name": "IEEE Trans. Multimedia", "abbr": "TMM", "url": "https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=6046" },
+  { "name": "Pattern Recognition", "abbr": "PR", "url": "https://www.sciencedirect.com/journal/pattern-recognition" },
+  { "name": "Neural Networks", "abbr": "NN", "url": "https://www.sciencedirect.com/journal/neural-networks" },
+  { "name": "IEEE Trans. Cybernetics", "abbr": "TCYB", "url": "https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=6221036" }
+]

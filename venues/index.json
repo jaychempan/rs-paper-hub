@@ -1,0 +1,6 @@
+[
+  { "key": "rs-journals", "label": "Remote Sensing Journals", "label_zh": "遥感期刊", "file": "rs-journals.json", "icon": "book" },
+  { "key": "ai-journals", "label": "CV / AI Journals", "label_zh": "CV / AI 期刊", "file": "ai-journals.json", "icon": "book" },
+  { "key": "ai-conferences", "label": "CV / AI Conferences", "label_zh": "CV / AI 会议", "file": "ai-conferences.json", "icon": "calendar" },
+  { "key": "rs-conferences", "label": "Remote Sensing Conferences", "label_zh": "遥感会议", "file": "rs-conferences.json", "icon": "calendar" }
+]

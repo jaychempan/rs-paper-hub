@@ -1,0 +1,15 @@
+[
+  { "name": "IEEE Trans. Geoscience and Remote Sensing", "abbr": "TGRS", "url": "https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=36" },
+  { "name": "ISPRS J. Photogrammetry and Remote Sensing", "abbr": "ISPRS", "url": "https://www.sciencedirect.com/journal/isprs-journal-of-photogrammetry-and-remote-sensing" },
+  { "name": "Remote Sensing of Environment", "abbr": "RSE", "url": "https://www.sciencedirect.com/journal/remote-sensing-of-environment" },
+  { "name": "Int. J. Applied Earth Observation and Geoinformation", "abbr": "JAG", "url": "https://www.sciencedirect.com/journal/international-journal-of-applied-earth-observation-and-geoinformation" },
+  { "name": "IEEE Geoscience and Remote Sensing Letters", "abbr": "GRSL", "url": "https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=8859" },
+  { "name": "Remote Sensing (MDPI)", "abbr": "RS", "url": "https://www.mdpi.com/journal/remotesensing" },
+  { "name": "IEEE J. Selected Topics in Applied Earth Obs. & RS", "abbr": "JSTARS", "url": "https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=4609443" },
+  { "name": "GIScience & Remote Sensing", "abbr": "GRS", "url": "https://www.tandfonline.com/journals/tgrs20" },
+  { "name": "International Journal of Remote Sensing", "abbr": "IJRS", "url": "https://www.tandfonline.com/journals/tres20" },
+  { "name": "Remote Sensing Letters", "abbr": "RSL", "url": "https://www.tandfonline.com/journals/trsl20" },
+  { "name": "IEEE Geoscience and Remote Sensing Magazine", "abbr": "GRSM", "url": "https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=6245518" },
+  { "name": "Photogrammetric Engineering & Remote Sensing", "abbr": "PE&RS", "url": "https://www.asprs.org/asprs-publications/pers" },
+  { "name": "Geo-spatial Information Science", "abbr": "GSIS", "url": "https://www.tandfonline.com/journals/tgsi20" }
+]
