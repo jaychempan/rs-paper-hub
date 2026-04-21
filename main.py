@@ -55,13 +55,19 @@ def save_results(papers: list[dict], output_dir: str):
     logging.info(f"Saved {len(papers)} papers to {json_path}")
 
 
+def _strip_version(link: str) -> str:
+    """Strip arxiv version suffix: http://arxiv.org/abs/1234.5678v2 -> http://arxiv.org/abs/1234.5678"""
+    import re
+    return re.sub(r'v\d+$', '', link) if link else link
+
+
 def load_existing(output_dir: str) -> set[str]:
-    """Load existing paper links to support incremental scraping."""
+    """Load existing paper links (version-stripped) to support incremental scraping."""
     csv_path = os.path.join(output_dir, CSV_FILENAME)
     if os.path.exists(csv_path):
         try:
             df = pd.read_csv(csv_path)
-            return set(df["Paper_link"].dropna())
+            return set(_strip_version(link) for link in df["Paper_link"].dropna())
         except Exception:
             pass
     return set()
@@ -195,17 +201,28 @@ def main():
     logger.info("Parsing paper metadata...")
     papers = parse_results(results)
 
-    # Step 3: Incremental mode - filter out existing
+    # Step 3: Incremental mode - filter out existing, update links for new versions
+    updated_links = {}
     if args.incremental:
         existing = load_existing(args.output_dir)
         before = len(papers)
-        papers = [p for p in papers if p["Paper_link"] not in existing]
+        new_papers = []
+        for p in papers:
+            base = _strip_version(p["Paper_link"])
+            if base not in existing:
+                new_papers.append(p)
+            else:
+                # Track version updates (new link for existing paper)
+                updated_links[base] = p
+        papers = new_papers
         logger.info(f"Incremental: {before - len(papers)} existing skipped, {len(papers)} new")
+        if updated_links:
+            logger.info(f"  {len(updated_links)} papers have version updates")
 
     # Record new paper count in progress
     progress.update_new_count(len(papers))
 
-    if not papers:
+    if not papers and not updated_links:
         logger.info("No new papers to process.")
         return
 
@@ -226,6 +243,16 @@ def main():
         csv_path = os.path.join(args.output_dir, CSV_FILENAME)
         if os.path.exists(csv_path):
             existing_df = pd.read_csv(csv_path)
+            # Apply version updates (new link/title) to existing papers
+            if updated_links:
+                def _apply_update(row):
+                    base = _strip_version(str(row.get("Paper_link", "")))
+                    if base in updated_links:
+                        upd = updated_links[base]
+                        row["Paper_link"] = upd["Paper_link"]
+                        row["Title"] = upd.get("Title", row["Title"])
+                    return row
+                existing_df = existing_df.apply(_apply_update, axis=1)
             new_df = pd.DataFrame(papers)
             combined = pd.concat([existing_df, new_df], ignore_index=True)
             papers = combined.to_dict("records")
