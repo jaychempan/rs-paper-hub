@@ -2,10 +2,10 @@ name: Daily Paper Update
 
 on:
   schedule:
-    # Run Mon-Fri at 00:30 UTC (08:30 Beijing Time), 30min after arXiv announcements
+    # Run Mon-Fri at 00:15 UTC (08:15 Beijing Time), 15min after arXiv announcements
     # arXiv publishes new papers Sun-Thu at 20:00 EDT (00:00 UTC next day)
     # No arXiv announcements on Fri/Sat, so skip weekends
-    - cron: '30 0 * * 1-5'
+    - cron: '15 0 * * 1-5'
   workflow_dispatch:  # Allow manual trigger
 
 permissions:
@@ -38,7 +38,8 @@ jobs:
       - name: Check for changes
         id: changes
         run: |
-          git diff --quiet output/ groups/ && echo "changed=false" >> $GITHUB_OUTPUT || echo "changed=true" >> $GITHUB_OUTPUT
+          git add output/ groups/
+          git diff --cached --quiet && echo "changed=false" >> $GITHUB_OUTPUT || echo "changed=true" >> $GITHUB_OUTPUT
 
       - name: Commit and push
         if: steps.changes.outputs.changed == 'true'

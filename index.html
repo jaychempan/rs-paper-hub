@@ -805,7 +805,7 @@ const LANG = {
     downloadBib: 'Download .bib', exportGroup: 'Export Group', groupNamePlaceholder: 'Group name',
     ds_all: 'All Papers', ds_vlm: 'Vision-Language Model', ds_agent: 'Agent', ds_uav: 'UAV',
     noBibtex: 'No BibTeX available',
-    scholar: 'Scholar',
+    scholar: 'Scholar', copyInfo: 'Copy', copyInfoDone: 'Copied!',
     before: 'Before', more: 'more',
     visits: 'visits:',
     friendLinks: 'Links',
@@ -849,7 +849,7 @@ const LANG = {
     downloadBib: '下载 .bib', exportGroup: '导出研究组', groupNamePlaceholder: '研究组名称',
     ds_all: '全部论文', ds_vlm: '视觉语言模型', ds_agent: 'Agent', ds_uav: '无人机',
     noBibtex: '暂无引用信息',
-    scholar: '谷歌学术',
+    scholar: '谷歌学术', copyInfo: '复制', copyInfoDone: '已复制！',
     before: '早于', more: '更多',
     visits: '访问量：',
     friendLinks: '友情链接',
@@ -1006,6 +1006,7 @@ const ICON = {
   authors: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
   abstract: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg>',
   scholar: '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M5.242 13.769L0 9.5 12 0l12 9.5-5.242 4.269C17.548 11.249 14.978 9.5 12 9.5c-2.977 0-5.548 1.748-6.758 4.269zM12 10a7 7 0 1 0 0 14 7 7 0 0 0 0-14z"/></svg>',
+  copy: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
 };
 const TASK_NAMES = {
   CLS: 'Classification', ITR: 'Image-Text Retrieval', GeoLoc: 'Geolocation',
@@ -1444,6 +1445,7 @@ function render() {
         ${codeLink}
         <a href="javascript:void(0)" onclick="event.stopPropagation(); showBibtex(${idx})">${ICON.bibtex}${t('bibtex')}</a>
         <a href="${scholarUrl}" target="_blank" onclick="event.stopPropagation()">${ICON.scholar}${t('scholar')}</a>
+        <a href="javascript:void(0)" onclick="event.stopPropagation(); copyPaperInfo(this, ${idx})">${ICON.copy}${t('copyInfo')}</a>
         <button class="collect-btn${isCollected?' collected':''}" onclick="event.stopPropagation(); toggleCollect(${idx})">${collectIcon}${isCollected?t('collectDone'):t('collect')}</button>
       </div>
     </div>`;
@@ -1641,6 +1643,16 @@ function showBibtex(idx) {
 
 function closeBibtex() {
   document.getElementById('bibtexModal').classList.remove('show');
+}
+
+function copyPaperInfo(el, idx) {
+  const p = filtered[idx];
+  const text = `Title: ${p.Title}\nAuthors: ${p.Authors}\nPaper_Link: ${p.Paper_link}\nAbstract: ${p.Abstract}`;
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = el.innerHTML;
+    el.innerHTML = ICON.copy + t('copyInfoDone');
+    setTimeout(() => el.innerHTML = orig, 1500);
+  });
 }
 
 function copyBibtex() {
