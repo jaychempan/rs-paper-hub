@@ -957,8 +957,8 @@
     <button class="recent-panel-close" onclick="toggleRecentPanel()">&times;</button>
   </div>
   <div class="recent-tabs">
-    <button class="recent-tab active" onclick="switchRecentTab('daily', this)">Today</button>
-    <button class="recent-tab" onclick="switchRecentTab('weekly', this)">This Week</button>
+    <button class="recent-tab active" data-tab="daily" onclick="switchRecentTab('daily', this)">Today</button>
+    <button class="recent-tab" data-tab="weekly" onclick="switchRecentTab('weekly', this)">This Week</button>
   </div>
   <div class="recent-list" id="recentList"></div>
 </div>
@@ -1050,7 +1050,7 @@ const LANG = {
     noMatchToday: 'No remote sensing papers published today.',
     noMatchWeek: 'No remote sensing papers found this week yet.',
     paper: 'Paper', code: 'Code', collect: 'Collect', collectDone: 'Collected',
-    newPapers: 'NEW PAPERS', recentPapers: 'Recent Papers',
+    newPapers: 'NEW PAPERS', recentPapers: 'Recent Papers', newBadge: 'New',
     noPapersToday: 'No papers today yet', noPapersWeek: 'No papers this week',
     bibtex: 'BibTeX', copyClipboard: 'Copy to Clipboard', copied: 'Copied!',
     exportBibtex: 'Export BibTeX', filteredAvail: 'filtered papers available.',
@@ -1092,6 +1092,7 @@ const LANG = {
     monthNames: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
     allCategories: '所有类别', allVLM: '所有 VLM', vlmOnly: '仅 VLM', nonVLM: '非 VLM',
     allKeywords: '所有关键词', allTasks: '所有任务',
+    today: '今日', thisWeek: '本周',
     sortNew: '最新', sortOld: '最旧', sortAZ: 'A-Z',
     charts: '图表',
     chartPapersByYear: '论文年度分布', chartTopTypes: '热门类型',
@@ -1102,7 +1103,7 @@ const LANG = {
     noMatchToday: '今日暂无遥感论文发布。',
     noMatchWeek: '本周暂无遥感论文。',
     paper: '论文', code: '代码', collect: '收藏', collectDone: '已收藏',
-    newPapers: '最新论文', recentPapers: '近期论文',
+    newPapers: '最新论文', recentPapers: '近期论文', newBadge: '新增',
     noPapersToday: '今日暂无论文', noPapersWeek: '本周暂无论文',
     bibtex: '引用', copyClipboard: '复制到剪贴板', copied: '已复制！',
     exportBibtex: '导出引用', filteredAvail: '篇筛选论文可导出。',
@@ -2311,18 +2312,25 @@ function renderRecentList() {
   const list = document.getElementById('recentList');
   const ranges = getArxivDateRanges();
 
-  let papers;
-  if (recentTab === 'daily') {
-    papers = allPapers.filter(p => ranges.todayFrom && (p._added_date || '') >= ranges.todayFrom && (p._added_date || '') <= ranges.todayTo);
-  } else {
-    papers = allPapers.filter(p => (p._added_date || '') >= ranges.weekFrom);
-  }
+  const dailyPapers = allPapers.filter(p => ranges.todayFrom && (p._added_date || '') >= ranges.todayFrom && (p._added_date || '') <= ranges.todayTo);
+  const weeklyPapers = allPapers.filter(p => (p._added_date || '') >= ranges.weekFrom);
+
+  // Update tab labels with counts
+  const tabs = document.querySelectorAll('.recent-tab');
+  tabs.forEach(tab => {
+    if (tab.getAttribute('data-tab') === 'daily') {
+      tab.textContent = dailyPapers.length > 0 ? `${t('today')} (${dailyPapers.length})` : t('today');
+    } else {
+      tab.textContent = weeklyPapers.length > 0 ? `${t('thisWeek')} (${weeklyPapers.length})` : t('thisWeek');
+    }
+  });
+
+  let papers = recentTab === 'daily' ? dailyPapers : weeklyPapers;
   papers.sort((a, b) => (b.Date || '').localeCompare(a.Date || ''));
 
   // Update toggle badge
   const toggle = document.getElementById('recentToggle');
-  const dailyCount = allPapers.filter(p => ranges.todayFrom && (p._added_date || '') >= ranges.todayFrom && (p._added_date || '') <= ranges.todayTo).length;
-  toggle.textContent = dailyCount > 0 ? `NEW +${dailyCount}` : t('newPapers');
+  toggle.textContent = dailyPapers.length > 0 ? `${t('newBadge')} +${dailyPapers.length}` : t('newPapers');
 
   if (papers.length === 0) {
     list.innerHTML = `<div class="recent-empty">${recentTab === 'daily' ? t('noPapersToday') : t('noPapersWeek')}</div>`;
