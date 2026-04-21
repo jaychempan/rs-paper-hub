@@ -1,0 +1,9 @@
+[
+  { "name": "BigEarthNet", "url": "https://bigearth.net/" },
+  { "name": "RESISC-45", "url": "https://gcheng-nwpu.github.io/#Datasets" },
+  { "name": "AID", "url": "https://captain-whu.github.io/AID/" },
+  { "name": "UC Merced", "url": "http://weegee.vision.ucmerced.edu/datasets/landuse.html" },
+  { "name": "fMoW", "url": "https://github.com/fMoW/dataset" },
+  { "name": "EuroSAT", "url": "https://github.com/phelber/EuroSAT" },
+  { "name": "PatternNet", "url": "https://sites.google.com/view/zhouwx/dataset" }
+]
