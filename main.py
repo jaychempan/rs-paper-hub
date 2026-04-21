@@ -38,7 +38,7 @@ def save_results(papers: list[dict], output_dir: str):
     columns = [
         "Type", "Subtype", "Date", "Month", "Year", "Institute",
         "Title", "abbr.", "Paper_link", "Abstract",
-        "code", "Publication", "BibTex", "Authors",
+        "code", "Publication", "BibTex", "Authors", "_added_date",
     ]
 
     # CSV
