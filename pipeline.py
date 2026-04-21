@@ -229,25 +229,53 @@ def run(input_path: str, output_dir: str):
         json.dump(uav_annotated, f, ensure_ascii=False, indent=2)
     logger.info(f"  -> {uav_annotated_path}")
 
-    # ── Step 11: Update auto groups ────────────────────
-    logger.info("[11/13] Updating auto groups...")
+    # ── Step 11: Filter SAR papers ─────────────────────
+    logger.info("[11/15] Filtering SAR-related papers...")
+    from cleaning.filter.sar_filter import filter_sar_papers
+    sar_matched, sar_annotated = filter_sar_papers(papers)
+    logger.info(f"  SAR-related: {len(sar_matched)} / {len(papers)}")
+
+    # ── Step 12: Classify SAR papers ─────────────────────
+    logger.info("[12/15] Classifying SAR papers...")
+    classify_papers(sar_matched)
+
+    sar_cat_counter = Counter(p.get("Category", "Other") for p in sar_matched)
+    for cat, count in sar_cat_counter.most_common():
+        logger.info(f"  {cat}: {count}")
+
+    # ── Save SAR outputs ─────────────────────────────────
+    logger.info("Saving SAR outputs...")
+    save(
+        sar_matched,
+        os.path.join(output_dir, "papers_sar.csv"),
+        os.path.join(output_dir, "papers_sar.json"),
+        ALL_COLUMNS,
+    )
+
+    sar_annotated_path = os.path.join(output_dir, "papers_sar_annotated.json")
+    with open(sar_annotated_path, "w", encoding="utf-8") as f:
+        json.dump(sar_annotated, f, ensure_ascii=False, indent=2)
+    logger.info(f"  -> {sar_annotated_path}")
+
+    # ── Step 13: Update auto groups ────────────────────
+    logger.info("[13/15] Updating auto groups...")
     from update_groups import update_auto_groups
     update_auto_groups(os.path.join(output_dir, "papers.json"), "groups")
 
-    # ── Step 12: Generate Atom feeds for Zotero ──────────
-    logger.info("[12/13] Generating Atom feeds...")
+    # ── Step 14: Generate Atom feeds for Zotero ──────────
+    logger.info("[14/15] Generating Atom feeds...")
     from rss_generator import generate_feeds
     generate_feeds(papers, matched, agent_matched, uav_matched, output_dir,
                    site_url="https://rspaper.top")
 
-    # ── Step 13: Generate trends statistics ──────────────
-    logger.info("[13/13] Generating trends statistics...")
+    # ── Step 15: Generate trends statistics ──────────────
+    logger.info("[15/15] Generating trends statistics...")
     from trends.generate import main as generate_trends
     generate_trends()
 
     # ── Summary ───────────────────────────────────────────
     logger.info("=" * 50)
-    logger.info(f"Done! Total: {len(papers)} | VLM: {len(matched)} | Agent: {len(agent_matched)} | UAV: {len(uav_matched)}")
+    logger.info(f"Done! Total: {len(papers)} | VLM: {len(matched)} | Agent: {len(agent_matched)} | UAV: {len(uav_matched)} | SAR: {len(sar_matched)}")
     logger.info(f"  papers.csv/json             - all {len(papers)} papers (cleaned)")
     logger.info(f"  papers_vlm.csv/json         - {len(matched)} VLM papers (with Category)")
     logger.info(f"  papers_vlm_annotated.json   - full list with VLM flags")
@@ -255,6 +283,8 @@ def run(input_path: str, output_dir: str):
     logger.info(f"  papers_agent_annotated.json - full list with Agent flags")
     logger.info(f"  papers_uav.csv/json         - {len(uav_matched)} UAV papers (with Category)")
     logger.info(f"  papers_uav_annotated.json   - full list with UAV flags")
+    logger.info(f"  papers_sar.csv/json         - {len(sar_matched)} SAR papers (with Category)")
+    logger.info(f"  papers_sar_annotated.json   - full list with SAR flags")
 
 
 def main():

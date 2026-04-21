@@ -418,16 +418,32 @@
   #vlmFilter, #vlmKeywordFilter { border-color: #f9a8d4; color: #9d174d; background-color: #fdf2f8; }
   #taskFilter { border-color: #fdba74; color: #c2410c; background-color: #fff7ed; }
   .ds-tabs {
-    display: inline-flex; border: 1.5px solid var(--primary); border-radius: 10px; overflow: hidden;
+    display: inline-flex; border: 1.5px solid var(--primary); border-radius: 10px; overflow: visible; position: relative;
   }
-  .ds-tabs button {
+  .ds-tabs > button, .ds-tabs > .ds-toggle-wrap > button[data-key] {
     padding: 7px 16px; border: none; background: transparent; font-size: 13px; font-weight: 600;
     cursor: pointer; color: var(--primary); transition: all 0.2s; white-space: nowrap;
     border-right: 1px solid var(--primary-light);
   }
-  .ds-tabs button:last-child { border-right: none; }
-  .ds-tabs button:hover { background: var(--primary-light); }
-  .ds-tabs button.active { background: var(--primary); color: white; }
+  .ds-tabs > button:last-of-type { border-right: none; }
+  .ds-tabs > button:hover { background: var(--primary-light); }
+  .ds-tabs > button.active, .ds-tabs .ds-dropdown button.active { background: var(--primary); color: white; }
+  .ds-toggle-wrap { position: relative; display: inline-flex; }
+  .ds-toggle-wrap > .ds-toggle-btn { border-right: none; border-radius: 0 8px 8px 0; }
+  .ds-dropdown {
+    display: none; position: absolute; top: calc(100% + 4px); right: 0; z-index: 100;
+    background: var(--card, #fff); border: 1.5px solid var(--primary); border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1); overflow: hidden; min-width: 140px;
+  }
+  .ds-dropdown button {
+    display: block; width: 100%; padding: 8px 16px; border: none; background: transparent;
+    font-size: 13px; font-weight: 600; cursor: pointer; color: var(--primary);
+    transition: all 0.15s; text-align: left; white-space: nowrap;
+    border-bottom: 1px solid var(--primary-light);
+  }
+  .ds-dropdown button:last-child { border-bottom: none; }
+  .ds-dropdown button:hover { background: var(--primary-light); }
+  .ds-dropdown.show { display: block; }
   .ds-select {
     padding: 7px 30px 7px 12px; border: 1.5px solid var(--primary); border-radius: 10px;
     font-size: 13px; font-weight: 600; color: var(--primary); background: white;
@@ -1118,7 +1134,7 @@ const LANG = {
     exportRange: 'Export range:',
     includeAbstracts: 'Include abstracts',
     downloadBib: 'Download .bib', exportGroup: 'Export Group', groupNamePlaceholder: 'Group name',
-    ds_all: 'All Papers', ds_vlm: 'Vision-Language Model', ds_agent: 'Agent', ds_uav: 'UAV',
+    ds_all: 'All Papers', ds_vlm: 'Vision-Language Model', ds_agent: 'Agent', ds_uav: 'UAV', ds_sar: 'SAR',
     noBibtex: 'No BibTeX available',
     scholar: 'Scholar', copyInfo: 'Copy', copyInfoDone: 'Copied!',
     navPapers: 'Papers', navTrends: 'Trends', navSkills: 'Skills', navVenues: 'Venues', navResources: 'Resources',
@@ -1179,7 +1195,7 @@ const LANG = {
     exportRange: '导出范围：',
     includeAbstracts: '包含摘要',
     downloadBib: '下载 .bib', exportGroup: '导出研究组', groupNamePlaceholder: '研究组名称',
-    ds_all: '全部论文', ds_vlm: '视觉语言模型', ds_agent: 'Agent', ds_uav: '无人机',
+    ds_all: '全部论文', ds_vlm: '视觉语言模型', ds_agent: 'Agent', ds_uav: '无人机', ds_sar: 'SAR',
     noBibtex: '暂无引用信息',
     scholar: '谷歌学术', copyInfo: '复制', copyInfoDone: '已复制！',
     navPapers: '论文', navTrends: '趋势', navSkills: '技能', navVenues: '期刊会议', navResources: '资源',
@@ -1331,8 +1347,8 @@ function applyLang() {
   document.getElementById('exportGroupName').placeholder = t('groupNamePlaceholder');
   const exportAvailLabel = document.getElementById('exportAvailLabel');
   if (exportAvailLabel) exportAvailLabel.textContent = t('filteredAvail');
-  // Data source tabs
-  document.querySelectorAll('#dataSource button').forEach(btn => {
+  // Data source tabs + dropdown
+  document.querySelectorAll('#dataSource button[data-key], .ds-dropdown button[data-key]').forEach(btn => {
     btn.textContent = t('ds_' + btn.dataset.key);
   });
   document.querySelectorAll('#dataSourceSelect option').forEach(opt => {
@@ -1351,6 +1367,8 @@ function applyLang() {
   renderGroupSelect();
   renderVenues();
   renderResources();
+  // Refresh trends (data source labels + content)
+  if (trendsData) { initTrendsDataSource(); renderTrends(); }
 }
 
 function toggleLang() {
@@ -1414,9 +1432,10 @@ const TASK_NAMES = {
 };
 const DATA_SOURCES = [
   { label: 'All Papers', file: 'papers.json', key: 'all' },
-  { label: 'UAV', file: 'papers_uav.json', key: 'uav' },
   { label: 'Vision-Language Model', file: 'papers_vlm.json', key: 'vlm' },
+  { label: 'UAV', file: 'papers_uav.json', key: 'uav' },
   { label: 'Agent', file: 'papers_agent.json', key: 'agent' },
+  { label: 'SAR', file: 'papers_sar.json', key: 'sar' },
 ];
 let allPapers = [];
 let filtered = [];
@@ -1435,41 +1454,126 @@ let fuzzySearch = false;
 function initDataSourceSelect() {
   const container = document.getElementById('dataSource');
   const sel = document.getElementById('dataSourceSelect');
-  DATA_SOURCES.forEach((ds, i) => {
-    // Tab buttons
-    const btn = document.createElement('button');
-    btn.dataset.key = ds.key;
-    btn.textContent = t('ds_' + ds.key);
-    if (i === 0) btn.classList.add('active');
-    btn.addEventListener('click', () => {
-      container.querySelectorAll('button').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      sel.value = ds.key;
-      location.hash = ds.key;
-      loadDataFromSource(ds);
+  const FIXED_COUNT = 2; // All Papers, UAV always visible
+  let swapIdx = 2; // index of the item currently in the 3rd slot (default: VLM)
+  let dsExpanded = false;
+
+  function closeDropdown() {
+    dsExpanded = false;
+    dropdown.classList.remove('show');
+    toggleBtn.innerHTML = '▾';
+    toggleBtn.style.background = 'transparent';
+  }
+
+  function rebuildTabs(activeKey) {
+    // Clear container
+    container.innerHTML = '';
+    sel.innerHTML = '';
+
+    // Determine visible keys: first FIXED_COUNT + the swapped item
+    const visibleIndices = [];
+    for (let i = 0; i < FIXED_COUNT && i < DATA_SOURCES.length; i++) visibleIndices.push(i);
+    if (swapIdx >= FIXED_COUNT) visibleIndices.push(swapIdx);
+
+    // Build visible buttons
+    visibleIndices.forEach(idx => {
+      const ds = DATA_SOURCES[idx];
+      const btn = document.createElement('button');
+      btn.dataset.key = ds.key;
+      btn.textContent = t('ds_' + ds.key);
+      if (ds.key === activeKey) btn.classList.add('active');
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        activateSource(ds.key);
+      });
+      container.appendChild(btn);
     });
-    container.appendChild(btn);
-    // Select option
-    const opt = document.createElement('option');
-    opt.value = ds.key;
-    opt.textContent = t('ds_' + ds.key);
-    sel.appendChild(opt);
-  });
-  sel.addEventListener('change', () => {
-    const ds = DATA_SOURCES.find(d => d.key === sel.value);
-    if (ds) {
-      container.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.key === ds.key));
-      location.hash = ds.key;
-      loadDataFromSource(ds);
+
+    // Build dropdown items (everything not visible)
+    dropdown.innerHTML = '';
+    DATA_SOURCES.forEach((ds, i) => {
+      if (visibleIndices.includes(i)) return;
+      const btn = document.createElement('button');
+      btn.dataset.key = ds.key;
+      btn.textContent = t('ds_' + ds.key);
+      if (ds.key === activeKey) btn.classList.add('active');
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        // Swap this item into the 3rd visible slot
+        swapIdx = i;
+        closeDropdown();
+        activateSource(ds.key);
+      });
+      dropdown.appendChild(btn);
+    });
+
+    // Append toggle + dropdown
+    if (DATA_SOURCES.length > FIXED_COUNT + 1) {
+      toggleWrap.appendChild(toggleBtn);
+      toggleWrap.appendChild(dropdown);
+      container.appendChild(toggleWrap);
     }
-  });
-  // Restore last selection from URL hash
+
+    // Build select options
+    DATA_SOURCES.forEach(ds => {
+      const opt = document.createElement('option');
+      opt.value = ds.key;
+      opt.textContent = t('ds_' + ds.key);
+      if (ds.key === activeKey) opt.selected = true;
+      sel.appendChild(opt);
+    });
+  }
+
+  function activateSource(key) {
+    const ds = DATA_SOURCES.find(d => d.key === key);
+    if (!ds) return;
+    // If the selected key is in the overflow, swap it into visible
+    const idx = DATA_SOURCES.indexOf(ds);
+    if (idx >= FIXED_COUNT && idx !== swapIdx) {
+      swapIdx = idx;
+    }
+    rebuildTabs(key);
+    sel.value = key;
+    location.hash = key;
+    loadDataFromSource(ds);
+  }
+
+  // Toggle wrap (holds toggle button + dropdown)
+  const toggleWrap = document.createElement('span');
+  toggleWrap.className = 'ds-toggle-wrap';
+  const dropdown = document.createElement('div');
+  dropdown.className = 'ds-dropdown';
+  const toggleBtn = document.createElement('button');
+  toggleBtn.className = 'ds-toggle-btn';
+  toggleBtn.innerHTML = '▾';
+  toggleBtn.style.cssText = 'padding:7px 10px;border:none;background:transparent;cursor:pointer;font-size:12px;color:var(--primary);transition:all 0.15s;';
+  toggleBtn.onmouseenter = () => { toggleBtn.style.background = 'var(--primary-light)'; };
+  toggleBtn.onmouseleave = () => { if (!dsExpanded) toggleBtn.style.background = 'transparent'; };
+  toggleBtn.onclick = (e) => {
+    e.stopPropagation();
+    dsExpanded = !dsExpanded;
+    dropdown.classList.toggle('show', dsExpanded);
+    toggleBtn.innerHTML = dsExpanded ? '▴' : '▾';
+    toggleBtn.style.background = dsExpanded ? 'var(--primary-light)' : 'transparent';
+  };
+
+  // Close dropdown on outside click
+  document.addEventListener('click', () => { if (dsExpanded) closeDropdown(); });
+
+  sel.addEventListener('change', () => { activateSource(sel.value); });
+
+  // Determine initial active key from URL hash
   const hash = location.hash.replace('#', '');
   const matchedDs = DATA_SOURCES.find(d => d.key === hash);
+  const activeKey = matchedDs ? matchedDs.key : DATA_SOURCES[0].key;
+
+  // If active item is in overflow, swap it into visible slot
   if (matchedDs) {
-    container.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.key === matchedDs.key));
-    sel.value = matchedDs.key;
+    const idx = DATA_SOURCES.indexOf(matchedDs);
+    if (idx >= FIXED_COUNT) swapIdx = idx;
   }
+
+  rebuildTabs(activeKey);
 }
 
 function loadDataFromSource(ds) {
@@ -1582,8 +1686,8 @@ function initTrendsDataSource() {
   if (!wrap || !trendsData) return;
   wrap.innerHTML = '';
   const keys = Object.keys(trendsData).filter(k => k !== '_last_updated');
-  const labels_en = { all: 'All Papers', vlm: 'VLM', uav: 'UAV', agent: 'Agent' };
-  const labels_zh = { all: '全部论文', vlm: '视觉语言模型', uav: '无人机', agent: 'Agent' };
+  const labels_en = { all: 'All Papers', vlm: 'VLM', uav: 'UAV', agent: 'Agent', sar: 'SAR' };
+  const labels_zh = { all: '全部论文', vlm: '视觉语言模型', uav: '无人机', agent: 'Agent', sar: 'SAR' };
   const labels = currentLang === 'zh' ? labels_zh : labels_en;
   keys.forEach(k => {
     const btn = document.createElement('button');
