@@ -770,7 +770,6 @@
   <div class="skills-page">
     <div class="skills-header">
       <h2 data-i18n="skillsTitle">Skills</h2>
-      <p data-i18n="skillsDesc">A curated collection of research skills — reading, writing, coding and beyond. Contributions welcome!</p>
     </div>
     <div class="skills-grid">
 
@@ -954,6 +953,8 @@ const LANG = {
     scholar: 'Scholar', copyInfo: 'Copy', copyInfoDone: 'Copied!',
     navPapers: 'Papers', navSkills: 'Skills',
     skillsTitle: 'Skills', skillsDesc: 'A curated collection of research skills — reading, writing, coding and beyond. Contributions welcome!',
+    notePapers: 'Note: There is a 2–3 day delay between the publication date and the announcement date of arXiv papers; Category and task labels are rule-based and may contain inaccuracies. We are continuously improving them. This does not affect tracking the latest research trends.',
+    noteSkills: 'Note: A curated collection of research skills — reading, writing, coding and beyond. Contributions welcome!',
     before: 'Before', more: 'more',
     visits: 'visits:',
     friendLinks: 'Links',
@@ -1000,6 +1001,8 @@ const LANG = {
     scholar: '谷歌学术', copyInfo: '复制', copyInfoDone: '已复制！',
     navPapers: '论文', navSkills: '技能',
     skillsTitle: '技能工具', skillsDesc: '汇集阅读、写作、编程等科研技能，欢迎分享与贡献！',
+    notePapers: 'Note: arXiv 论文的发布日期与公布日期之间有 2-3 天的延迟；类别和任务标签基于规则生成，可能存在不准确之处。我们正在持续改进。这不影响追踪最新研究动态。',
+    noteSkills: 'Note: 汇集阅读、写作、编程等科研技能，欢迎分享与贡献！',
     before: '早于', more: '更多',
     visits: '访问量：',
     friendLinks: '友情链接',
@@ -1157,6 +1160,12 @@ function switchPage(page, el) {
   const target = document.getElementById('page-' + page);
   if (target) target.classList.add('active');
   if (el) el.classList.add('active');
+  // Update note text based on active page
+  const note = document.getElementById('noteDisclaimer');
+  if (note) note.textContent = t('note' + page.charAt(0).toUpperCase() + page.slice(1));
+  // Show/hide stats bar on non-papers pages
+  const stats = document.getElementById('statsBar');
+  if (stats) stats.style.display = page === 'papers' ? '' : 'none';
   localStorage.setItem('activePage', page);
   window.scrollTo({ top: 0 });
 }
