@@ -56,8 +56,7 @@
   }
   .sidebar-item:hover .sidebar-item-label { opacity: 1; }
   .top-fixed {
-    position: sticky; top: 0; z-index: 100;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    z-index: 100;
   }
   .page-content { flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
   .main-wrap { flex: 1; }
@@ -697,8 +696,9 @@
 
 <div class="stats-bar" id="statsBar"></div>
 <div style="max-width:1200px;margin:0 auto;padding:8px 24px 4px;background:var(--bg);">
-  <div id="noteDisclaimer" style="font-size:12px;color:#94a3b8;background:#f8fafc;border:1px dashed #e2e8f0;border-radius:6px;padding:6px 12px;text-align:center;">
-    Note: There is a 2–3 day delay between the publication date and the announcement date of arXiv papers; Category and task labels are rule-based and may contain inaccuracies. We are continuously improving them. This does not affect tracking the latest research trends.
+  <div id="noteDisclaimer" style="font-size:12px;color:#94a3b8;background:#f8fafc;border:1px dashed #e2e8f0;border-radius:6px;padding:6px 12px;text-align:center;display:inline-flex;align-items:center;justify-content:center;gap:6px;width:100%;box-sizing:border-box;">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    <span id="noteText"></span>
   </div>
 </div>
 </div><!-- .top-fixed -->
@@ -1038,9 +1038,9 @@ const LANG = {
     scholar: 'Scholar', copyInfo: 'Copy', copyInfoDone: 'Copied!',
     navPapers: 'Papers', navSkills: 'Skills', navVenues: 'Venues',
     skillsTitle: 'Skills', skillsDesc: 'A curated collection of research skills — reading, writing, coding and beyond. Contributions welcome!',
-    notePapers: 'Note: There is a 2–3 day delay between the publication date and the announcement date of arXiv papers; Category and task labels are rule-based and may contain inaccuracies. We are continuously improving them. This does not affect tracking the latest research trends.',
-    noteSkills: 'Note: A curated collection of research skills — reading, writing, coding and beyond. Contributions welcome!',
-    noteVenues: 'Note: A curated list of key journals and conferences in remote sensing and related AI/CV fields.',
+    notePapers: 'arXiv papers have a 2–3 day publication-to-announcement delay; category/task labels are rule-based and may be imprecise — we are continuously improving them.',
+    noteSkills: 'A curated collection of research skills — reading, writing, coding and beyond. Contributions welcome!',
+    noteVenues: 'A curated list of key journals and conferences in remote sensing and related AI/CV fields.',
     before: 'Before', more: 'more',
     visits: 'visits:',
     friendLinks: 'Links',
@@ -1087,9 +1087,9 @@ const LANG = {
     scholar: '谷歌学术', copyInfo: '复制', copyInfoDone: '已复制！',
     navPapers: '论文', navSkills: '技能', navVenues: '期刊会议',
     skillsTitle: '技能工具', skillsDesc: '汇集阅读、写作、编程等科研技能，欢迎分享与贡献！',
-    notePapers: 'Note: arXiv 论文的发布日期与公布日期之间有 2-3 天的延迟；类别和任务标签基于规则生成，可能存在不准确之处。我们正在持续改进。这不影响追踪最新研究动态。',
-    noteSkills: 'Note: 汇集阅读、写作、编程等科研技能，欢迎分享与贡献！',
-    noteVenues: 'Note: 遥感及相关 AI/CV 领域的核心期刊与会议汇总。',
+    notePapers: 'arXiv 论文发布与公告存在 2–3 天延迟；类别/任务标签基于规则，可能不完全准确，我们正在持续优化。',
+    noteSkills: '汇集阅读、写作、编程等科研技能，欢迎分享与贡献！',
+    noteVenues: '遥感及相关 AI/CV 领域的核心期刊与会议汇总。',
     before: '早于', more: '更多',
     visits: '访问量：',
     friendLinks: '友情链接',
@@ -1124,9 +1124,10 @@ function applyLang() {
     a.textContent = t(key);
     if (svg) a.prepend(svg);
   });
-  // Note
-  const noteEl = document.getElementById('noteDisclaimer');
-  if (noteEl) noteEl.textContent = t('noteDisclaimer');
+  // Note - update based on active page
+  const noteEl = document.getElementById('noteText');
+  const activePage = localStorage.getItem('activePage') || 'papers';
+  if (noteEl) noteEl.textContent = t('note' + activePage.charAt(0).toUpperCase() + activePage.slice(1));
   // Footer links label
   const flLabel = document.querySelector('.footer-links-label');
   if (flLabel) flLabel.textContent = t('friendLinks');
@@ -1248,7 +1249,7 @@ function switchPage(page, el) {
   if (target) target.classList.add('active');
   if (el) el.classList.add('active');
   // Update note text based on active page
-  const note = document.getElementById('noteDisclaimer');
+  const note = document.getElementById('noteText');
   if (note) note.textContent = t('note' + page.charAt(0).toUpperCase() + page.slice(1));
   // Show/hide stats bar on non-papers pages
   const stats = document.getElementById('statsBar');
