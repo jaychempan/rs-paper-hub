@@ -76,7 +76,37 @@ python pipeline.py
 
 两条命令搞定。所有输出文件（`papers.csv/json`、`papers_vlm.csv/json`、`papers_agent.csv/json`、`papers_uav.csv/json`、`papers_sar.csv/json`）自动更新。
 
+或者直接一行搞定：
+
+```bash
+bash run_daily.sh
+```
+
 > **注意：** `--incremental` 默认开启，已有论文会自动跳过。如需全量重新采集，请使用 `--no-incremental`。
+
+### 网页爬取备用方案（arXiv API 不可用时）
+
+arXiv API 偶尔会无法访问。项目提供了一个网页爬取备用方案，直接爬取 arXiv 搜索页面，产出格式完全一致：
+
+```bash
+# 使用网页爬虫替代 API
+bash run_daily.sh --web
+
+# 或直接运行
+python main_web.py --update
+```
+
+备用方案使用 `main_web.py` + `web_scraper.py` 爬取 `arxiv.org/search/`，搜索 "remote sensing" 和 "earth observation" 相关论文。该方案为**纯增量更新**——已有论文不会被修改，仅追加新论文。后续处理流程（`pipeline.py`）与 API 方式完全一致。
+
+| 参数 | 说明 | 默认值 |
+|------|------|--------|
+| `--update` | 快速更新（最近 7 天） | 关 |
+| `--days N` | 更新模式回溯天数 | 7 |
+| `--max-results N` | 最大论文数量 | 无限制 |
+| `--with-code` | 查询 Papers With Code 代码仓库 | 关 |
+| `-v, --verbose` | 详细日志 | 关 |
+
+> **依赖：** `beautifulsoup4`（已包含在 `requirements.txt` 中）
 
 ---
 
@@ -243,6 +273,7 @@ python main.py --download-only
 ```
 rs-paper-hub/
 ├── main.py              # 采集器命令行入口
+├── main_web.py          # 网页爬取备用方案（arXiv API 不可用时）
 ├── pipeline.py          # 一键处理：清洗 + 分类 + 任务标注 + VLM/Agent/UAV/SAR 筛选 + 趋势统计
 ├── filter_vlm.py        # 单独 VLM 筛选脚本
 ├── filter_agent.py      # 单独 Agent 筛选脚本
@@ -250,6 +281,7 @@ rs-paper-hub/
 ├── rss_generator.py     # Atom feed 生成器（Zotero 订阅）
 ├── config.py            # 搜索配置
 ├── scraper.py           # arXiv API 采集器
+├── web_scraper.py       # arXiv 网页爬虫（HTML 备用方案）
 ├── parser.py            # 元数据解析与 BibTeX 生成
 ├── downloader.py        # PDF 下载器（断点续传）
 ├── progress.py          # 进度追踪器

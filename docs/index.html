@@ -254,6 +254,7 @@
     <ul class="sidebar-nav">
       <li><a href="#pipeline"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><span data-i18n="pipeline">Pipeline</span></a></li>
       <li><a href="#cli"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg><span data-i18n="cli">CLI Reference</span></a></li>
+      <li><a href="#web-fallback"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 0 1-9 9m9-9a9 9 0 0 0-9-9m9 9H3m9 9a9 9 0 0 1-9-9m9 9c1.66 0 3-4.03 3-9s-1.34-9-3-9m0 18c-1.66 0-3-4.03-3-9s1.34-9 3-9"/></svg><span data-i18n="webFallback">Web Scraping Fallback</span></a></li>
       <li><a href="#schema"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span data-i18n="schema">Output Schema</span></a></li>
       <li><a href="#task-tags"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span data-i18n="taskTags">Task Tags</span></a></li>
       <li><a href="#submit-group"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span data-i18n="submitGroup">Submit Group</span></a></li>
@@ -424,7 +425,7 @@
 </div>
 
 <ul>
-  <li data-i18n="step1Desc"><strong>Fetch arXiv:</strong> Query the arXiv API for recent submissions in relevant categories</li>
+  <li data-i18n="step1Desc"><strong>Fetch arXiv:</strong> Query the arXiv API for recent submissions in relevant categories (or use the web scraping fallback when the API is down)</li>
   <li data-i18n="step2Desc"><strong>Filter RS:</strong> Apply keyword-based filtering to identify remote sensing papers</li>
   <li data-i18n="step3Desc"><strong>Extract Metadata:</strong> Parse paper titles, abstracts, authors, and dates</li>
   <li data-i18n="step4Desc"><strong>Topic Detection:</strong> Use keyword matching to filter VLM, Agent, UAV, and SAR related papers</li>
@@ -469,6 +470,44 @@ python main.py --dry-run
 
 # Verbose output
 python main.py --verbose</code></pre>
+</section>
+
+<section id="web-fallback">
+<h2 data-i18n="webFallback">Web Scraping Fallback</h2>
+<p data-i18n="webFallbackIntro">The arXiv API can occasionally be unreachable. A web scraping fallback is provided that produces the same output format by scraping arXiv search pages directly.</p>
+
+<h3 data-i18n="wfUsageTitle">Usage</h3>
+<pre><code># Use web scraper instead of API
+bash run_daily.sh --web
+
+# Or run directly
+python main_web.py --update
+
+# Look back 14 days instead of default 7
+python main_web.py --update --days 14
+
+# Limit fetch count
+python main_web.py --update --max-results 50</code></pre>
+
+<h3 data-i18n="wfHowTitle">How it works</h3>
+<ul>
+  <li data-i18n="wfHow1"><code>web_scraper.py</code> scrapes <code>arxiv.org/search/</code> for "remote sensing" and "earth observation" papers</li>
+  <li data-i18n="wfHow2"><code>main_web.py</code> handles incremental merging — existing papers are never modified, only new papers are appended</li>
+  <li data-i18n="wfHow3">The downstream pipeline (<code>pipeline.py</code>) works identically regardless of which fetch method is used</li>
+  <li data-i18n="wfHow4">All fields are guaranteed to have values (empty string instead of NaN/null for missing data)</li>
+</ul>
+
+<h3 data-i18n="wfArgsTitle">Arguments</h3>
+<div class="table-wrap">
+<table>
+  <tr><th>Argument</th><th>Description</th><th>Default</th></tr>
+  <tr><td><code>--update</code></td><td>Quick update (latest 7 days)</td><td>off</td></tr>
+  <tr><td><code>--days N</code></td><td>Number of days to look back in update mode</td><td>7</td></tr>
+  <tr><td><code>--max-results N</code></td><td>Maximum number of papers to fetch</td><td>unlimited</td></tr>
+  <tr><td><code>--with-code</code></td><td>Query Papers With Code for code repos</td><td>off</td></tr>
+  <tr><td><code>-v, --verbose</code></td><td>Verbose logging</td><td>off</td></tr>
+</table>
+</div>
 </section>
 
 <section id="schema">
@@ -621,7 +660,7 @@ const LANG = {
     rssAll: 'All Papers', rssVlm: 'VLM Papers', rssAgent: 'Agent Papers', rssUav: 'UAV Papers', rssSar: 'SAR Papers',
     gettingStarted: 'Getting Started', technical: 'Technical',
     overview: 'Overview', features: 'Features', webViewer: 'Web Viewer Guide', rssZotero: 'RSS & Zotero',
-    pipeline: 'Pipeline', cli: 'CLI Reference', schema: 'Output Schema', taskTags: 'Task Tags', submitGroup: 'Submit Group',
+    pipeline: 'Pipeline', cli: 'CLI Reference', webFallback: 'Web Scraping Fallback', schema: 'Output Schema', taskTags: 'Task Tags', submitGroup: 'Submit Group',
     siteTitle: 'RS Paper Hub', siteSubtitle: 'A curated collection of remote sensing papers from arXiv',
     overviewDesc1: 'RS Paper Hub is an automated system that collects, filters, and categorizes remote sensing papers from arXiv. It helps researchers stay updated with the latest developments in remote sensing, vision-language models, and AI agents.',
     overviewDesc2: 'The project provides multiple ways to access papers: a web interface, RSS feeds, and direct JSON downloads. All papers are automatically tagged with categories, tasks, and VLM-related keywords.',
@@ -650,9 +689,15 @@ const LANG = {
     rss3Title: 'Direct JSON Download', rss3Desc: 'For programmatic access, JSON files are also available:',
     pipelineIntro: 'The data processing pipeline consists of 15 steps:',
     step1: 'Fetch arXiv', step2: 'Filter RS', step3: 'Extract Metadata', step4: 'Topic Detection', step5: 'Task Tagging', step6: 'Task Tagging', step7: 'Classification', step8: 'Generate Feeds', step8b: 'Generate Trends', step9: 'Deploy',
-    step1Desc: 'Query the arXiv API for recent submissions in relevant categories', step2Desc: 'Apply keyword-based filtering to identify remote sensing papers', step3Desc: 'Parse paper titles, abstracts, authors, and dates', step4Desc: 'Use keyword matching to filter VLM, Agent, UAV, and SAR related papers', step5Desc: 'Classify papers into 11 task categories based on content', step6Desc: 'Classify papers into 11 task categories based on content', step7Desc: 'Categorize as Method, Survey, or Dataset', step8Desc: 'Create RSS feeds and JSON outputs', step8bDesc: 'Generate trend statistics (incremental)', step9Desc: 'Update the website with new data',
+    step1Desc: 'Query the arXiv API for recent submissions (or use web scraping fallback when the API is down)', step2Desc: 'Apply keyword-based filtering to identify remote sensing papers', step3Desc: 'Parse paper titles, abstracts, authors, and dates', step4Desc: 'Use keyword matching to filter VLM, Agent, UAV, and SAR related papers', step5Desc: 'Classify papers into 11 task categories based on content', step6Desc: 'Classify papers into 11 task categories based on content', step7Desc: 'Categorize as Method, Survey, or Dataset', step8Desc: 'Create RSS feeds and JSON outputs', step8bDesc: 'Generate trend statistics (incremental)', step9Desc: 'Update the website with new data',
     cliIntro: 'Run the pipeline using Python:',
     cli1Title: 'Arguments', cli2Title: 'Examples',
+    webFallbackIntro: 'The arXiv API can occasionally be unreachable. A web scraping fallback is provided that produces the same output format by scraping arXiv search pages directly.',
+    wfUsageTitle: 'Usage', wfHowTitle: 'How it works', wfArgsTitle: 'Arguments',
+    wfHow1: 'web_scraper.py scrapes arxiv.org/search/ for "remote sensing" and "earth observation" papers',
+    wfHow2: 'main_web.py handles incremental merging — existing papers are never modified, only new papers are appended',
+    wfHow3: 'The downstream pipeline (pipeline.py) works identically regardless of which fetch method is used',
+    wfHow4: 'All fields are guaranteed to have values (empty string instead of NaN/null for missing data)',
     schemaIntro: 'Each paper entry in the JSON output contains the following fields:',
     taskTagsIntro: 'Papers are automatically tagged with one or more of the following 11 task types:',
     submitGroupIntro: 'You can create a custom paper group to curate and share a reading list with the community. Groups appear in the "All Groups" dropdown on the main page.',
@@ -677,7 +722,7 @@ const LANG = {
     rssAll: '全部论文', rssVlm: 'VLM 论文', rssAgent: 'Agent 论文', rssUav: 'UAV 论文', rssSar: 'SAR 论文',
     gettingStarted: '入门', technical: '技术文档',
     overview: '项目简介', features: '核心功能', webViewer: '网页使用指南', rssZotero: 'RSS 与 Zotero',
-    pipeline: '处理流程', cli: '命令行参考', schema: '输出格式', taskTags: '任务标签', submitGroup: '提交研究组',
+    pipeline: '处理流程', cli: '命令行参考', webFallback: '网页爬取备用方案', schema: '输出格式', taskTags: '任务标签', submitGroup: '提交研究组',
     siteTitle: '遥感论文社', siteSubtitle: '来自 arXiv 的遥感论文精选合集',
     overviewDesc1: 'RS Paper Hub 是一个自动化系统，从 arXiv 收集、筛选和整理遥感论文。帮助研究人员及时了解遥感、视觉语言模型和 AI Agent 领域的最新进展。',
     overviewDesc2: '该项目提供多种访问论文的方式：网页界面、RSS 订阅和直接下载 JSON。所有论文都会自动标记类别、任务和 VLM 相关关键词。',
@@ -706,9 +751,15 @@ const LANG = {
     rss3Title: '直接下载 JSON', rss3Desc: '为了方便程序调用，也提供 JSON 文件下载：',
     pipelineIntro: '数据处理流程包含 15 个步骤：',
     step1: '获取 arXiv', step2: '筛选遥感', step3: '提取元数据', step4: '主题检测', step5: '任务标记', step6: '任务标记', step7: '分类', step8: '生成订阅源', step8b: '生成趋势', step9: '部署',
-    step1Desc: '查询 arXiv API 获取相关类别的最新提交', step2Desc: '使用关键词筛选识别遥感论文', step3Desc: '解析论文标题、摘要、作者和日期', step4Desc: '使用关键词匹配筛选 VLM、Agent、UAV、SAR 相关论文', step5Desc: '根据内容将论文分为 11 个任务类别', step6Desc: '根据内容将论文分为 11 个任务类别', step7Desc: '分类为方法、综述或数据集', step8Desc: '创建 RSS 订阅源和 JSON 输出', step8bDesc: '生成趋势统计数据（增量更新）', step9Desc: '更新网站数据',
+    step1Desc: '查询 arXiv API 获取最新提交（API 不可用时可使用网页爬取备用方案）', step2Desc: '使用关键词筛选识别遥感论文', step3Desc: '解析论文标题、摘要、作者和日期', step4Desc: '使用关键词匹配筛选 VLM、Agent、UAV、SAR 相关论文', step5Desc: '根据内容将论文分为 11 个任务类别', step6Desc: '根据内容将论文分为 11 个任务类别', step7Desc: '分类为方法、综述或数据集', step8Desc: '创建 RSS 订阅源和 JSON 输出', step8bDesc: '生成趋势统计数据（增量更新）', step9Desc: '更新网站数据',
     cliIntro: '使用 Python 运行处理流程：',
     cli1Title: '参数', cli2Title: '示例',
+    webFallbackIntro: 'arXiv API 偶尔会无法访问。项目提供了网页爬取备用方案，直接爬取 arXiv 搜索页面，产出格式完全一致。',
+    wfUsageTitle: '使用方法', wfHowTitle: '工作原理', wfArgsTitle: '参数说明',
+    wfHow1: 'web_scraper.py 爬取 arxiv.org/search/，搜索 "remote sensing" 和 "earth observation" 相关论文',
+    wfHow2: 'main_web.py 负责增量合并——已有论文不会被修改，仅追加新论文',
+    wfHow3: '后续处理流程（pipeline.py）与 API 方式完全一致',
+    wfHow4: '所有字段保证有值（缺失数据为空字符串，不会出现 NaN/null）',
     schemaIntro: 'JSON 输出中每篇论文包含以下字段：',
     taskTagsIntro: '论文会自动标记以下 11 种任务类型中的一种或多种：',
     submitGroupIntro: '您可以创建自定义论文组，整理并与社区分享阅读列表。创建的论文组会显示在主页的"所有研究组"下拉菜单中。',

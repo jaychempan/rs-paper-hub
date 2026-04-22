@@ -70,9 +70,39 @@ python main.py --update
 python pipeline.py
 ```
 
+Or use the one-liner:
+
+```bash
+bash run_daily.sh
+```
+
 That's it. All output files (`papers.csv/json`, `papers_vlm.csv/json`, `papers_agent.csv/json`, `papers_uav.csv/json`, `papers_sar.csv/json`) are updated in place.
 
 > **Note:** `--incremental` is enabled by default — existing papers are always skipped. Use `--no-incremental` to force a full re-fetch.
+
+### Web Scraping Fallback (when arXiv API is down)
+
+The arXiv API can occasionally be unreachable. A web scraping fallback is provided that produces the same output format by scraping arXiv search pages directly:
+
+```bash
+# Use web scraper instead of API
+bash run_daily.sh --web
+
+# Or run directly
+python main_web.py --update
+```
+
+The fallback uses `main_web.py` + `web_scraper.py` to scrape `arxiv.org/search/` for "remote sensing" and "earth observation" papers. It is **purely incremental** — existing papers are never modified, only new papers are appended. The downstream pipeline (`pipeline.py`) works identically regardless of which fetch method is used.
+
+| Flag | Description | Default |
+|------|-------------|---------|
+| `--update` | Quick update (latest 7 days) | off |
+| `--days N` | Look back N days in update mode | 7 |
+| `--max-results N` | Max papers to fetch | unlimited |
+| `--with-code` | Query Papers With Code for repos | off |
+| `-v, --verbose` | Verbose logging | off |
+
+> **Requires:** `beautifulsoup4` (included in `requirements.txt`)
 
 ---
 
@@ -233,6 +263,7 @@ Papers are automatically tagged with task types based on title and abstract keyw
 ```
 rs-paper-hub/
 ├── main.py              # Scraper CLI entry point
+├── main_web.py          # Web scraping fallback (when arXiv API is down)
 ├── pipeline.py          # One-click: clean + classify + tag + filter VLM/Agent/UAV/SAR + trends
 ├── filter_vlm.py        # Standalone VLM filter script
 ├── filter_agent.py      # Standalone Agent filter script
@@ -240,6 +271,7 @@ rs-paper-hub/
 ├── rss_generator.py     # Atom feed generator for Zotero
 ├── config.py            # Search configuration
 ├── scraper.py           # arXiv API scraper
+├── web_scraper.py       # arXiv web scraper (HTML fallback)
 ├── parser.py            # Metadata parser & BibTeX generation
 ├── downloader.py        # PDF downloader with resume support
 ├── progress.py          # Progress tracker
