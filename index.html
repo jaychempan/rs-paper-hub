@@ -151,7 +151,25 @@
     .res-grid { grid-template-columns: 1fr; }
   }
   @media (max-width: 768px) {
-    .sidebar { left: 8px; right: auto; top: auto; bottom: 80px; transform: none; }
+    .sidebar { left: 8px; right: auto; top: auto; bottom: 80px; transform: none; transition: left 0.3s ease; }
+    .sidebar.collapsed { left: -60px; }
+    .sidebar-collapse-btn {
+      display: flex; width: 40px; height: 40px; border-radius: 10px;
+      align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.6);
+      border: none; cursor: pointer; transition: all 0.15s; margin-top: 2px;
+    }
+    .sidebar-collapse-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+    .sidebar-expand-btn {
+      display: none; position: fixed; left: 0; bottom: 90px; z-index: 200;
+      width: 14px; height: 36px; border-radius: 0 5px 5px 0; padding: 0;
+      background: rgba(79,70,229,0.45); color: rgba(255,255,255,0.8);
+      border: none; cursor: pointer; align-items: center; justify-content: center;
+    }
+    .sidebar.collapsed ~ .sidebar-expand-btn { display: flex; }
+  }
+  @media (min-width: 769px) {
+    .sidebar-collapse-btn, .sidebar-expand-btn { display: none !important; }
   }
 
   /* Header */
@@ -712,8 +730,14 @@
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
       <span class="sidebar-item-label" data-i18n="navResources">Resources</span>
     </a>
+    <button class="sidebar-collapse-btn" onclick="toggleSidebarCollapse()" aria-label="Hide sidebar">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
   </nav>
 </aside>
+<button class="sidebar-expand-btn" id="sidebarExpandBtn" onclick="toggleSidebarCollapse()" aria-label="Show sidebar">
+  <svg width="8" height="12" viewBox="0 0 8 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 2 6 6 2 10"/></svg>
+</button>
 
 <div class="page-content">
 
@@ -2911,6 +2935,18 @@ function debounce(fn, ms) { let t; return (...a) => { clearTimeout(t); t = setTi
 window.addEventListener('scroll', () => {
   document.getElementById('backTop').classList.toggle('show', window.scrollY > 400);
 });
+
+// Sidebar collapse (mobile)
+function toggleSidebarCollapse() {
+  const sidebar = document.getElementById('sidebar');
+  const collapsed = sidebar.classList.toggle('collapsed');
+  localStorage.setItem('sidebarCollapsed', collapsed ? '1' : '');
+}
+(function() {
+  if (window.innerWidth <= 768 && localStorage.getItem('sidebarCollapsed') === '1') {
+    document.getElementById('sidebar').classList.add('collapsed');
+  }
+})();
 
 // Recent papers side panel
 let recentTab = 'daily';
