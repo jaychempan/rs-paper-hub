@@ -4,8 +4,8 @@
   <id>https://rspaper.top/output/feed_vlm.xml</id>
   <link href="https://rspaper.top/output/feed_vlm.xml" rel="self" type="application/atom+xml" />
   <link href="https://rspaper.top" rel="alternate" type="text/html" />
-  <updated>2026-04-21T05:29:08Z</updated>
-  <subtitle>Latest remote sensing papers (last 7 days) — 11 entries</subtitle>
+  <updated>2026-04-22T02:18:19Z</updated>
+  <subtitle>Latest remote sensing papers (last 7 days) — 8 entries</subtitle>
   <author>
     <name>RS-Paper-Hub</name>
     <uri>https://rspaper.top</uri>
@@ -268,97 +268,5 @@
 &lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Method&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Tasks:&lt;/strong&gt; CLS&lt;/p&gt;</content>
     <category term="Computer Vision" />
-  </entry>
-  <entry>
-    <title>UHR-BAT: Budget-Aware Token Compression Vision-Language model for Ultra-High-Resolution Remote Sensing</title>
-    <link href="http://arxiv.org/abs/2604.13565v1" rel="alternate" type="text/html" />
-    <id>http://arxiv.org/abs/2604.13565v1</id>
-    <published>2026-04-15T00:00:00Z</published>
-    <updated>2026-04-15T00:00:00Z</updated>
-    <author>
-      <name>Yunkai Dang</name>
-    </author>
-    <author>
-      <name>Minxin Dai</name>
-    </author>
-    <author>
-      <name>Yuekun Yang</name>
-    </author>
-    <author>
-      <name>Zhangnan Li</name>
-    </author>
-    <author>
-      <name>Wenbin Li</name>
-    </author>
-    <author>
-      <name>Feng Miao</name>
-    </author>
-    <author>
-      <name>Yang Gao</name>
-    </author>
-    <summary type="text">Ultra-high-resolution (UHR) remote sensing imagery couples kilometer-scale context with query-critical evidence that may occupy only a few pixels. Such vast spatial scale leads to a quadratic explosion of visual tokens and hinders the extraction of information from small objects. Previous works utilize direct downsampling, dense tiling, or global top-k pruning, which either compromise query-critical image details or incur unpredictable compute. In this paper, we propose UHR-BAT, a query-guided and region-faithful token compression framework to efficiently select visual tokens under a strict context budget. Specifically, we leverage text-guided, multi-scale importance estimation for visual tokens, effectively tackling the challenge of achieving precise yet low-cost feature extraction. Furthermore, by introducing region-wise preserve and merge strategies, we mitigate visual token redundancy, further driving down the computational budget. Experimental results show that UHR-BAT achieves state-of-the-art performance across various benchmarks. Code will be available at https://github.com/Yunkaidang/UHR.</summary>
-    <content type="html">&lt;p&gt;&lt;strong&gt;Code:&lt;/strong&gt; &lt;a href="https://github.com/Yunkaidang/UHR"&gt;https://github.com/Yunkaidang/UHR&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Method&lt;/p&gt;</content>
-    <category term="Computer Vision" />
-    <category term="Artificial Intelligence" />
-  </entry>
-  <entry>
-    <title>Decoding the Delta: Unifying Remote Sensing Change Detection and Understanding with Multimodal Large Language Models</title>
-    <link href="http://arxiv.org/abs/2604.14044v1" rel="alternate" type="text/html" />
-    <id>http://arxiv.org/abs/2604.14044v1</id>
-    <published>2026-04-15T00:00:00Z</published>
-    <updated>2026-04-15T00:00:00Z</updated>
-    <author>
-      <name>Xiaohe Li</name>
-    </author>
-    <author>
-      <name>Jiahao Li</name>
-    </author>
-    <author>
-      <name>Kaixin Zhang</name>
-    </author>
-    <author>
-      <name>Yuqiang Fang</name>
-    </author>
-    <author>
-      <name>Leilei Lin</name>
-    </author>
-    <author>
-      <name>Hong Wang</name>
-    </author>
-    <author>
-      <name>Haohua Wu</name>
-    </author>
-    <author>
-      <name>Zide Fan</name>
-    </author>
-    <summary type="text">While Multimodal Large Language Models (MLLMs) excel in general vision-language tasks, their application to remote sensing change understanding is hindered by a fundamental "temporal blindness". Existing architectures lack intrinsic mechanisms for multi-temporal contrastive reasoning and struggle with precise spatial grounding. To address this, we first introduce Delta-QA, a comprehensive benchmark comprising 180k visual question-answering samples. Delta-QA unifies pixel-level segmentation and visual question answering across bi- and tri-temporal scenarios, structuring change interpretation into four progressive cognitive dimensions. Methodologically, we propose Delta-LLaVA, a novel MLLM framework explicitly tailored for multi-temporal remote sensing interpretation. It overcomes the limitations of naive feature concatenation through three core innovations: a Change-Enhanced Attention module that systematically isolates and amplifies visual differences, a Change-SEG module utilizing Change Prior Embedding to extract differentiable difference features as input for the LLM, and Local Causal Attention to prevent cross-temporal contextual leakage. Extensive experiments demonstrate that Delta-LLaVA decisively outperforms leading generalist MLLMs and specialized segmentation models in complex change deduction and high-precision boundary localization, establishing a unified framework for earth observation intelligence.</summary>
-    <content type="html">&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Method&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Tasks:&lt;/strong&gt; VQA;CD;VG&lt;/p&gt;</content>
-    <category term="Computer Vision" />
-  </entry>
-  <entry>
-    <title>SatBLIP: Context Understanding and Feature Identification from Satellite Imagery with Vision-Language Learning</title>
-    <link href="http://arxiv.org/abs/2604.14373v2" rel="alternate" type="text/html" />
-    <id>http://arxiv.org/abs/2604.14373v2</id>
-    <published>2026-04-15T00:00:00Z</published>
-    <updated>2026-04-15T00:00:00Z</updated>
-    <author>
-      <name>Xue Wu</name>
-    </author>
-    <author>
-      <name>Shengting Cao</name>
-    </author>
-    <author>
-      <name>Shenglin Li</name>
-    </author>
-    <author>
-      <name>Jiaqi Gong</name>
-    </author>
-    <summary type="text">Rural environmental risks are shaped by place-based conditions (e.g., housing quality, road access, land-surface patterns), yet standard vulnerability indices are coarse and provide limited insight into risk contexts. We propose SatBLIP, a satellite-specific vision-language framework for rural context understanding and feature identification that predicts county-level Social Vulnerability Index (SVI). SatBLIP addresses limitations of prior remote sensing pipelines-handcrafted features, manual virtual audits, and natural-image-trained VLMs-by coupling contrastive image-text alignment with bootstrapped captioning tailored to satellite semantics. We use GPT-4o to generate structured descriptions of satellite tiles (roof type/condition, house size, yard attributes, greenery, and road context), then fine-tune a satellite-adapted BLIP model to generate captions for unseen images. Captions are encoded with CLIP and fused with LLM-derived embeddings via attention for SVI estimation under spatial aggregation. Using SHAP, we identify salient attributes (e.g., roof form/condition, street width, vegetation, cars/open space) that consistently drive robust predictions, enabling interpretable mapping of rural risk environments.</summary>
-    <content type="html">&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Method&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Tasks:&lt;/strong&gt; IC&lt;/p&gt;</content>
-    <category term="Computer Vision" />
-    <category term="Artificial Intelligence" />
   </entry>
 </feed>

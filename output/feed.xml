@@ -4,12 +4,33 @@
   <id>https://rspaper.top/output/feed.xml</id>
   <link href="https://rspaper.top/output/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://rspaper.top" rel="alternate" type="text/html" />
-  <updated>2026-04-21T05:29:08Z</updated>
-  <subtitle>Latest remote sensing papers (last 7 days) — 21 entries</subtitle>
+  <updated>2026-04-22T02:18:19Z</updated>
+  <subtitle>Latest remote sensing papers (last 7 days) — 24 entries</subtitle>
   <author>
     <name>RS-Paper-Hub</name>
     <uri>https://rspaper.top</uri>
   </author>
+  <entry>
+    <title>HarmoniDiff-RS: Training-Free Diffusion Harmonization for Satellite Image Composition</title>
+    <link href="http://arxiv.org/abs/2604.19392" rel="alternate" type="text/html" />
+    <id>http://arxiv.org/abs/2604.19392</id>
+    <published>2026-04-21T00:00:00Z</published>
+    <updated>2026-04-21T00:00:00Z</updated>
+    <author>
+      <name>Xiaoqi Zhuang</name>
+    </author>
+    <author>
+      <name>Jefersson A. Dos Santos</name>
+    </author>
+    <author>
+      <name>Jungong Han</name>
+    </author>
+    <summary type="text">Satellite image composition plays a critical role in remote sensing applications such as data augmentation, disaste simulation, and urban planning. We propose HarmoniDiff-RS, a training-free diffusion-based framework for harmonizing composite satellite images under diverse domain conditions. Our method aligns the source and target domains through a Latent Mean Shift operation that transfers radiometric characteristics between them. To balance harmonization and content preservation, we introduce a Timestep-wise Latent Fusion strategy by leveraging early inverted latents for high harmonization and late latents for semantic consistency to generate a set of composite candidates. A lightweight harmony classifier is trained to further automatically select the most coherent result among them. We also construct RSIC-H, a benchmark dataset for satellite image harmonization derived from fMoW, providing 500 paired composition samples. Experiments demonstrate that our method effectively performs satellite image composition, showing strong potential for scalable remote-sensing synthesis and simulation tasks. Code is available at: https://github.com/XiaoqiZhuang/HarmoniDiff-RS.</summary>
+    <content type="html">&lt;p&gt;&lt;strong&gt;Code:&lt;/strong&gt; &lt;a href="https://github.com/XiaoqiZhuang/HarmoniDiff-RS"&gt;https://github.com/XiaoqiZhuang/HarmoniDiff-RS&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Publication:&lt;/strong&gt; CVPR 2026&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Method&lt;/p&gt;</content>
+    <category term="Computer Vision" />
+  </entry>
   <entry>
     <title>Revisiting Change VQA in Remote Sensing with Structured and Native Multimodal Qwen Models</title>
     <link href="http://arxiv.org/abs/2604.18429v1" rel="alternate" type="text/html" />
@@ -114,6 +135,120 @@
     <category term="astro-ph.EP" />
   </entry>
   <entry>
+    <title>ExplainS2A: Explainable Spectral-Spatial Duality Model for Fast Transforming Sentinel-2 Image to AVIRIS-Level Hyperspectral Image</title>
+    <link href="http://arxiv.org/abs/2604.19007" rel="alternate" type="text/html" />
+    <id>http://arxiv.org/abs/2604.19007</id>
+    <published>2026-04-20T00:00:00Z</published>
+    <updated>2026-04-20T00:00:00Z</updated>
+    <author>
+      <name>Chia-Hsiang Lin</name>
+    </author>
+    <author>
+      <name>Zi-Chao Leng</name>
+    </author>
+    <summary type="text">Mainstream optical satellites often acquire multispectral multi-resolution images, which have limited material identifiability compared to the HSIs. Thus, spectrally super-resolving the MSI into their hyperspectral counterparts greatly facilitates remote material identification and the downstream tasks. However, spectrally super-resolving the MSI into an HSI is often constrained by the multi-resolution nature of the sensor. Specifically, due to the presence of some LR bands in the MSI, the initial spectral super-resolution results often appear to be spatially blurry, resulting in an LR HSI. To overcome this bottleneck, we then leverage some HR band inherent in the acquired MSI to spatially guide the reconstruction procedure, thereby yielding the desired HR HSI. This fusion procedure elegantly coincides with a widely known spatial super-resolution problem in satellite remote sensing. Hence, we have reformulated the tough spectral super-resolution problem into a more widely investigated spatial super-resolution problem, referred to as the spectral-spatial duality theory. Accordingly, we propose ExplainS2A, consisting of a deep unfolding network and an explainable fusion network, that unifies spectral recovery and spatial fusion into a single explainable framework. Unlike conventional black-box models, ExplainS2A offers interpretability and operates as a linear-time algorithm. Remarkably, it can process a million-scale Sentinel-2 image in less than one second, yielding high-fidelity HSI over the same scene, and upgrades the blind source separation results. Although demonstrated on the Sentinel-2 and AVIRIS sensors, ExplainS2A also serves as a general framework applicable to various sensor pairs with different resolution configurations, and has experimentally demonstrated cross-region and cross-season generalization ability. Source codes: https://github.com/IHCLab/ExplainS2A.</summary>
+    <content type="html">&lt;p&gt;&lt;strong&gt;Code:&lt;/strong&gt; &lt;a href="https://github.com/IHCLab/ExplainS2A"&gt;https://github.com/IHCLab/ExplainS2A&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Publication:&lt;/strong&gt; 16 pages, 11 figures&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Method&lt;/p&gt;</content>
+    <category term="Image and Video Processing" />
+  </entry>
+  <entry>
+    <title>HMR-Net: Hierarchical Modular Routing for Cross-Domain Object Detection in Aerial Images</title>
+    <link href="http://arxiv.org/abs/2604.18866" rel="alternate" type="text/html" />
+    <id>http://arxiv.org/abs/2604.18866</id>
+    <published>2026-04-20T00:00:00Z</published>
+    <updated>2026-04-20T00:00:00Z</updated>
+    <author>
+      <name>Pourya Shamsolmoali</name>
+    </author>
+    <author>
+      <name>Masoumeh Zareapoor</name>
+    </author>
+    <author>
+      <name>Michael Felsberg</name>
+    </author>
+    <author>
+      <name>Nick Pears</name>
+    </author>
+    <author>
+      <name>Yue Lu</name>
+    </author>
+    <summary type="text">Despite advances in object detection, aerial imagery remains a challenging domain, as models often fail to generalize across variations in spatial resolution, scene composition, and semantic label coverage. Differences in geographic context, sensor characteristics, and object distributions across datasets limit the capacity of conventional models to learn consistent and transferable representations. Shared methods trained on such data tend to impose a unified representation across fundamentally different domains, resulting in poor performance on region-specific content and less flexibility when dealing with novel object categories. To address this, we propose a novel modular learning framework that enables structured specialization in aerial detection. Our method introduces a hierarchical routing mechanism with two levels of modularity: a global expert assignment layer that uses latent geographic embeddings to route datasets to specialized processing modules, and a local scene decomposition mechanism that allocates image subregions to region-specific sub-modules. This allows our method to specialize across datasets and within complex scenes. Additionally, the framework contains a conditional expert module that uses external semantic information (e.g., category names or textual descriptions) to enable detection of novel object categories during inference, without the need for retraining or fine-tuning. By moving beyond monolithic representations, our method offers an adaptive framework for remote sensing object detection. Comprehensive evaluations on four datasets highlight improvements in multi-dataset generalization, regional specialization, and open-category detection.</summary>
+    <content type="html">&lt;p&gt;&lt;strong&gt;Publication:&lt;/strong&gt; Submitted to IJCV September 2025&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Method&lt;/p&gt;</content>
+    <category term="Computer Vision" />
+  </entry>
+  <entry>
+    <title>ConvVitMamba: Efficient Multiscale Convolution, Transformer, and Mamba-Based Sequence modelling for Hyperspectral Image Classification</title>
+    <link href="http://arxiv.org/abs/2604.18856" rel="alternate" type="text/html" />
+    <id>http://arxiv.org/abs/2604.18856</id>
+    <published>2026-04-20T00:00:00Z</published>
+    <updated>2026-04-20T00:00:00Z</updated>
+    <author>
+      <name>Mohammed Q. Alkhatib</name>
+    </author>
+    <summary type="text">Hyperspectral image (HSI) classification remains challenging due to high spectral dimensionality, redundancy, and limited labeled data. Although convolutional neural networks (CNNs) and Vision Transformers (ViTs) achieve strong performance by exploiting spectral-spatial information and long-range dependencies, they often incur high computational cost and large model size, limiting practical use. To address these limitations, a unified hybrid framework, termed ConvVitMamba, is proposed for efficient HSI classification. The architecture integrates three components: a multiscale convolutional feature extractor to capture local spectral, spatial, and joint patterns; a Vision Transformer based tokenization and encoding stage to model global contextual relationships; and a lightweight Mamba inspired gated sequence mixing module for efficient content-aware refinement without quadratic self-attention. Principal Component Analysis (PCA) is used as preprocessing to reduce redundancy and improve efficiency. Experiments on four benchmark datasets, including Houston and three UAV borne QUH datasets (Pingan, Qingyun, and Tangdaowan), demonstrate that ConvVitMamba consistently outperforms CNN, Transformer, and Mamba based methods while maintaining a favorable balance between accuracy, model size, and inference efficiency. Ablation studies confirm the complementary contributions of all components. The results indicate that the proposed framework provides an effective and efficient solution for HSI classification in diverse scenarios. The source code is publicly available at https://github.com/mqalkhatib/ConvVitMamba</summary>
+    <content type="html">&lt;p&gt;&lt;strong&gt;Code:&lt;/strong&gt; &lt;a href="https://github.com/mqalkhatib/ConvVitMamba"&gt;https://github.com/mqalkhatib/ConvVitMamba&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Publication:&lt;/strong&gt; Pre-print Accepted for Publication in International Journal of Remote Sensing&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Method&lt;/p&gt;</content>
+    <category term="Computer Vision" />
+    <category term="doi; 10.1080/01431161.2026.2663567" />
+  </entry>
+  <entry>
+    <title>A Controlled Benchmark of Visual State-Space Backbones with Domain-Shift and Boundary Analysis for Remote-Sensing Segmentation</title>
+    <link href="http://arxiv.org/abs/2604.18721" rel="alternate" type="text/html" />
+    <id>http://arxiv.org/abs/2604.18721</id>
+    <published>2026-04-20T00:00:00Z</published>
+    <updated>2026-04-20T00:00:00Z</updated>
+    <author>
+      <name>Nichula Wasalathilaka</name>
+    </author>
+    <author>
+      <name>Dineth Perera</name>
+    </author>
+    <author>
+      <name>Oshadha Samarakoon</name>
+    </author>
+    <author>
+      <name>Buddhi Wijenayake</name>
+    </author>
+    <author>
+      <name>Roshan Godaliyadda</name>
+    </author>
+    <author>
+      <name>Vijitha Herath</name>
+    </author>
+    <author>
+      <name>Parakrama Ekanayake</name>
+    </author>
+    <summary type="text">Visual state-space models (SSMs) are increasingly promoted as efficient alternatives to Vision Transformers, yet their practical advantages remain unclear under fair comparison because existing studies rarely isolate encoder effects from decoder and training choices. We present a strictly controlled benchmark of representative visual SSM families, including VMamba, MambaVision, and Spatial-Mamba, for remote-sensing semantic segmentation, in which only the encoder varies across experiments. Evaluated on LoveDA and ISPRS Potsdam under a unified 4-stage feature interface and a fixed lightweight decoder, the benchmark reveals three main findings, intra-family scaling yields only modest gains, cross-domain generalization is strongly asymmetric, and boundary delineation is the dominant failure mode under distribution shift. Although visual SSMs achieve favorable accuracy-efficiency trade-offs relative to the controlled CNN and Transformer baselines considered here, the results suggest that future improvements are more likely to come from robustness-oriented design and boundary-aware decoding than from encoder scaling alone. By isolating encoder behavior under a unified and reproducible protocol, this study establishes a practical reference benchmark for the design and evaluation of future Mamba-based segmentation backbones</summary>
+    <content type="html">&lt;p&gt;&lt;strong&gt;Publication:&lt;/strong&gt; IEEE IGARSS 2026&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Dataset&lt;/p&gt;</content>
+    <category term="Image and Video Processing" />
+    <category term="Computer Vision" />
+  </entry>
+  <entry>
+    <title>Forecasting Ionospheric Irregularities on GNSS Lines of Sight Using Dynamic Graphs with Ephemeris Conditioning</title>
+    <link href="http://arxiv.org/abs/2604.18379" rel="alternate" type="text/html" />
+    <id>http://arxiv.org/abs/2604.18379</id>
+    <published>2026-04-20T00:00:00Z</published>
+    <updated>2026-04-20T00:00:00Z</updated>
+    <author>
+      <name>Mert Can Turkmen</name>
+    </author>
+    <author>
+      <name>Eng Leong Tan</name>
+    </author>
+    <author>
+      <name>Yee Hui Lee</name>
+    </author>
+    <summary type="text">Most data-driven ionospheric forecasting models operate on gridded products, which do not preserve the time-varying sampling structure of satellite-based sensing. We instead model the ionosphere as a dynamic graph over ionospheric pierce points (IPPs), with connectivity that evolves as satellite positions change. Because satellite trajectories are predictable, the graph topology over the forecast horizon can be constructed in advance. We exploit this property to condition forecasts on the future graph structure, which we term ephemeris conditioning. This enables prediction on lines of sight that appear only in the forecast horizon. We evaluate our framework on multi-GNSS (Global Navigation Satellite System) data from a co-located receiver pair in Singapore spanning January 2023 through April 2025. The task is to forecast Rate of TEC Index (ROTI)-defined irregularities at 5-minute cadence up to 2 hours ahead as binary probabilistic classification per node. The resulting model, IonoDGNN, achieves a Brier Skill Score (BSS) of 0.49 and a precision-recall area under the curve (PR-AUC) of 0.75, improving over persistence by 35\% in BSS and 52\% in PR-AUC, with larger gains at longer lead times. Ablations confirm that graph structure and ephemeris conditioning each contribute meaningfully, with conditioning proving essential for satellites that rise during the forecast horizon (receiver operating characteristic AUC: 0.95 vs.\ 0.52 without). Under simulated coverage dropout, the model retains predictive skill on affected nodes through spatial message passing from observed neighbors. These results suggest that dynamic graph forecasting on evolving lines of sight is a viable alternative to grid-based representations for ionospheric irregularity forecasting. The model and evaluation code will be released upon publication.</summary>
+    <content type="html">&lt;p&gt;&lt;strong&gt;Publication:&lt;/strong&gt; 14 pages, 8 figures&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Method&lt;/p&gt;</content>
+    <category term="Machine Learning" />
+    <category term="Signal Processing; Geophysics; physics.space-ph" />
+  </entry>
+  <entry>
     <title>RS-HyRe-R1: A Hybrid Reward Mechanism to Overcome Perceptual Inertia for Remote Sensing Images Understanding</title>
     <link href="http://arxiv.org/abs/2604.17504v1" rel="alternate" type="text/html" />
     <id>http://arxiv.org/abs/2604.17504v1</id>
@@ -192,6 +327,40 @@
     <summary type="text">A robust Multimodal Large Language Model (MLLM) for Earth Observation should maintain consistent interpretation and reasoning under realistic input variations. However, current Remote Sensing MLLMs fail to meet this requirement. Trained on carefully curated clean datasets, they learn brittle mappings that do not generalize to noisy conditions in operational Earth Observation. Consequently, their performance degrades when confronted with imperfect inputs in deployment. To quantify this vulnerability, we construct a realistic set of multimodal perturbations, including visual degradations such as cloud and fog cover, together with diverse human-centric textual variations ranging from colloquialisms to vague or omitted instructions. Empirical evaluations show that these perturbations significantly impair the visual-semantic reasoning capabilities of leading RS foundation models. To address this limitation, we introduce RemoteShield, a robust Remote Sensing MLLM trained to maintain consistent outputs across realistic input variations. During training, each clean sample is paired with its image-text perturbed variants to form a semantic equivalence cluster. Rather than directly fitting noisy samples, RemoteShield is optimized through preference learning over clean and perturbed conditions within the same cluster. By comparing model responses to clean and corrupted inputs, the model is encouraged to favor stable responses over perturbation-induced failures. This cross-condition alignment helps the model focus on underlying task semantics despite visual degradations and textual noise. Experiments on three Earth Observation tasks show that RemoteShield consistently delivers stronger robustness and cross-condition consistency than representative baselines under realistic multimodal perturbations.</summary>
     <content type="html">&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Method&lt;/p&gt;</content>
     <category term="Computer Vision" />
+  </entry>
+  <entry>
+    <title>MM-Hand: A 21-DOF Multi-modal Modular Dexterous Robotic Hand with Remote Actuation</title>
+    <link href="http://arxiv.org/abs/2604.17245" rel="alternate" type="text/html" />
+    <id>http://arxiv.org/abs/2604.17245</id>
+    <published>2026-04-19T00:00:00Z</published>
+    <updated>2026-04-19T00:00:00Z</updated>
+    <author>
+      <name>Zhuoheng Li</name>
+    </author>
+    <author>
+      <name>Qingquan Lin</name>
+    </author>
+    <author>
+      <name>Checheng Yu</name>
+    </author>
+    <author>
+      <name>Qiangyu Chen</name>
+    </author>
+    <author>
+      <name>Zhiqian Lan</name>
+    </author>
+    <author>
+      <name>Lutong Zhang</name>
+    </author>
+    <author>
+      <name>Hongyang Li</name>
+    </author>
+    <author>
+      <name>Ping Luo</name>
+    </author>
+    <summary type="text">High-DOF dexterous hands require compact actuation, rich sensing, and reliable thermal behavior, but conventional designs often occupy valuable in-hand space, increase end-effector mass, and suffer from heat accumulation near the hand. Remote tendon-driven actuation offers an alternative by relocating motors to the robot base or an external motor hub, thereby freeing the fingers and palm for additional degrees of freedom, sensing modules, and maintainable mechanical structures. This paper presents MM-Hand, a 21-DOF Multimodal Modular dexterous hand based on remote tendon-driven actuation. The hand integrates spring-return tendon-driven fingers, modular 3D-printed finger and palm structures, quick tendon connectors for maintenance, and a multimodal sensing system including joint angle sensors, tactile sensors, motor-side feedback, and in-palm stereo vision. We further analyze tendon-sheath length variation and friction loss to guide the design of the routing, motor hub, and closed-loop joint control. Experiments validate the transmission, output force, sensing, and control capability of the system. The fingertip force reaches 25N under a 1m remote sheath transmission, demonstrating practical load capacity despite long-distance tendon routing. Closed-loop joint-level experiments further evaluate command tracking with a static arm and during arm motion. These results show that MM-Hand provides a lightweight, sensor-rich, and maintainable hardware platform for dexterous manipulation research. To support the community, all hardware designs and software frameworks are made fully open-source at https://mmlab.hk/research/MM-Hand.</summary>
+    <content type="html">&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Method&lt;/p&gt;</content>
+    <category term="Robotics" />
   </entry>
   <entry>
     <title>Hyperspectral Unmixing Hierarchies</title>
@@ -531,128 +700,5 @@
 &lt;p&gt;&lt;strong&gt;Publication:&lt;/strong&gt; 14 pages, 12 figures&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Dataset&lt;/p&gt;</content>
     <category term="Computer Vision" />
-  </entry>
-  <entry>
-    <title>UHR-BAT: Budget-Aware Token Compression Vision-Language model for Ultra-High-Resolution Remote Sensing</title>
-    <link href="http://arxiv.org/abs/2604.13565v1" rel="alternate" type="text/html" />
-    <id>http://arxiv.org/abs/2604.13565v1</id>
-    <published>2026-04-15T00:00:00Z</published>
-    <updated>2026-04-15T00:00:00Z</updated>
-    <author>
-      <name>Yunkai Dang</name>
-    </author>
-    <author>
-      <name>Minxin Dai</name>
-    </author>
-    <author>
-      <name>Yuekun Yang</name>
-    </author>
-    <author>
-      <name>Zhangnan Li</name>
-    </author>
-    <author>
-      <name>Wenbin Li</name>
-    </author>
-    <author>
-      <name>Feng Miao</name>
-    </author>
-    <author>
-      <name>Yang Gao</name>
-    </author>
-    <summary type="text">Ultra-high-resolution (UHR) remote sensing imagery couples kilometer-scale context with query-critical evidence that may occupy only a few pixels. Such vast spatial scale leads to a quadratic explosion of visual tokens and hinders the extraction of information from small objects. Previous works utilize direct downsampling, dense tiling, or global top-k pruning, which either compromise query-critical image details or incur unpredictable compute. In this paper, we propose UHR-BAT, a query-guided and region-faithful token compression framework to efficiently select visual tokens under a strict context budget. Specifically, we leverage text-guided, multi-scale importance estimation for visual tokens, effectively tackling the challenge of achieving precise yet low-cost feature extraction. Furthermore, by introducing region-wise preserve and merge strategies, we mitigate visual token redundancy, further driving down the computational budget. Experimental results show that UHR-BAT achieves state-of-the-art performance across various benchmarks. Code will be available at https://github.com/Yunkaidang/UHR.</summary>
-    <content type="html">&lt;p&gt;&lt;strong&gt;Code:&lt;/strong&gt; &lt;a href="https://github.com/Yunkaidang/UHR"&gt;https://github.com/Yunkaidang/UHR&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Method&lt;/p&gt;</content>
-    <category term="Computer Vision" />
-    <category term="Artificial Intelligence" />
-  </entry>
-  <entry>
-    <title>Remote Sensing Image Super-Resolution for Imbalanced Textures: A Texture-Aware Diffusion Framework</title>
-    <link href="http://arxiv.org/abs/2604.13994v1" rel="alternate" type="text/html" />
-    <id>http://arxiv.org/abs/2604.13994v1</id>
-    <published>2026-04-15T00:00:00Z</published>
-    <updated>2026-04-15T00:00:00Z</updated>
-    <author>
-      <name>Enzhuo Zhang</name>
-    </author>
-    <author>
-      <name>Sijie Zhao</name>
-    </author>
-    <author>
-      <name>Dilxat Muhtar</name>
-    </author>
-    <author>
-      <name>Zhenshi Li</name>
-    </author>
-    <author>
-      <name>Xueliang Zhang</name>
-    </author>
-    <author>
-      <name>Pengfeng Xiao</name>
-    </author>
-    <summary type="text">Generative diffusion priors have recently achieved state-of-the-art performance in natural image super-resolution, demonstrating a powerful capability to synthesize photorealistic details. However, their direct application to remote sensing image super-resolution (RSISR) reveals significant shortcomings. Unlike natural images, remote sensing images exhibit a unique texture distribution where ground objects are globally stochastic yet locally clustered, leading to highly imbalanced textures. This imbalance severely hinders the model's spatial perception. To address this, we propose TexADiff, a novel framework that begins by estimating a Relative Texture Density Map (RTDM) to represent the texture distribution. TexADiff then leverages this RTDM in three synergistic ways: as an explicit spatial conditioning to guide the diffusion process, as a loss modulation term to prioritize texture-rich regions, and as a dynamic adapter for the sampling schedule. These modifications are designed to endow the model with explicit texture-aware capabilities. Experiments demonstrate that TexADiff achieves superior or competitive quantitative metrics. Furthermore, qualitative results show that our model generates faithful high-frequency details while effectively suppressing texture hallucinations. This improved reconstruction quality also results in significant gains in downstream task performance. The source code of our method can be found at https://github.com/ZezFuture/TexAdiff.</summary>
-    <content type="html">&lt;p&gt;&lt;strong&gt;Code:&lt;/strong&gt; &lt;a href="https://github.com/ZezFuture/TexAdiff"&gt;https://github.com/ZezFuture/TexAdiff&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Publication:&lt;/strong&gt; 10 pages, 5 figures&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Method&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Tasks:&lt;/strong&gt; SR&lt;/p&gt;</content>
-    <category term="Computer Vision" />
-  </entry>
-  <entry>
-    <title>Decoding the Delta: Unifying Remote Sensing Change Detection and Understanding with Multimodal Large Language Models</title>
-    <link href="http://arxiv.org/abs/2604.14044v1" rel="alternate" type="text/html" />
-    <id>http://arxiv.org/abs/2604.14044v1</id>
-    <published>2026-04-15T00:00:00Z</published>
-    <updated>2026-04-15T00:00:00Z</updated>
-    <author>
-      <name>Xiaohe Li</name>
-    </author>
-    <author>
-      <name>Jiahao Li</name>
-    </author>
-    <author>
-      <name>Kaixin Zhang</name>
-    </author>
-    <author>
-      <name>Yuqiang Fang</name>
-    </author>
-    <author>
-      <name>Leilei Lin</name>
-    </author>
-    <author>
-      <name>Hong Wang</name>
-    </author>
-    <author>
-      <name>Haohua Wu</name>
-    </author>
-    <author>
-      <name>Zide Fan</name>
-    </author>
-    <summary type="text">While Multimodal Large Language Models (MLLMs) excel in general vision-language tasks, their application to remote sensing change understanding is hindered by a fundamental "temporal blindness". Existing architectures lack intrinsic mechanisms for multi-temporal contrastive reasoning and struggle with precise spatial grounding. To address this, we first introduce Delta-QA, a comprehensive benchmark comprising 180k visual question-answering samples. Delta-QA unifies pixel-level segmentation and visual question answering across bi- and tri-temporal scenarios, structuring change interpretation into four progressive cognitive dimensions. Methodologically, we propose Delta-LLaVA, a novel MLLM framework explicitly tailored for multi-temporal remote sensing interpretation. It overcomes the limitations of naive feature concatenation through three core innovations: a Change-Enhanced Attention module that systematically isolates and amplifies visual differences, a Change-SEG module utilizing Change Prior Embedding to extract differentiable difference features as input for the LLM, and Local Causal Attention to prevent cross-temporal contextual leakage. Extensive experiments demonstrate that Delta-LLaVA decisively outperforms leading generalist MLLMs and specialized segmentation models in complex change deduction and high-precision boundary localization, establishing a unified framework for earth observation intelligence.</summary>
-    <content type="html">&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Method&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Tasks:&lt;/strong&gt; VQA;CD;VG&lt;/p&gt;</content>
-    <category term="Computer Vision" />
-  </entry>
-  <entry>
-    <title>SatBLIP: Context Understanding and Feature Identification from Satellite Imagery with Vision-Language Learning</title>
-    <link href="http://arxiv.org/abs/2604.14373v2" rel="alternate" type="text/html" />
-    <id>http://arxiv.org/abs/2604.14373v2</id>
-    <published>2026-04-15T00:00:00Z</published>
-    <updated>2026-04-15T00:00:00Z</updated>
-    <author>
-      <name>Xue Wu</name>
-    </author>
-    <author>
-      <name>Shengting Cao</name>
-    </author>
-    <author>
-      <name>Shenglin Li</name>
-    </author>
-    <author>
-      <name>Jiaqi Gong</name>
-    </author>
-    <summary type="text">Rural environmental risks are shaped by place-based conditions (e.g., housing quality, road access, land-surface patterns), yet standard vulnerability indices are coarse and provide limited insight into risk contexts. We propose SatBLIP, a satellite-specific vision-language framework for rural context understanding and feature identification that predicts county-level Social Vulnerability Index (SVI). SatBLIP addresses limitations of prior remote sensing pipelines-handcrafted features, manual virtual audits, and natural-image-trained VLMs-by coupling contrastive image-text alignment with bootstrapped captioning tailored to satellite semantics. We use GPT-4o to generate structured descriptions of satellite tiles (roof type/condition, house size, yard attributes, greenery, and road context), then fine-tune a satellite-adapted BLIP model to generate captions for unseen images. Captions are encoded with CLIP and fused with LLM-derived embeddings via attention for SVI estimation under spatial aggregation. Using SHAP, we identify salient attributes (e.g., roof form/condition, street width, vegetation, cars/open space) that consistently drive robust predictions, enabling interpretable mapping of rural risk environments.</summary>
-    <content type="html">&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Method&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Tasks:&lt;/strong&gt; IC&lt;/p&gt;</content>
-    <category term="Computer Vision" />
-    <category term="Artificial Intelligence" />
   </entry>
 </feed>

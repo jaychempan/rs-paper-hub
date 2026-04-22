@@ -5565,5 +5565,24 @@
     "_added_date": "2026-04-18",
     "Category": "Method",
     "_tasks": "CLS;OD"
+  },
+  {
+    "Type": "Computer Vision",
+    "Subtype": "doi; 10.1080/01431161.2026.2663567",
+    "Date": "2026-04-20",
+    "Month": 4,
+    "Year": 2026,
+    "Institute": "",
+    "Title": "ConvVitMamba: Efficient Multiscale Convolution, Transformer, and Mamba-Based Sequence modelling for Hyperspectral Image Classification",
+    "abbr.": "",
+    "Paper_link": "http://arxiv.org/abs/2604.18856",
+    "Abstract": "Hyperspectral image (HSI) classification remains challenging due to high spectral dimensionality, redundancy, and limited labeled data. Although convolutional neural networks (CNNs) and Vision Transformers (ViTs) achieve strong performance by exploiting spectral-spatial information and long-range dependencies, they often incur high computational cost and large model size, limiting practical use. To address these limitations, a unified hybrid framework, termed ConvVitMamba, is proposed for efficient HSI classification. The architecture integrates three components: a multiscale convolutional feature extractor to capture local spectral, spatial, and joint patterns; a Vision Transformer based tokenization and encoding stage to model global contextual relationships; and a lightweight Mamba inspired gated sequence mixing module for efficient content-aware refinement without quadratic self-attention. Principal Component Analysis (PCA) is used as preprocessing to reduce redundancy and improve efficiency. Experiments on four benchmark datasets, including Houston and three UAV borne QUH datasets (Pingan, Qingyun, and Tangdaowan), demonstrate that ConvVitMamba consistently outperforms CNN, Transformer, and Mamba based methods while maintaining a favorable balance between accuracy, model size, and inference efficiency. Ablation studies confirm the complementary contributions of all components. The results indicate that the proposed framework provides an effective and efficient solution for HSI classification in diverse scenarios. The source code is publicly available at https://github.com/mqalkhatib/ConvVitMamba",
+    "code": "https://github.com/mqalkhatib/ConvVitMamba",
+    "Publication": "Pre-print Accepted for Publication in International Journal of Remote Sensing",
+    "BibTex": "@article{alkhatib2026convvitmamba,\n  title={ConvVitMamba: Efficient Multiscale Convolution, Transformer, and Mamba-Based Sequence modelling for Hyperspectral Image Classification},\n  author={Mohammed Q. Alkhatib},\n  journal={arXiv preprint arXiv:2604.18856},\n  year={2026},\n  url={http://arxiv.org/abs/2604.18856}\n}",
+    "Authors": "Mohammed Q. Alkhatib",
+    "_added_date": "2026-04-22",
+    "Category": "Method",
+    "_tasks": ""
   }
 ]
