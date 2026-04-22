@@ -163,3 +163,4 @@ cython_debug/
 feature-ideas.md
 /html_inbox
 /cleaning/__pycache__
+run_daily.sh
