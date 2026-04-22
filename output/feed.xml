@@ -4,16 +4,16 @@
   <id>https://rspaper.top/output/feed.xml</id>
   <link href="https://rspaper.top/output/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://rspaper.top" rel="alternate" type="text/html" />
-  <updated>2026-04-22T02:18:19Z</updated>
-  <subtitle>Latest remote sensing papers (last 7 days) — 24 entries</subtitle>
+  <updated>2026-04-22T03:46:27Z</updated>
+  <subtitle>Latest remote sensing papers (last 7 days) — 27 entries</subtitle>
   <author>
     <name>RS-Paper-Hub</name>
     <uri>https://rspaper.top</uri>
   </author>
   <entry>
     <title>HarmoniDiff-RS: Training-Free Diffusion Harmonization for Satellite Image Composition</title>
-    <link href="http://arxiv.org/abs/2604.19392" rel="alternate" type="text/html" />
-    <id>http://arxiv.org/abs/2604.19392</id>
+    <link href="http://arxiv.org/abs/2604.19392v1" rel="alternate" type="text/html" />
+    <id>http://arxiv.org/abs/2604.19392v1</id>
     <published>2026-04-21T00:00:00Z</published>
     <updated>2026-04-21T00:00:00Z</updated>
     <author>
@@ -29,6 +29,37 @@
     <content type="html">&lt;p&gt;&lt;strong&gt;Code:&lt;/strong&gt; &lt;a href="https://github.com/XiaoqiZhuang/HarmoniDiff-RS"&gt;https://github.com/XiaoqiZhuang/HarmoniDiff-RS&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Publication:&lt;/strong&gt; CVPR 2026&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Method&lt;/p&gt;</content>
+    <category term="Computer Vision" />
+  </entry>
+  <entry>
+    <title>Structure-Semantic Decoupled Modulation of Global Geospatial Embeddings for High-Resolution Remote Sensing Mapping</title>
+    <link href="http://arxiv.org/abs/2604.19591v1" rel="alternate" type="text/html" />
+    <id>http://arxiv.org/abs/2604.19591v1</id>
+    <published>2026-04-21T00:00:00Z</published>
+    <updated>2026-04-21T00:00:00Z</updated>
+    <author>
+      <name>Jienan Lyu</name>
+    </author>
+    <author>
+      <name>Miao Yang</name>
+    </author>
+    <author>
+      <name>Jinchen Cai</name>
+    </author>
+    <author>
+      <name>Yiwen Hu</name>
+    </author>
+    <author>
+      <name>Guanyi Lu</name>
+    </author>
+    <author>
+      <name>Junhao Qiu</name>
+    </author>
+    <author>
+      <name>Runmin Dong</name>
+    </author>
+    <summary type="text">Fine-grained high-resolution remote sensing mapping typically relies on localized visual features, which restricts cross-domain generalizability and often leads to fragmented predictions of large-scale land covers. While global geospatial foundation models offer powerful, generalizable representations, directly fusing their high-dimensional implicit embeddings with high-resolution visual features frequently triggers feature interference and spatial structure degradation due to a severe semantic-spatial gap. To overcome these limitations, we propose a Structure-Semantic Decoupled Modulation (SSDM) framework, which decouples global geospatial representations into two complementary cross-modal injection pathways. First, the structural prior modulation branch introduces the macroscopic receptive field priors from global representations into the self-attention modules of the high-resolution encoder. By guiding local feature extraction with holistic structural constraints, it effectively suppresses prediction fragmentation caused by high-frequency detail noise and excessive intra-class variance. Second, the global semantic injection branch explicitly aligns holistic context with the deep high-resolution feature space and directly supplements global semantics via cross-modal integration, thereby significantly enhancing the semantic consistency and category-level discrimination of complex land covers. Extensive experiments demonstrate that our method achieves state-of-the-art performance compared to existing cross-modal fusion approaches. By unleashing the potential of global embeddings, SSDM consistently improves high-resolution mapping accuracy across diverse scenarios, providing a universal and effective paradigm for integrating geospatial foundation models into high-resolution vision tasks.</summary>
+    <content type="html">&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Method&lt;/p&gt;</content>
     <category term="Computer Vision" />
   </entry>
   <entry>
@@ -136,8 +167,8 @@
   </entry>
   <entry>
     <title>ExplainS2A: Explainable Spectral-Spatial Duality Model for Fast Transforming Sentinel-2 Image to AVIRIS-Level Hyperspectral Image</title>
-    <link href="http://arxiv.org/abs/2604.19007" rel="alternate" type="text/html" />
-    <id>http://arxiv.org/abs/2604.19007</id>
+    <link href="http://arxiv.org/abs/2604.19007v1" rel="alternate" type="text/html" />
+    <id>http://arxiv.org/abs/2604.19007v1</id>
     <published>2026-04-20T00:00:00Z</published>
     <updated>2026-04-20T00:00:00Z</updated>
     <author>
@@ -149,13 +180,14 @@
     <summary type="text">Mainstream optical satellites often acquire multispectral multi-resolution images, which have limited material identifiability compared to the HSIs. Thus, spectrally super-resolving the MSI into their hyperspectral counterparts greatly facilitates remote material identification and the downstream tasks. However, spectrally super-resolving the MSI into an HSI is often constrained by the multi-resolution nature of the sensor. Specifically, due to the presence of some LR bands in the MSI, the initial spectral super-resolution results often appear to be spatially blurry, resulting in an LR HSI. To overcome this bottleneck, we then leverage some HR band inherent in the acquired MSI to spatially guide the reconstruction procedure, thereby yielding the desired HR HSI. This fusion procedure elegantly coincides with a widely known spatial super-resolution problem in satellite remote sensing. Hence, we have reformulated the tough spectral super-resolution problem into a more widely investigated spatial super-resolution problem, referred to as the spectral-spatial duality theory. Accordingly, we propose ExplainS2A, consisting of a deep unfolding network and an explainable fusion network, that unifies spectral recovery and spatial fusion into a single explainable framework. Unlike conventional black-box models, ExplainS2A offers interpretability and operates as a linear-time algorithm. Remarkably, it can process a million-scale Sentinel-2 image in less than one second, yielding high-fidelity HSI over the same scene, and upgrades the blind source separation results. Although demonstrated on the Sentinel-2 and AVIRIS sensors, ExplainS2A also serves as a general framework applicable to various sensor pairs with different resolution configurations, and has experimentally demonstrated cross-region and cross-season generalization ability. Source codes: https://github.com/IHCLab/ExplainS2A.</summary>
     <content type="html">&lt;p&gt;&lt;strong&gt;Code:&lt;/strong&gt; &lt;a href="https://github.com/IHCLab/ExplainS2A"&gt;https://github.com/IHCLab/ExplainS2A&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Publication:&lt;/strong&gt; 16 pages, 11 figures&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Method&lt;/p&gt;</content>
+&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Method&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Tasks:&lt;/strong&gt; SR&lt;/p&gt;</content>
     <category term="Image and Video Processing" />
   </entry>
   <entry>
     <title>HMR-Net: Hierarchical Modular Routing for Cross-Domain Object Detection in Aerial Images</title>
-    <link href="http://arxiv.org/abs/2604.18866" rel="alternate" type="text/html" />
-    <id>http://arxiv.org/abs/2604.18866</id>
+    <link href="http://arxiv.org/abs/2604.18866v1" rel="alternate" type="text/html" />
+    <id>http://arxiv.org/abs/2604.18866v1</id>
     <published>2026-04-20T00:00:00Z</published>
     <updated>2026-04-20T00:00:00Z</updated>
     <author>
@@ -175,7 +207,8 @@
     </author>
     <summary type="text">Despite advances in object detection, aerial imagery remains a challenging domain, as models often fail to generalize across variations in spatial resolution, scene composition, and semantic label coverage. Differences in geographic context, sensor characteristics, and object distributions across datasets limit the capacity of conventional models to learn consistent and transferable representations. Shared methods trained on such data tend to impose a unified representation across fundamentally different domains, resulting in poor performance on region-specific content and less flexibility when dealing with novel object categories. To address this, we propose a novel modular learning framework that enables structured specialization in aerial detection. Our method introduces a hierarchical routing mechanism with two levels of modularity: a global expert assignment layer that uses latent geographic embeddings to route datasets to specialized processing modules, and a local scene decomposition mechanism that allocates image subregions to region-specific sub-modules. This allows our method to specialize across datasets and within complex scenes. Additionally, the framework contains a conditional expert module that uses external semantic information (e.g., category names or textual descriptions) to enable detection of novel object categories during inference, without the need for retraining or fine-tuning. By moving beyond monolithic representations, our method offers an adaptive framework for remote sensing object detection. Comprehensive evaluations on four datasets highlight improvements in multi-dataset generalization, regional specialization, and open-category detection.</summary>
     <content type="html">&lt;p&gt;&lt;strong&gt;Publication:&lt;/strong&gt; Submitted to IJCV September 2025&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Method&lt;/p&gt;</content>
+&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Method&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Tasks:&lt;/strong&gt; OD&lt;/p&gt;</content>
     <category term="Computer Vision" />
   </entry>
   <entry>
@@ -190,14 +223,15 @@
     <summary type="text">Hyperspectral image (HSI) classification remains challenging due to high spectral dimensionality, redundancy, and limited labeled data. Although convolutional neural networks (CNNs) and Vision Transformers (ViTs) achieve strong performance by exploiting spectral-spatial information and long-range dependencies, they often incur high computational cost and large model size, limiting practical use. To address these limitations, a unified hybrid framework, termed ConvVitMamba, is proposed for efficient HSI classification. The architecture integrates three components: a multiscale convolutional feature extractor to capture local spectral, spatial, and joint patterns; a Vision Transformer based tokenization and encoding stage to model global contextual relationships; and a lightweight Mamba inspired gated sequence mixing module for efficient content-aware refinement without quadratic self-attention. Principal Component Analysis (PCA) is used as preprocessing to reduce redundancy and improve efficiency. Experiments on four benchmark datasets, including Houston and three UAV borne QUH datasets (Pingan, Qingyun, and Tangdaowan), demonstrate that ConvVitMamba consistently outperforms CNN, Transformer, and Mamba based methods while maintaining a favorable balance between accuracy, model size, and inference efficiency. Ablation studies confirm the complementary contributions of all components. The results indicate that the proposed framework provides an effective and efficient solution for HSI classification in diverse scenarios. The source code is publicly available at https://github.com/mqalkhatib/ConvVitMamba</summary>
     <content type="html">&lt;p&gt;&lt;strong&gt;Code:&lt;/strong&gt; &lt;a href="https://github.com/mqalkhatib/ConvVitMamba"&gt;https://github.com/mqalkhatib/ConvVitMamba&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Publication:&lt;/strong&gt; Pre-print Accepted for Publication in International Journal of Remote Sensing&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Method&lt;/p&gt;</content>
+&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Method&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Tasks:&lt;/strong&gt; CLS&lt;/p&gt;</content>
     <category term="Computer Vision" />
     <category term="doi; 10.1080/01431161.2026.2663567" />
   </entry>
   <entry>
     <title>A Controlled Benchmark of Visual State-Space Backbones with Domain-Shift and Boundary Analysis for Remote-Sensing Segmentation</title>
-    <link href="http://arxiv.org/abs/2604.18721" rel="alternate" type="text/html" />
-    <id>http://arxiv.org/abs/2604.18721</id>
+    <link href="http://arxiv.org/abs/2604.18721v1" rel="alternate" type="text/html" />
+    <id>http://arxiv.org/abs/2604.18721v1</id>
     <published>2026-04-20T00:00:00Z</published>
     <updated>2026-04-20T00:00:00Z</updated>
     <author>
@@ -223,7 +257,8 @@
     </author>
     <summary type="text">Visual state-space models (SSMs) are increasingly promoted as efficient alternatives to Vision Transformers, yet their practical advantages remain unclear under fair comparison because existing studies rarely isolate encoder effects from decoder and training choices. We present a strictly controlled benchmark of representative visual SSM families, including VMamba, MambaVision, and Spatial-Mamba, for remote-sensing semantic segmentation, in which only the encoder varies across experiments. Evaluated on LoveDA and ISPRS Potsdam under a unified 4-stage feature interface and a fixed lightweight decoder, the benchmark reveals three main findings, intra-family scaling yields only modest gains, cross-domain generalization is strongly asymmetric, and boundary delineation is the dominant failure mode under distribution shift. Although visual SSMs achieve favorable accuracy-efficiency trade-offs relative to the controlled CNN and Transformer baselines considered here, the results suggest that future improvements are more likely to come from robustness-oriented design and boundary-aware decoding than from encoder scaling alone. By isolating encoder behavior under a unified and reproducible protocol, this study establishes a practical reference benchmark for the design and evaluation of future Mamba-based segmentation backbones</summary>
     <content type="html">&lt;p&gt;&lt;strong&gt;Publication:&lt;/strong&gt; IEEE IGARSS 2026&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Dataset&lt;/p&gt;</content>
+&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Dataset&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Tasks:&lt;/strong&gt; SEG&lt;/p&gt;</content>
     <category term="Image and Video Processing" />
     <category term="Computer Vision" />
   </entry>
@@ -244,9 +279,58 @@
     </author>
     <summary type="text">Most data-driven ionospheric forecasting models operate on gridded products, which do not preserve the time-varying sampling structure of satellite-based sensing. We instead model the ionosphere as a dynamic graph over ionospheric pierce points (IPPs), with connectivity that evolves as satellite positions change. Because satellite trajectories are predictable, the graph topology over the forecast horizon can be constructed in advance. We exploit this property to condition forecasts on the future graph structure, which we term ephemeris conditioning. This enables prediction on lines of sight that appear only in the forecast horizon. We evaluate our framework on multi-GNSS (Global Navigation Satellite System) data from a co-located receiver pair in Singapore spanning January 2023 through April 2025. The task is to forecast Rate of TEC Index (ROTI)-defined irregularities at 5-minute cadence up to 2 hours ahead as binary probabilistic classification per node. The resulting model, IonoDGNN, achieves a Brier Skill Score (BSS) of 0.49 and a precision-recall area under the curve (PR-AUC) of 0.75, improving over persistence by 35\% in BSS and 52\% in PR-AUC, with larger gains at longer lead times. Ablations confirm that graph structure and ephemeris conditioning each contribute meaningfully, with conditioning proving essential for satellites that rise during the forecast horizon (receiver operating characteristic AUC: 0.95 vs.\ 0.52 without). Under simulated coverage dropout, the model retains predictive skill on affected nodes through spatial message passing from observed neighbors. These results suggest that dynamic graph forecasting on evolving lines of sight is a viable alternative to grid-based representations for ionospheric irregularity forecasting. The model and evaluation code will be released upon publication.</summary>
     <content type="html">&lt;p&gt;&lt;strong&gt;Publication:&lt;/strong&gt; 14 pages, 8 figures&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Method&lt;/p&gt;</content>
+&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Method&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Tasks:&lt;/strong&gt; CLS&lt;/p&gt;</content>
     <category term="Machine Learning" />
     <category term="Signal Processing; Geophysics; physics.space-ph" />
+  </entry>
+  <entry>
+    <title>A Proxy Consistency Loss for Grounded Fusion of Earth Observation and Location Encoders</title>
+    <link href="http://arxiv.org/abs/2604.18881v1" rel="alternate" type="text/html" />
+    <id>http://arxiv.org/abs/2604.18881v1</id>
+    <published>2026-04-20T00:00:00Z</published>
+    <updated>2026-04-20T00:00:00Z</updated>
+    <author>
+      <name>Zhongying Wang</name>
+    </author>
+    <author>
+      <name>Kevin Lane</name>
+    </author>
+    <author>
+      <name>Levi Cai</name>
+    </author>
+    <author>
+      <name>Morteza Karimzadeh</name>
+    </author>
+    <author>
+      <name>Esther Rolf</name>
+    </author>
+    <summary type="text">Supervised learning with Earth observation inputs is often limited by the sparsity of high-quality labeled or in-situ measured data to use as training labels. With the abundance of geographic data products, in many cases there are variables correlated with - but different from - the variable of interest that can be leveraged. We integrate such proxy variables within a geographic prior via a trainable location encoder and introduce a proxy consistency loss (PCL) formulation to imbue proxy data into the location encoder. The first key insight behind our approach is to use the location encoder as an agile and flexible way to learn from abundantly available proxy data which can be sampled independently of training label availability. Our second key insight is that we will need to regularize the location encoder appropriately to achieve performance and robustness with limited labeled data. Our experiments on air quality prediction and poverty mapping show that integrating proxy data implicitly through the location encoder outperforms using both as input to an observation encoder and fusion strategies that use frozen, pretrained location embeddings as a geographic prior. Superior performance for in-sample prediction shows that the PCL can incorporate rich information from the proxies, and superior out-of-sample prediction shows that the learned latent embeddings help generalize to areas without training labels.</summary>
+    <content type="html">&lt;p&gt;&lt;strong&gt;Publication:&lt;/strong&gt; EarthVision 2026&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Method&lt;/p&gt;</content>
+    <category term="Computer Vision" />
+    <category term="Artificial Intelligence" />
+  </entry>
+  <entry>
+    <title>Characterizing AlphaEarth Embedding Geometry for Agentic Environmental Reasoning</title>
+    <link href="http://arxiv.org/abs/2604.18715v1" rel="alternate" type="text/html" />
+    <id>http://arxiv.org/abs/2604.18715v1</id>
+    <published>2026-04-20T00:00:00Z</published>
+    <updated>2026-04-20T00:00:00Z</updated>
+    <author>
+      <name>Mashrekur Rahman</name>
+    </author>
+    <author>
+      <name>Samuel J. Barrett</name>
+    </author>
+    <author>
+      <name>Christina Last</name>
+    </author>
+    <summary type="text">Earth observation foundation models encode land surface information into dense embedding vectors, yet the geometric structure of these representations and its implications for downstream reasoning remain underexplored. We characterize the manifold geometry of Google AlphaEarth's 64-dimensional embeddings across 12.1 million Continental United States samples (2017--2023) and develop an agentic system that leverages this geometric understanding for environmental reasoning. The manifold is non-Euclidean: effective dimensionality is 13.3 (participation ratio) from 64 raw dimensions, with local intrinsic dimensionality of approximately 10. Tangent spaces rotate substantially, with 84\% of locations exceeding 60\textdegree{} and local-global alignment (mean$|\cosθ| = 0.17$) approaching the random baseline of 0.125. Supervised linear probes indicate that concept directions rotate across the manifold, and compositional vector arithmetic using both PCA-derived and probe-derived directions yields poor precision. Retrieval instead produces physically coherent results, with local geometry predicting retrieval coherence ($R^2 = 0.32$). Building on this characterization, we introduce an agentic system with nine specialized tools that decomposes environmental queries into reasoning chains over a FAISS-indexed embedding database. A five-condition ablation (120 queries, three complexity tiers) shows that embedding retrieval dominates response quality ($μ= 3.79 \pm 0.90$ vs.\ $3.03 \pm 0.77$ parametric-only; scale 1--5), with peak performance on multi-step comparisons ($μ= 4.28 \pm 0.43$). A cross-model benchmark show that geometric tools reduce Sonnet 4.5's score by 0.12 points but improve Opus 4.6's by 0.07, with Opus achieving higher geometric grounding (3.38 vs.\ 2.64), suggesting that the value of geometric characterization scales with the reasoning capability of the consuming model.</summary>
+    <content type="html">&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Method&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Tasks:&lt;/strong&gt; VG&lt;/p&gt;</content>
+    <category term="cs.CL" />
+    <category term="Artificial Intelligence" />
   </entry>
   <entry>
     <title>RS-HyRe-R1: A Hybrid Reward Mechanism to Overcome Perceptual Inertia for Remote Sensing Images Understanding</title>

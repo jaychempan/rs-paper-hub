@@ -956,9 +956,9 @@
     "Month": 9,
     "Year": 2025,
     "Institute": "",
-    "Title": "Agentic Reasoning for Robust Vision Systems via Increased Test-Time Compute",
+    "Title": "Visual Reasoning Agent: Robust Vision Systems in Remote Sensing via Inference-Time Scaling",
     "abbr.": "",
-    "Paper_link": "http://arxiv.org/abs/2509.16343v1",
+    "Paper_link": "http://arxiv.org/abs/2509.16343v2",
     "Abstract": "Developing trustworthy intelligent vision systems for high-stakes domains, \\emph{e.g.}, remote sensing and medical diagnosis, demands broad robustness without costly retraining. We propose \\textbf{Visual Reasoning Agent (VRA)}, a training-free, agentic reasoning framework that wraps off-the-shelf vision-language models \\emph{and} pure vision systems in a \\emph{Think--Critique--Act} loop. While VRA incurs significant additional test-time computation, it achieves up to 40\\% absolute accuracy gains on challenging visual reasoning benchmarks. Future work will optimize query routing and early stopping to reduce inference overhead while preserving reliability in vision tasks.",
     "code": "",
     "Publication": "",
@@ -1955,5 +1955,24 @@
     "_added_date": "2026-04-21",
     "Category": "Method",
     "_tasks": "VQA"
+  },
+  {
+    "Type": "cs.CL",
+    "Subtype": "Artificial Intelligence",
+    "Date": "2026-04-20",
+    "Month": 4,
+    "Year": 2026,
+    "Institute": "",
+    "Title": "Characterizing AlphaEarth Embedding Geometry for Agentic Environmental Reasoning",
+    "abbr.": "",
+    "Paper_link": "http://arxiv.org/abs/2604.18715v1",
+    "Abstract": "Earth observation foundation models encode land surface information into dense embedding vectors, yet the geometric structure of these representations and its implications for downstream reasoning remain underexplored. We characterize the manifold geometry of Google AlphaEarth's 64-dimensional embeddings across 12.1 million Continental United States samples (2017--2023) and develop an agentic system that leverages this geometric understanding for environmental reasoning. The manifold is non-Euclidean: effective dimensionality is 13.3 (participation ratio) from 64 raw dimensions, with local intrinsic dimensionality of approximately 10. Tangent spaces rotate substantially, with 84\\% of locations exceeding 60\\textdegree{} and local-global alignment (mean$|\\cosθ| = 0.17$) approaching the random baseline of 0.125. Supervised linear probes indicate that concept directions rotate across the manifold, and compositional vector arithmetic using both PCA-derived and probe-derived directions yields poor precision. Retrieval instead produces physically coherent results, with local geometry predicting retrieval coherence ($R^2 = 0.32$). Building on this characterization, we introduce an agentic system with nine specialized tools that decomposes environmental queries into reasoning chains over a FAISS-indexed embedding database. A five-condition ablation (120 queries, three complexity tiers) shows that embedding retrieval dominates response quality ($μ= 3.79 \\pm 0.90$ vs.\\ $3.03 \\pm 0.77$ parametric-only; scale 1--5), with peak performance on multi-step comparisons ($μ= 4.28 \\pm 0.43$). A cross-model benchmark show that geometric tools reduce Sonnet 4.5's score by 0.12 points but improve Opus 4.6's by 0.07, with Opus achieving higher geometric grounding (3.38 vs.\\ 2.64), suggesting that the value of geometric characterization scales with the reasoning capability of the consuming model.",
+    "code": "",
+    "Publication": "",
+    "BibTex": "@article{rahman2026characterizing,\n  title={Characterizing AlphaEarth Embedding Geometry for Agentic Environmental Reasoning},\n  author={Mashrekur Rahman and Samuel J. Barrett and Christina Last},\n  journal={arXiv preprint arXiv:2604.18715v1},\n  year={2026},\n  url={http://arxiv.org/abs/2604.18715v1}\n}",
+    "Authors": "Mashrekur Rahman, Samuel J. Barrett, Christina Last",
+    "_added_date": "2026-04-22",
+    "Category": "Method",
+    "_tasks": "VG"
   }
 ]

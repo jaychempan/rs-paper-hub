@@ -5442,7 +5442,7 @@
     "Institute": "",
     "Title": "SMART-Ship: A Comprehensive Synchronized Multi-modal Aligned Remote Sensing Targets Dataset and Benchmark for Berthed Ships Analysis",
     "abbr.": "",
-    "Paper_link": "http://arxiv.org/abs/2508.02384v1",
+    "Paper_link": "http://arxiv.org/abs/2508.02384v2",
     "Abstract": "Given the limitations of satellite orbits and imaging conditions, multi-modal remote sensing (RS) data is crucial in enabling long-term earth observation. However, maritime surveillance remains challenging due to the complexity of multi-scale targets and the dynamic environments. To bridge this critical gap, we propose a Synchronized Multi-modal Aligned Remote sensing Targets dataset for berthed ships analysis (SMART-Ship), containing spatiotemporal registered images with fine-grained annotation for maritime targets from five modalities: visible-light, synthetic aperture radar (SAR), panchromatic, multi-spectral, and near-infrared. Specifically, our dataset consists of 1092 multi-modal image sets, covering 38,838 ships. Each image set is acquired within one week and registered to ensure spatiotemporal consistency. Ship instances in each set are annotated with polygonal location information, fine-grained categories, instance-level identifiers, and change region masks, organized hierarchically to support diverse multi-modal RS tasks. Furthermore, we define standardized benchmarks on five fundamental tasks and comprehensively compare representative methods across the dataset. Thorough experiment evaluations validate that the proposed SMART-Ship dataset could support various multi-modal RS interpretation tasks and reveal the promising directions for further exploration.",
     "code": "",
     "Publication": "",
